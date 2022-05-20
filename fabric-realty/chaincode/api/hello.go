@@ -126,3 +126,59 @@ func CreateDataItem(stub shim.ChaincodeStubInterface, args []string) pb.Response
 
 	return shim.Success([]byte(dataID))
 }
+
+func CreateAPI(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+	if len(args) != 8 {
+		return shim.Error("参数个数不满足")
+	}
+
+	apiName := args[0]
+	apiID := uuid.New().String()
+	apiIntroduction := args[1]
+	apiAuthor := args[2]
+	apiURL := args[3]
+	apiType := args[4]
+	apiRequest := args[5]
+	apiResponse := args[6]
+	apiVersion := args[7]
+
+	if apiName == "" || apiAuthor == "" || apiURL == "" || apiType == "" || apiVersion == "" {
+		return shim.Error("参数存在空值")
+	}
+
+	api := &model.API{
+		Name:         apiName,
+		ID:           apiID,
+		Introduction: apiIntroduction,
+		Author:       apiAuthor,
+		URL:          apiURL,
+		Type:         apiType,
+		Request:      apiRequest,
+		Response:     apiResponse,
+		Version:      apiVersion,
+		Created:      time.Now(),
+	}
+
+	if err := utils.WriteLedger(api, stub, model.APIKey, []string{apiID}); err != nil {
+		return shim.Error(fmt.Sprintf("保存数据项失败:%s", err))
+	}
+
+	results, err := utils.GetStateByPartialCompositeKeys(stub, model.OrganizationKey, []string{apiAuthor})
+	if err != nil {
+		return shim.Error(fmt.Sprintf("不存在当前机构:%s", err))
+	}
+
+	var org model.Organization
+	err = json.Unmarshal(results[0], &org)
+	if err != nil {
+		return shim.Error(fmt.Sprintf("QueryAccountList-反序列化出错: %s", err))
+	}
+
+	org.APIList = append(org.APIList, apiID)
+
+	if err := utils.WriteLedger(org, stub, model.OrganizationKey, []string{org.ID}); err != nil {
+		return shim.Error(fmt.Sprintf("更新索引失败:%s", err))
+	}
+
+	return shim.Success([]byte(apiID))
+}

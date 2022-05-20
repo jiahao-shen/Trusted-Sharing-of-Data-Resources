@@ -50,7 +50,7 @@ func Test_CreateOrganization(t *testing.T) {
 		[]byte(""),
 	}).Payload)
 
-	fmt.Println(id1)
+	fmt.Println("中华人民共和国国务院:", id1)
 
 	id2 := string(checkInvoke(t, stub, [][]byte{
 		[]byte("createOrganization"),
@@ -60,7 +60,7 @@ func Test_CreateOrganization(t *testing.T) {
 		[]byte(id1),
 	}).Payload)
 
-	fmt.Println(id2)
+	fmt.Println("中华人民共和国国家卫生健康委员会:", id2)
 
 	id3 := string(checkInvoke(t, stub, [][]byte{
 		[]byte("createDataItem"),
@@ -74,20 +74,51 @@ func Test_CreateOrganization(t *testing.T) {
 		[]byte("https://gjzwfw.www.gov.cn/fwmh/healthCode/indexNucleic.do"),
 	}).Payload)
 
-	fmt.Println(id3)
+	fmt.Println("核酸检测结果:", id3)
 
 	orgList := string(checkInvoke(t, stub, [][]byte{
 		[]byte("queryOrganizationList"),
 	}).Payload)
 
-	fmt.Println(orgList)
+	fmt.Println("机构查询:", orgList)
 
 	dataList := string(checkInvoke(t, stub, [][]byte{
 		[]byte("queryDataItemList"),
 		[]byte(id2),
 	}).Payload)
 
-	fmt.Println(dataList)
+	fmt.Println("数据查询:", dataList)
+
+	id4 := string(checkInvoke(t, stub, [][]byte{
+		[]byte("createOrganization"),
+		[]byte("中国信息通信研究院"),
+		[]byte("government"),
+		[]byte(""),
+		[]byte(id1),
+	}).Payload)
+
+	fmt.Println("中国信息通信研究院:", id4)
+
+	id5 := string(checkInvoke(t, stub, [][]byte{
+		[]byte("createAPI"),
+		[]byte("获取行程数据"),
+		[]byte("个人轨迹数据"),
+		[]byte(id4),
+		[]byte("https://xc.caict.ac.cn/#/login"),
+		[]byte("POST"),
+		[]byte(`[{"Field": "IdentifyCard", "Type": "String"}]`),
+		[]byte(`{"Status": "Integer", "Message": "String", "Data": "List"}`),
+		[]byte("v1.0.0"),
+	}).Payload)
+
+	fmt.Println("获取行程数据:", id5)
+
+	apiList := string(checkInvoke(t, stub, [][]byte{
+		[]byte("queryAPIList"),
+		[]byte(id4),
+	}).Payload)
+
+	fmt.Println("API查询:", apiList)
 }
 
 func Test_QueryOrganizationList(t *testing.T) {
@@ -101,21 +132,6 @@ func Test_QueryOrganizationList(t *testing.T) {
 	fmt.Println(string(checkInvoke(t, stub, [][]byte{
 		[]byte("queryOrganizationList"),
 		[]byte("HospitalA-Surgery"),
-	}).Payload))
-}
-
-func Test_QueryDataItemList(t *testing.T) {
-	stub := initTest(t)
-	fmt.Println("1、测试某个机构下的数据目录")
-
-	fmt.Println(string(checkInvoke(t, stub, [][]byte{
-		[]byte("queryDataItemList"),
-		[]byte("HospitalA-Surgery"),
-	}).Payload))
-
-	fmt.Println(string(checkInvoke(t, stub, [][]byte{
-		[]byte("queryDataItemList"),
-		[]byte("HospitalB"),
 	}).Payload))
 }
 

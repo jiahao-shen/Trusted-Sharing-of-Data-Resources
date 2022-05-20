@@ -1,4 +1,6 @@
-.vscode
-.idea
-
+# 文件夹
 vendor
+
+
+# 文件
+go.work

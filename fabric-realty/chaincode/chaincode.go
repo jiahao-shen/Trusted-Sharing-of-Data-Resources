@@ -77,10 +77,14 @@ func (t *BlockChainRealEstate) Invoke(stub shim.ChaincodeStubInterface) pb.Respo
 		return api.CreateOrganization(stub, args)
 	case "createDataItem":
 		return api.CreateDataItem(stub, args)
+	case "createAPI":
+		return api.CreateAPI(stub, args)
 	case "queryOrganizationList":
 		return api.QueryOrganizationList(stub, args)
 	case "queryDataItemList":
 		return api.QueryDataItemList(stub, args)
+	case "queryAPIList":
+		return api.QueryAPIList(stub, args)
 	default:
 		return shim.Error(fmt.Sprintf("没有该功能: %s", funcName))
 	}

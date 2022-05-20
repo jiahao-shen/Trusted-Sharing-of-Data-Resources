@@ -90,6 +90,7 @@ const (
 	DonatingGranteeKey = "donating-grantee-key"
 	OrganizationKey    = "organization-key"
 	DataItemKey        = "dataitem-key"
+	APIKey             = "api-key"
 )
 
 type Organization struct {
@@ -100,6 +101,7 @@ type Organization struct {
 	Superior     string    `json:"superior"`     // 上级单位
 	Subordinates []string  `json:"subordinates"` // 下级单位
 	DataItems    []string  `json:"dataitems"`    // 数据项
+	APIList      []string  `json:"apilist"`      // API列表
 	Created      time.Time `json:"created"`      // 创建时间
 }
 
@@ -114,5 +116,18 @@ type DataItem struct {
 	Classified   string    `json:"classified"`   // 涉密属性
 	Version      string    `json:"version"`      // 版本号
 	Location     string    `json:"location"`     // 存储路径
+	Created      time.Time `json:"created"`      // 创建时间
+}
+
+type API struct {
+	Name         string    `json:"name"`         // API名称
+	ID           string    `json:"id"`           // API标识符
+	Introduction string    `json:"introduction"` // API介绍
+	Author       string    `json:"author"`       // API所有者
+	URL          string    `json:"url"`          // API请求地址
+	Type         string    `json:"type"`         // 请求类型(OPTIONS, HEAD, GET, POST, PUT, DELETE, TRACE, CONNECT)
+	Request      string    `json:"request"`      // 请求参数(JSON格式, 关键字和类型)
+	Response     string    `json:"response"`     // 返回参数(JSON格式, 关键字和类型)
+	Version      string    `json:"version"`      // API版本信息
 	Created      time.Time `json:"created"`      // 创建时间
 }

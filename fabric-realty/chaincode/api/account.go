@@ -34,9 +34,11 @@ func QueryAccountList(stub shim.ChaincodeStubInterface, args []string) pb.Respon
 	return shim.Success(accountListByte)
 }
 
-// QueryOrganizationList 查询机构列表
+// 查询机构列表
 func QueryOrganizationList(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 	var organizationList []model.Organization
+
+	// TODO(获取args)
 
 	results, err := utils.GetStateByPartialCompositeKeys(stub, model.OrganizationKey, args)
 	if err != nil {
@@ -61,9 +63,11 @@ func QueryOrganizationList(stub shim.ChaincodeStubInterface, args []string) pb.R
 	return shim.Success(organizationListByte)
 }
 
-// QueryDataItemList 查询机构目录
+// 查询数据项目录
 func QueryDataItemList(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 	var dataitemList []model.DataItem
+
+	// TODO(获取args)
 
 	results, err := utils.GetStateByPartialCompositeKeys(stub, model.OrganizationKey, args)
 	if err != nil {
@@ -97,4 +101,44 @@ func QueryDataItemList(stub shim.ChaincodeStubInterface, args []string) pb.Respo
 		return shim.Error(fmt.Sprintf("QueryAccountList-序列化出错: %s", err))
 	}
 	return shim.Success(dataitemListByte)
+}
+
+// 查询API列表
+func QueryAPIList(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+	var apiList []model.API
+
+	// TODO(获取args)
+
+	results, err := utils.GetStateByPartialCompositeKeys(stub, model.OrganizationKey, args)
+	if err != nil {
+		return shim.Error(fmt.Sprintf("%s", err))
+	}
+
+	for _, val := range results {
+		if val != nil {
+			var org model.Organization
+			err := json.Unmarshal(val, &org)
+			if err != nil {
+				return shim.Error(fmt.Sprintf("QueryAccountList-反序列化出错: %s", err))
+			}
+			for _, item := range org.APIList {
+				results, err := utils.GetStateByPartialCompositeKeys(stub, model.APIKey, []string{item})
+				if err != nil {
+					return shim.Error(fmt.Sprintf("%s", err))
+				}
+				var api model.API
+				err = json.Unmarshal(results[0], &api)
+				if err != nil {
+					return shim.Error(fmt.Sprintf("QueryAccountList-反序列化出错: %s", err))
+				}
+				apiList = append(apiList, api)
+			}
+		}
+	}
+
+	apiListByte, err := json.Marshal(apiList)
+	if err != nil {
+		return shim.Error(fmt.Sprintf("QueryAccountList-序列化出错: %s", err))
+	}
+	return shim.Success(apiListByte)
 }
