@@ -1,0 +1,41 @@
+[
+  {
+    "name": "中华人民共和国国家卫生健康委员会",
+    "id": "063b4fb4-8b73-47a2-9e6c-adc348ec4e17",
+    "type": "government",
+    "introduction": "",
+    "superior": "9c7cb684-819f-4816-8d66-0af8d489a873",
+    "subordinates": [],
+    "dataitems": [
+      "e4bd68f6-ed3e-4e8e-a954-c4f86cc9316f"
+    ],
+    "created": "2022-05-14T00:09:50.399343+08:00"
+  },
+  {
+    "name": "中华人民共和国国务院",
+    "id": "9c7cb684-819f-4816-8d66-0af8d489a873",
+    "type": "government",
+    "introduction": "",
+    "superior": "",
+    "subordinates": [
+      "063b4fb4-8b73-47a2-9e6c-adc348ec4e17"
+    ],
+    "dataitems": [],
+    "created": "2022-05-14T00:09:50.399235+08:00"
+  }
+]
+[
+  {
+    "name": "核酸检测结果",
+    "id": "e4bd68f6-ed3e-4e8e-a954-c4f86cc9316f",
+    "introduction": "新冠肺炎",
+    "author": "063b4fb4-8b73-47a2-9e6c-adc348ec4e17",
+    "type": "{Identity Card: string, NATT Result: string, Time: time.time}",
+    "shared": "Shared",
+    "resource": "Medical",
+    "classified": "Public",
+    "version": "1.0.0",
+    "location": "https://gjzwfw.www.gov.cn/fwmh/healthCode/indexNucleic.do",
+    "created": "2022-05-14T00:09:50.39938+08:00"
+  }
+]

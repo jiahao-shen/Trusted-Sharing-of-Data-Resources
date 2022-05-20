@@ -1,0 +1,53 @@
+[
+  {
+    "Name": "国务院",
+    "ID": "State-Council",
+    "Type": "Govenment",
+    "Introduction": "",
+    "Superior": "",
+    "Subordinate": "",
+    "DataItems": [
+      "NATT-Record"
+    ],
+    "Created": ""
+  },
+  {
+    "Name": "BH医院",
+    "ID": "Hospital-BH",
+    "Type": "Hospital",
+    "Introduction": "",
+    "Superior": "",
+    "Subordinate": "",
+    "DataItems": [
+      "Hospital-BH-Registration-Record",
+      "Hospital-BH-Diagnosis-Record"
+    ],
+    "Created": ""
+  },
+  {
+    "Name": "海淀医院",
+    "ID": "Hospital-Haidian",
+    "Type": "Hospital",
+    "Introduction": "",
+    "Superior": "",
+    "Subordinate": "",
+    "DataItems": [
+      "Hospital-Haidian-Registration-Record",
+      "Hospital-Haidian-Diagnosis-Record"
+    ],
+    "Created": ""
+  },
+  {
+    "Name": "BY3医院",
+    "ID": "Hospital-BY3",
+    "Type": "Hospital",
+    "Introduction": "",
+    "Superior": "",
+    "Subordinate": "",
+    "DataItems": [
+      "Hospital-BY3-Registration-Record",
+      "Hospital-BY3-Diagnosis-Record"
+    ],
+    "Created": ""
+  },
+]
