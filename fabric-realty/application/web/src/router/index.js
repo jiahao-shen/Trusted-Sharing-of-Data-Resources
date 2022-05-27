@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import FileOperationList from '../views/FileManage/FileOperationList.vue'
 
 Vue.use(Router)
 
@@ -55,6 +56,12 @@ export const constantRoutes = [{
       icon: 'realestate'
     }
   }]
+},
+
+{
+  path: '/file-operation-list',
+  name: 'FileOperationList',
+  component: FileOperationList
 }
 ]
 
