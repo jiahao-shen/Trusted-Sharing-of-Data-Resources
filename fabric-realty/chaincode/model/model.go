@@ -131,3 +131,11 @@ type API struct {
 	Version      string    `json:"version"`      // API版本信息
 	Created      time.Time `json:"created"`      // 创建时间
 }
+
+// FileOperation 文件操作信息
+type FileOperation struct {
+	FilePath   string `json:"filePath"`   // 文件路径
+	Type       string `json:"type"`       // 文件操作类型
+	CreateTime string `json:"createTime"` // 创建时间
+	Hash       string `json:"hash"`       // 前几个字段字符串拼接
+}
