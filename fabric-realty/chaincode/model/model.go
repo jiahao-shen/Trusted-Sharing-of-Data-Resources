@@ -91,6 +91,7 @@ const (
 	OrganizationKey    = "organization-key"
 	DataItemKey        = "dataitem-key"
 	APIKey             = "api-key"
+	FileOperationKey   = "file-operation-key"
 )
 
 type Organization struct {
