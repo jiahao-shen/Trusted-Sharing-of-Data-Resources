@@ -79,6 +79,8 @@ func (t *BlockChainRealEstate) Invoke(stub shim.ChaincodeStubInterface) pb.Respo
 		return api.CreateDataItem(stub, args)
 	case "createAPI":
 		return api.CreateAPI(stub, args)
+	case "requestAPI":
+		return api.RequestAPI(stub, args)
 	case "queryOrganizationList":
 		return api.QueryOrganizationList(stub, args)
 	case "queryDataItemList":

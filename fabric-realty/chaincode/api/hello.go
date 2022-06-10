@@ -1,10 +1,13 @@
 package api
 
 import (
+	"bytes"
 	"chaincode/model"
 	"chaincode/pkg/utils"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"net/http"
 	"time"
 
 	"github.com/google/uuid"
@@ -181,4 +184,32 @@ func CreateAPI(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 	}
 
 	return shim.Success([]byte(apiID))
+}
+
+func RequestAPI(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+	apiID := args[0]
+	apiArgs := args[1]
+
+	results, err := utils.GetStateByPartialCompositeKeys(stub, model.APIKey, []string{apiID})
+
+	if err != nil {
+		return shim.Error(fmt.Sprintf("不存在当前API:%s", err))
+	}
+
+	var api model.API
+	err = json.Unmarshal(results[0], &api)
+	if err != nil {
+		return shim.Error(fmt.Sprintf("QueryAccountList-反序列化出错: %s", err))
+	}
+
+	response, err := http.Post(api.URL, "application/json", bytes.NewBufferString(apiArgs))
+
+	if err != nil {
+		return shim.Error(fmt.Sprintf("HTTP请求失败:%s", err))
+	}
+
+	defer response.Body.Close()
+	body, _ := ioutil.ReadAll(response.Body)
+
+	return shim.Success([]byte(body))
 }

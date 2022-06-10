@@ -104,7 +104,7 @@ func Test_CreateOrganization(t *testing.T) {
 		[]byte("获取行程数据"),
 		[]byte("个人轨迹数据"),
 		[]byte(id4),
-		[]byte("https://xc.caict.ac.cn/#/login"),
+		[]byte("http://127.0.0.1:8080/test"),
 		[]byte("POST"),
 		[]byte(`[{"Field": "IdentifyCard", "Type": "String"}]`),
 		[]byte(`{"Status": "Integer", "Message": "String", "Data": "List"}`),
@@ -119,6 +119,14 @@ func Test_CreateOrganization(t *testing.T) {
 	}).Payload)
 
 	fmt.Println("API查询:", apiList)
+
+	result := string(checkInvoke(t, stub, [][]byte{
+		[]byte("requestAPI"),
+		[]byte(id5),
+		[]byte(`{"identityCard":"320506199612168412"}`),
+	}).Payload)
+
+	fmt.Println("API调用:", result)
 }
 
 func Test_QueryOrganizationList(t *testing.T) {
