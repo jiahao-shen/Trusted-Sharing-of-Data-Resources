@@ -122,6 +122,7 @@ func Test_CreateOrganization(t *testing.T) {
 
 	result := string(checkInvoke(t, stub, [][]byte{
 		[]byte("requestAPI"),
+		[]byte(id1),
 		[]byte(id5),
 		[]byte(`{"identityCard":"320506199612168412"}`),
 	}).Payload)

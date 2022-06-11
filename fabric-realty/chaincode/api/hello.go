@@ -187,8 +187,9 @@ func CreateAPI(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 }
 
 func RequestAPI(stub shim.ChaincodeStubInterface, args []string) pb.Response {
-	apiID := args[0]
-	apiArgs := args[1]
+	reqID := args[0]
+	apiID := args[1]
+	apiArgs := args[2]
 
 	results, err := utils.GetStateByPartialCompositeKeys(stub, model.APIKey, []string{apiID})
 
@@ -210,6 +211,19 @@ func RequestAPI(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 
 	defer response.Body.Close()
 	body, _ := ioutil.ReadAll(response.Body)
+
+	log := &model.RequestAPILog{
+		ID:      uuid.New().String(),
+		ReqID:   reqID,
+		APIID:   apiID,
+		ReqHash: utils.GetSHA256String(reqID + apiID + apiArgs),
+		ResHash: utils.GetSHA256String(string(body)),
+		Time:    time.Now(),
+	}
+
+	if err := utils.WriteLedger(log, stub, model.APIRequestKey, []string{log.ID}); err != nil {
+		return shim.Error(fmt.Sprintf("写入API调用日志失败:%s", err))
+	}
 
 	return shim.Success([]byte(body))
 }

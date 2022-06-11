@@ -1,6 +1,8 @@
 package utils
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -107,4 +109,22 @@ func GetStateByPartialCompositeKeys2(stub shim.ChaincodeStubInterface, objectTyp
 		results = append(results, val.GetValue())
 	}
 	return results, nil
+}
+
+// func GetMD5String(content string) (result string) {
+// 	hash := md5.New()
+// 	hash.Write([]byte(content))
+// 	return hex.EncodeToString(hash.Sum(nil))
+// }
+
+// func GetSHA1String(content string) (result string) {
+// 	hash := sha1.New()
+// 	hash.Write([]byte(content))
+// 	return hex.EncodeToString(hash.Sum(nil))
+// }
+
+func GetSHA256String(content string) (result string) {
+	hash := sha256.New()
+	hash.Write([]byte(content))
+	return hex.EncodeToString(hash.Sum(nil))
 }

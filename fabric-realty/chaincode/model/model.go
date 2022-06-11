@@ -91,6 +91,7 @@ const (
 	OrganizationKey    = "organization-key"
 	DataItemKey        = "dataitem-key"
 	APIKey             = "api-key"
+	APIRequestKey      = "api-request-key"
 	FileOperationKey   = "file-operation-key"
 )
 
@@ -104,6 +105,7 @@ type Organization struct {
 	DataItems    []string  `json:"dataitems"`    // 数据项
 	APIList      []string  `json:"apilist"`      // API列表
 	Created      time.Time `json:"created"`      // 创建时间
+	Hash         string    `json:"hash"`         // Hash值
 }
 
 type DataItem struct {
@@ -118,6 +120,7 @@ type DataItem struct {
 	Version      string    `json:"version"`      // 版本号
 	Location     string    `json:"location"`     // 存储路径
 	Created      time.Time `json:"created"`      // 创建时间
+	Hash         string    `json:"hash"`         // Hash值
 }
 
 type API struct {
@@ -131,6 +134,16 @@ type API struct {
 	Response     string    `json:"response"`     // 返回参数(JSON格式, 关键字和类型)
 	Version      string    `json:"version"`      // API版本信息
 	Created      time.Time `json:"created"`      // 创建时间
+	Hash         string    `json:"hash"`         // Hash值
+}
+
+type RequestAPILog struct {
+	ID      string    `json:"id"`      // 日志标识符
+	ReqID   string    `json:"reqId"`   // 请求方标识符
+	APIID   string    `json:"apiId"`   // API标识符
+	ReqHash string    `json:"reqHash"` // 请求值Hash
+	ResHash string    `json:"resHash"` // 返回值Hash
+	Time    time.Time `json:"time"`    // 调用时间
 }
 
 // FileOperation 文件操作信息

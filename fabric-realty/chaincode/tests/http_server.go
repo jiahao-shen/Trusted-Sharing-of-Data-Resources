@@ -34,7 +34,7 @@ func test(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(request)
 
 	response := &testResponse{
-		NATTResult: "阴性" + request.IdentityCard,
+		NATTResult: "阴性",
 	}
 
 	msg, err := json.Marshal(response)
