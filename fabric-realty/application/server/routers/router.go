@@ -30,6 +30,9 @@ func InitRouter() *gin.Engine {
 		apiV1.POST("/createFileOperation", v1.CreateFileOperation)
 		// 查询文件操作记录
 		apiV1.POST("/queryFileOperationList", v1.QueryFileOperationList)
+		// 创建机构
+		apiV1.POST("/createOrganization", v1.CreateOrganization)
+		apiV1.POST("/queryOrganizationList", v1.QueryOrganizationList)
 	}
 	// 静态文件路由
 	r.StaticFS("/web", http.Dir("./dist/"))
