@@ -59,7 +59,7 @@ func CreateAPI(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 	var org model.Organization
 	err = json.Unmarshal(results[0], &org)
 	if err != nil {
-		return shim.Error(fmt.Sprintf("QueryAccountList-反序列化出错: %s", err))
+		return shim.Error(fmt.Sprintf("反序列化出错: %s", err))
 	}
 
 	org.APIList = append(org.APIList, apiID)
@@ -68,7 +68,12 @@ func CreateAPI(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 		return shim.Error(fmt.Sprintf("更新索引失败:%s", err))
 	}
 
-	return shim.Success([]byte(apiID))
+	apiBody, err := json.Marshal(api)
+	if err != nil {
+		return shim.Error(fmt.Sprintf("序列化出错: %s", err))
+	}
+
+	return shim.Success(apiBody)
 }
 
 func RequestAPI(stub shim.ChaincodeStubInterface, args []string) pb.Response {
@@ -85,7 +90,7 @@ func RequestAPI(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 	var api model.API
 	err = json.Unmarshal(results[0], &api)
 	if err != nil {
-		return shim.Error(fmt.Sprintf("QueryAccountList-反序列化出错: %s", err))
+		return shim.Error(fmt.Sprintf("反序列化出错: %s", err))
 	}
 
 	response, err := http.Post(api.URL, "application/json", bytes.NewBufferString(apiArgs))
@@ -129,7 +134,7 @@ func QueryAPIList(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 			var org model.Organization
 			err := json.Unmarshal(val, &org)
 			if err != nil {
-				return shim.Error(fmt.Sprintf("QueryAccountList-反序列化出错: %s", err))
+				return shim.Error(fmt.Sprintf("反序列化出错: %s", err))
 			}
 			for _, item := range org.APIList {
 				results, err := utils.GetStateByPartialCompositeKeys(stub, model.APIKey, []string{item})
@@ -139,7 +144,7 @@ func QueryAPIList(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 				var api model.API
 				err = json.Unmarshal(results[0], &api)
 				if err != nil {
-					return shim.Error(fmt.Sprintf("QueryAccountList-反序列化出错: %s", err))
+					return shim.Error(fmt.Sprintf("反序列化出错: %s", err))
 				}
 				apiList = append(apiList, api)
 			}
@@ -148,7 +153,7 @@ func QueryAPIList(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 
 	apiListByte, err := json.Marshal(apiList)
 	if err != nil {
-		return shim.Error(fmt.Sprintf("QueryAccountList-序列化出错: %s", err))
+		return shim.Error(fmt.Sprintf("序列化出错: %s", err))
 	}
 	return shim.Success(apiListByte)
 }

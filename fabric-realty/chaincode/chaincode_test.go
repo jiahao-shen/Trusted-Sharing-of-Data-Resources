@@ -42,92 +42,104 @@ func TestBlockChainRealEstate_Init(t *testing.T) {
 
 func Test_CreateOrganization(t *testing.T) {
 	stub := initTest(t)
-	id1 := string(checkInvoke(t, stub, [][]byte{
+	resp1 := checkInvoke(t, stub, [][]byte{
 		[]byte("createOrganization"),
 		[]byte("中华人民共和国国务院"),
 		[]byte("government"),
 		[]byte(""),
 		[]byte(""),
-	}).Payload)
+	})
 
-	fmt.Println("中华人民共和国国务院:", id1)
+	var org1 model.Organization
+	json.Unmarshal(bytes.NewBuffer(resp1.Payload).Bytes(), &org1)
+	fmt.Println("中华人民共和国国务院:", org1.ID)
 
-	id2 := string(checkInvoke(t, stub, [][]byte{
+	resp2 := checkInvoke(t, stub, [][]byte{
 		[]byte("createOrganization"),
 		[]byte("中华人民共和国国家卫生健康委员会"),
 		[]byte("government"),
 		[]byte(""),
-		[]byte(id1),
-	}).Payload)
+		[]byte(org1.ID),
+	})
+	var org2 model.Organization
+	json.Unmarshal(bytes.NewBuffer(resp2.Payload).Bytes(), &org2)
+	fmt.Println("中华人民共和国国家卫生健康委员会:", org2.ID)
 
-	fmt.Println("中华人民共和国国家卫生健康委员会:", id2)
-
-	id3 := string(checkInvoke(t, stub, [][]byte{
+	resp3 := checkInvoke(t, stub, [][]byte{
 		[]byte("createDataItem"),
 		[]byte("核酸检测结果"),
 		[]byte("新冠肺炎"),
-		[]byte(id2),
+		[]byte(org2.ID),
 		[]byte("{Identity Card: string, NATT Result: string, Time: time.time}"),
 		[]byte("Shared"),
 		[]byte("Medical"),
 		[]byte("Public"),
 		[]byte("https://gjzwfw.www.gov.cn/fwmh/healthCode/indexNucleic.do"),
-	}).Payload)
-
+	})
+	var dataItem1 model.DataItem
+	json.Unmarshal(bytes.NewBuffer(resp3.Payload).Bytes(), &dataItem1)
+	id3 := dataItem1.ID
 	fmt.Println("核酸检测结果:", id3)
 
-	orgList := string(checkInvoke(t, stub, [][]byte{
+	resp4 := checkInvoke(t, stub, [][]byte{
 		[]byte("queryOrganizationList"),
-	}).Payload)
-
+	})
+	var orgList []model.Organization
+	json.Unmarshal(bytes.NewBuffer(resp4.Payload).Bytes(), &orgList)
 	fmt.Println("机构查询:", orgList)
 
-	dataList := string(checkInvoke(t, stub, [][]byte{
+	resp5 := checkInvoke(t, stub, [][]byte{
 		[]byte("queryDataItemList"),
-		[]byte(id2),
-	}).Payload)
+		[]byte(org2.ID),
+	})
+	var dataList1 []model.DataItem
+	json.Unmarshal(bytes.NewBuffer(resp5.Payload).Bytes(), &dataList1)
+	fmt.Println("数据查询:", dataList1)
 
-	fmt.Println("数据查询:", dataList)
-
-	id4 := string(checkInvoke(t, stub, [][]byte{
+	resp6 := checkInvoke(t, stub, [][]byte{
 		[]byte("createOrganization"),
 		[]byte("中国信息通信研究院"),
 		[]byte("government"),
 		[]byte(""),
-		[]byte(id1),
-	}).Payload)
+		[]byte(org1.ID),
+	})
+	var org3 model.Organization
+	json.Unmarshal(bytes.NewBuffer(resp6.Payload).Bytes(), &org3)
+	fmt.Println("中国信息通信研究院:", org3.ID)
 
-	fmt.Println("中国信息通信研究院:", id4)
-
-	id5 := string(checkInvoke(t, stub, [][]byte{
+	resp7 := checkInvoke(t, stub, [][]byte{
 		[]byte("createAPI"),
 		[]byte("获取行程数据"),
 		[]byte("个人轨迹数据"),
-		[]byte(id4),
+		[]byte(org3.ID),
 		[]byte("http://127.0.0.1:8080/test"),
 		[]byte("POST"),
 		[]byte(`[{"Field": "IdentifyCard", "Type": "String"}]`),
 		[]byte(`{"Status": "Integer", "Message": "String", "Data": "List"}`),
 		[]byte("v1.0.0"),
-	}).Payload)
+	})
+	var api1 model.API
+	json.Unmarshal(bytes.NewBuffer(resp7.Payload).Bytes(), &api1)
+	fmt.Println("获取行程数据:", api1.ID)
 
-	fmt.Println("获取行程数据:", id5)
-
-	apiList := string(checkInvoke(t, stub, [][]byte{
+	resp8 := checkInvoke(t, stub, [][]byte{
 		[]byte("queryAPIList"),
-		[]byte(id4),
-	}).Payload)
-
+		[]byte(org3.ID),
+	})
+	var apiList []model.API
+	json.Unmarshal(bytes.NewBuffer(resp8.Payload).Bytes(), &apiList)
 	fmt.Println("API查询:", apiList)
 
-	result := string(checkInvoke(t, stub, [][]byte{
+	resp9 := checkInvoke(t, stub, [][]byte{
 		[]byte("requestAPI"),
-		[]byte(id1),
-		[]byte(id5),
+		[]byte(org1.ID),
+		[]byte(api1.ID),
 		[]byte(`{"identityCard":"320506199612168412"}`),
-	}).Payload)
+	})
 
-	fmt.Println("API调用:", result)
+	var msg1 map[string]interface{}
+	json.Unmarshal(bytes.NewBuffer(resp9.Payload).Bytes(), &msg1)
+	fmt.Println("API调用:", msg1["nattResult"])
 }
 
 func Test_QueryOrganizationList(t *testing.T) {

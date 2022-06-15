@@ -57,7 +57,7 @@ func CreateDataItem(stub shim.ChaincodeStubInterface, args []string) pb.Response
 	var org model.Organization
 	err = json.Unmarshal(results[0], &org)
 	if err != nil {
-		return shim.Error(fmt.Sprintf("QueryAccountList-反序列化出错: %s", err))
+		return shim.Error(fmt.Sprintf("反序列化出错: %s", err))
 	}
 	org.DataItems = append(org.DataItems, dataID)
 
@@ -65,7 +65,12 @@ func CreateDataItem(stub shim.ChaincodeStubInterface, args []string) pb.Response
 		return shim.Error(fmt.Sprintf("更新索引失败:%s", err))
 	}
 
-	return shim.Success([]byte(dataID))
+	dataItemByte, err := json.Marshal(dataItem)
+	if err != nil {
+		return shim.Error(fmt.Sprintf("序列化出错: %s", err))
+	}
+
+	return shim.Success(dataItemByte)
 }
 
 // 查询数据项目录
@@ -84,7 +89,7 @@ func QueryDataItemList(stub shim.ChaincodeStubInterface, args []string) pb.Respo
 			var org model.Organization
 			err := json.Unmarshal(val, &org)
 			if err != nil {
-				return shim.Error(fmt.Sprintf("QueryAccountList-反序列化出错: %s", err))
+				return shim.Error(fmt.Sprintf("反序列化出错: %s", err))
 			}
 			for _, item := range org.DataItems {
 				results, err := utils.GetStateByPartialCompositeKeys(stub, model.DataItemKey, []string{item})
@@ -94,7 +99,7 @@ func QueryDataItemList(stub shim.ChaincodeStubInterface, args []string) pb.Respo
 				var data model.DataItem
 				err = json.Unmarshal(results[0], &data)
 				if err != nil {
-					return shim.Error(fmt.Sprintf("QueryAccountList-反序列化出错: %s", err))
+					return shim.Error(fmt.Sprintf("反序列化出错: %s", err))
 				}
 				dataitemList = append(dataitemList, data)
 			}
@@ -103,7 +108,8 @@ func QueryDataItemList(stub shim.ChaincodeStubInterface, args []string) pb.Respo
 
 	dataitemListByte, err := json.Marshal(dataitemList)
 	if err != nil {
-		return shim.Error(fmt.Sprintf("QueryAccountList-序列化出错: %s", err))
+		return shim.Error(fmt.Sprintf("序列化出错: %s", err))
 	}
+
 	return shim.Success(dataitemListByte)
 }

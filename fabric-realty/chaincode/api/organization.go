@@ -51,7 +51,7 @@ func CreateOrganization(stub shim.ChaincodeStubInterface, args []string) pb.Resp
 		var orgSuperior model.Organization
 		err = json.Unmarshal(results[0], &orgSuperior)
 		if err != nil {
-			return shim.Error(fmt.Sprintf("QueryAccountList-反序列化出错: %s", err))
+			return shim.Error(fmt.Sprintf("反序列化出错: %s", err))
 		}
 		orgSuperior.Subordinates = append(orgSuperior.Subordinates, orgID)
 
@@ -60,7 +60,12 @@ func CreateOrganization(stub shim.ChaincodeStubInterface, args []string) pb.Resp
 		}
 	}
 
-	return shim.Success([]byte(orgID))
+	orgByte, err := json.Marshal(org)
+	if err != nil {
+		return shim.Error(fmt.Sprintf("反序列化出错: %s", err))
+	}
+
+	return shim.Success([]byte(orgByte))
 }
 
 // 查询机构列表
@@ -79,7 +84,7 @@ func QueryOrganizationList(stub shim.ChaincodeStubInterface, args []string) pb.R
 			var org model.Organization
 			err := json.Unmarshal(val, &org)
 			if err != nil {
-				return shim.Error(fmt.Sprintf("QueryAccountList-反序列化出错: %s", err))
+				return shim.Error(fmt.Sprintf("反序列化出错: %s", err))
 			}
 			organizationList = append(organizationList, org)
 		}
@@ -87,7 +92,8 @@ func QueryOrganizationList(stub shim.ChaincodeStubInterface, args []string) pb.R
 
 	organizationListByte, err := json.Marshal(organizationList)
 	if err != nil {
-		return shim.Error(fmt.Sprintf("QueryAccountList-序列化出错: %s", err))
+		return shim.Error(fmt.Sprintf("序列化出错: %s", err))
 	}
+
 	return shim.Success(organizationListByte)
 }

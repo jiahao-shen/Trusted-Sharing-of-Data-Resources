@@ -17,6 +17,7 @@ type BlockChainRealEstate struct {
 // Init 链码初始化
 func (t *BlockChainRealEstate) Init(stub shim.ChaincodeStubInterface) pb.Response {
 	fmt.Println("链码初始化")
+
 	//初始化默认数据
 	var accountIds = [6]string{
 		"5feceb66ffc8",
@@ -40,6 +41,7 @@ func (t *BlockChainRealEstate) Init(stub shim.ChaincodeStubInterface) pb.Respons
 			return shim.Error(fmt.Sprintf("%s", err))
 		}
 	}
+
 	return shim.Success(nil)
 }
 
