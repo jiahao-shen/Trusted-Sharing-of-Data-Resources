@@ -70,13 +70,14 @@ func Test_CreateOrganization(t *testing.T) {
 	fmt.Println("创建机构:", string(resp2.Payload))
 
 	data1ID := uuid.New().String()
+	data1field, _ := json.Marshal([]model.Field{{Name: "Identity Card", Type: "string"}, {Name: "NATT Result", Type: "string"}, {Name: "Time", Type: "time.time"}})
 	resp3 := checkInvoke(t, stub, [][]byte{
 		[]byte("createData"),
 		[]byte("核酸检测结果"),
 		[]byte(data1ID),
 		[]byte("新冠肺炎-核酸检测结果"),
 		[]byte(org2ID),
-		[]byte("{Identity Card: string, NATT Result: string, Time: time.time}"),
+		[]byte(data1field),
 		[]byte("Medical"),
 		[]byte("Shared"),
 		[]byte("Public"),
@@ -116,6 +117,8 @@ func Test_CreateOrganization(t *testing.T) {
 	fmt.Println("创建机构:", string(resp7.Payload))
 
 	api1ID := uuid.New().String()
+	api1Request, _ := json.Marshal([]model.Field{{Name: "Identity Card", Type: "string"}})
+	api1Response, _ := json.Marshal([]model.Field{{Name: "Status", Type: "integer"}, {Name: "Message", Type: "string"}, {Name: "Data", Type: "list"}})
 	resp8 := checkInvoke(t, stub, [][]byte{
 		[]byte("createAPI"),
 		[]byte("获取行程数据"),
@@ -124,8 +127,8 @@ func Test_CreateOrganization(t *testing.T) {
 		[]byte(org3ID),
 		[]byte("http://127.0.0.1:8080/test"),
 		[]byte("POST"),
-		[]byte(`[{"Field": "IdentifyCard", "Type": "String"}]`),
-		[]byte(`{"Status": "Integer", "Message": "String", "Data": "List"}`),
+		[]byte(api1Request),
+		[]byte(api1Response),
 		[]byte("v1.0.0"),
 		[]byte(time.Now().String()),
 	})

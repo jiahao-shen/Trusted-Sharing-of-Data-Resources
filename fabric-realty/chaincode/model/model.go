@@ -135,11 +135,6 @@ type API struct {
 	Hash         string `json:"hash"`         // Hash值
 }
 
-type Field struct {
-	Name string `json:"name"` // 字段名称
-	Type string `json:"type"` // 字段类型
-}
-
 type RequestAPILog struct {
 	ID      string `json:"id"`      // 日志标识符
 	ReqID   string `json:"reqId"`   // 请求方标识符
@@ -155,4 +150,9 @@ type FileOperation struct {
 	Type       string `json:"type"`       // 文件操作类型
 	CreateTime string `json:"createTime"` // 创建时间
 	Hash       string `json:"hash"`       // 前几个字段字符串拼接
+}
+
+type Field struct {
+	Name string `json:"name"` // 字段名称
+	Type string `json:"type"` // 字段类型
 }

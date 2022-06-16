@@ -34,7 +34,7 @@ func CreateAPI(c *gin.Context) {
 		return
 	}
 
-	if body.APIName == "" || body.APIAuthor == "" || body.APIURL == "" || body.APIType == "" || body.APIRequest == "" || body.APIResponse == "" || body.APIVersion == "" {
+	if body.APIName == "" || body.APIAuthor == "" || body.APIURL == "" || body.APIType == "" || body.APIVersion == "" {
 		appG.Response(http.StatusBadRequest, "失败", "参数不能为空")
 		return
 	}
@@ -99,7 +99,7 @@ func RequestAPI(c *gin.Context) {
 		return
 	}
 
-	appG.Response(http.StatusOK, "成功", resp.Payload)
+	appG.Response(http.StatusOK, "成功", string(resp.Payload))
 }
 
 type QueryAPIListBody struct {
