@@ -6,7 +6,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"testing"
+	"time"
 
+	"github.com/google/uuid"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	pb "github.com/hyperledger/fabric/protos/peer"
 )
@@ -42,118 +44,107 @@ func TestBlockChainRealEstate_Init(t *testing.T) {
 
 func Test_CreateOrganization(t *testing.T) {
 	stub := initTest(t)
+
+	org1ID := uuid.New().String()
 	resp1 := checkInvoke(t, stub, [][]byte{
 		[]byte("createOrganization"),
 		[]byte("中华人民共和国国务院"),
+		[]byte(org1ID),
 		[]byte("government"),
 		[]byte(""),
 		[]byte(""),
+		[]byte(time.Now().String()),
 	})
+	fmt.Println("创建机构:", string(resp1.Payload))
 
-	var org1 model.Organization
-	json.Unmarshal(bytes.NewBuffer(resp1.Payload).Bytes(), &org1)
-	fmt.Println("中华人民共和国国务院:", org1.ID)
-
+	org2ID := uuid.New().String()
 	resp2 := checkInvoke(t, stub, [][]byte{
 		[]byte("createOrganization"),
 		[]byte("中华人民共和国国家卫生健康委员会"),
+		[]byte(org2ID),
 		[]byte("government"),
 		[]byte(""),
-		[]byte(org1.ID),
+		[]byte(org1ID),
+		[]byte(time.Now().String()),
 	})
-	var org2 model.Organization
-	json.Unmarshal(bytes.NewBuffer(resp2.Payload).Bytes(), &org2)
-	fmt.Println("中华人民共和国国家卫生健康委员会:", org2.ID)
+	fmt.Println("创建机构:", string(resp2.Payload))
 
+	data1ID := uuid.New().String()
 	resp3 := checkInvoke(t, stub, [][]byte{
-		[]byte("createDataItem"),
+		[]byte("createData"),
 		[]byte("核酸检测结果"),
-		[]byte("新冠肺炎"),
-		[]byte(org2.ID),
+		[]byte(data1ID),
+		[]byte("新冠肺炎-核酸检测结果"),
+		[]byte(org2ID),
 		[]byte("{Identity Card: string, NATT Result: string, Time: time.time}"),
-		[]byte("Shared"),
 		[]byte("Medical"),
+		[]byte("Shared"),
 		[]byte("Public"),
+		[]byte("v1.0.0"),
 		[]byte("https://gjzwfw.www.gov.cn/fwmh/healthCode/indexNucleic.do"),
+		[]byte(time.Now().String()),
 	})
-	var dataItem1 model.DataItem
-	json.Unmarshal(bytes.NewBuffer(resp3.Payload).Bytes(), &dataItem1)
-	id3 := dataItem1.ID
-	fmt.Println("核酸检测结果:", id3)
+	fmt.Println("创建数据:", string(resp3.Payload))
 
 	resp4 := checkInvoke(t, stub, [][]byte{
 		[]byte("queryOrganizationList"),
 	})
-	var orgList []model.Organization
-	json.Unmarshal(bytes.NewBuffer(resp4.Payload).Bytes(), &orgList)
-	fmt.Println("机构查询:", orgList)
+	fmt.Println("查询机构(全部):", string(resp4.Payload))
 
 	resp5 := checkInvoke(t, stub, [][]byte{
-		[]byte("queryDataItemList"),
-		[]byte(org2.ID),
+		[]byte("queryOrganizationList"),
+		[]byte(org1ID),
 	})
-	var dataList1 []model.DataItem
-	json.Unmarshal(bytes.NewBuffer(resp5.Payload).Bytes(), &dataList1)
-	fmt.Println("数据查询:", dataList1)
+	fmt.Println("查询机构(单个):", string(resp5.Payload))
 
 	resp6 := checkInvoke(t, stub, [][]byte{
+		[]byte("queryDataList"),
+		[]byte(org2ID),
+	})
+	fmt.Println("查询数据:", string(resp6.Payload))
+
+	org3ID := uuid.New().String()
+	resp7 := checkInvoke(t, stub, [][]byte{
 		[]byte("createOrganization"),
 		[]byte("中国信息通信研究院"),
+		[]byte(org3ID),
 		[]byte("government"),
 		[]byte(""),
-		[]byte(org1.ID),
+		[]byte(org1ID),
+		[]byte(time.Now().String()),
 	})
-	var org3 model.Organization
-	json.Unmarshal(bytes.NewBuffer(resp6.Payload).Bytes(), &org3)
-	fmt.Println("中国信息通信研究院:", org3.ID)
+	fmt.Println("创建机构:", string(resp7.Payload))
 
-	resp7 := checkInvoke(t, stub, [][]byte{
+	api1ID := uuid.New().String()
+	resp8 := checkInvoke(t, stub, [][]byte{
 		[]byte("createAPI"),
 		[]byte("获取行程数据"),
+		[]byte(api1ID),
 		[]byte("个人轨迹数据"),
-		[]byte(org3.ID),
+		[]byte(org3ID),
 		[]byte("http://127.0.0.1:8080/test"),
 		[]byte("POST"),
 		[]byte(`[{"Field": "IdentifyCard", "Type": "String"}]`),
 		[]byte(`{"Status": "Integer", "Message": "String", "Data": "List"}`),
 		[]byte("v1.0.0"),
+		[]byte(time.Now().String()),
 	})
-	var api1 model.API
-	json.Unmarshal(bytes.NewBuffer(resp7.Payload).Bytes(), &api1)
-	fmt.Println("获取行程数据:", api1.ID)
-
-	resp8 := checkInvoke(t, stub, [][]byte{
-		[]byte("queryAPIList"),
-		[]byte(org3.ID),
-	})
-	var apiList []model.API
-	json.Unmarshal(bytes.NewBuffer(resp8.Payload).Bytes(), &apiList)
-	fmt.Println("API查询:", apiList)
+	fmt.Println("创建API:", string(resp8.Payload))
 
 	resp9 := checkInvoke(t, stub, [][]byte{
-		[]byte("requestAPI"),
-		[]byte(org1.ID),
-		[]byte(api1.ID),
-		[]byte(`{"identityCard":"320506199612168412"}`),
+		[]byte("queryAPIList"),
+		[]byte(org3ID),
 	})
+	fmt.Println("查询API:", string(resp9.Payload))
 
-	var msg1 map[string]interface{}
-	json.Unmarshal(bytes.NewBuffer(resp9.Payload).Bytes(), &msg1)
-	fmt.Println("API调用:", msg1["nattResult"])
-}
-
-func Test_QueryOrganizationList(t *testing.T) {
-	stub := initTest(t)
-	fmt.Println("1、测试查询所有机构")
-	fmt.Println(string(checkInvoke(t, stub, [][]byte{
-		[]byte("queryOrganizationList"),
-	}).Payload))
-
-	fmt.Println("2、测试查询单个机构")
-	fmt.Println(string(checkInvoke(t, stub, [][]byte{
-		[]byte("queryOrganizationList"),
-		[]byte("HospitalA-Surgery"),
-	}).Payload))
+	resp10 := checkInvoke(t, stub, [][]byte{
+		[]byte("requestAPI"),
+		[]byte(org1ID),
+		[]byte(api1ID),
+		[]byte(`{"identityCard":"320506199612168412"}`),
+		[]byte(time.Now().String()),
+	})
+	fmt.Println("调用API:", string(resp10.Payload))
 }
 
 // 测试获取账户信息

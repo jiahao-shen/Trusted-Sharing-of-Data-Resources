@@ -77,16 +77,16 @@ func (t *BlockChainRealEstate) Invoke(stub shim.ChaincodeStubInterface) pb.Respo
 		return api.UpdateDonating(stub, args)
 	case "createOrganization":
 		return api.CreateOrganization(stub, args)
-	case "createDataItem":
-		return api.CreateDataItem(stub, args)
+	case "createData":
+		return api.CreateData(stub, args)
 	case "createAPI":
 		return api.CreateAPI(stub, args)
 	case "requestAPI":
 		return api.RequestAPI(stub, args)
 	case "queryOrganizationList":
 		return api.QueryOrganizationList(stub, args)
-	case "queryDataItemList":
-		return api.QueryDataItemList(stub, args)
+	case "queryDataList":
+		return api.QueryDataList(stub, args)
 	case "queryAPIList":
 		return api.QueryAPIList(stub, args)
 	default:

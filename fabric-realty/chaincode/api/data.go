@@ -5,47 +5,48 @@ import (
 	"chaincode/pkg/utils"
 	"encoding/json"
 	"fmt"
-	"time"
 
-	"github.com/google/uuid"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	pb "github.com/hyperledger/fabric/protos/peer"
 )
 
-func CreateDataItem(stub shim.ChaincodeStubInterface, args []string) pb.Response {
-	if len(args) != 8 {
+func CreateData(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+	if len(args) != 11 {
 		return shim.Error("参数个数不满足")
 	}
 
 	dataName := args[0]
-	dataID := uuid.New().String()
-	dataIntroduction := args[1]
-	dataAuthor := args[2]
-	dataType := args[3]
-	dataShared := args[4]
-	dataResource := args[5]
-	dataClassified := args[6]
-	dataLocation := args[7]
+	dataID := args[1]
+	dataIntroduction := args[2]
+	dataAuthor := args[3]
+	dataField := args[4]
+	dataType := args[5]
+	dataShared := args[6]
+	dataClassified := args[7]
+	dataVersion := args[8]
+	dataLocation := args[9]
+	dataCreated := args[10]
 
-	if dataName == "" || dataAuthor == "" {
+	if dataName == "" || dataID == "" || dataAuthor == "" || dataVersion == "" || dataCreated == "" {
 		return shim.Error("参数存在空值")
 	}
 
-	dataItem := &model.DataItem{
+	dataItem := &model.Data{
 		Name:         dataName,
 		ID:           dataID,
 		Introduction: dataIntroduction,
 		Author:       dataAuthor,
+		Field:        dataField,
 		Type:         dataType,
 		Shared:       dataShared,
-		Resource:     dataResource,
 		Classified:   dataClassified,
-		Version:      "1.0.0",
+		Version:      dataVersion,
 		Location:     dataLocation,
-		Created:      time.Now(),
+		Created:      dataCreated,
+		Hash:         utils.GetSHA256String(args),
 	}
 
-	if err := utils.WriteLedger(dataItem, stub, model.DataItemKey, []string{dataID}); err != nil {
+	if err := utils.WriteLedger(dataItem, stub, model.DataKey, []string{dataID}); err != nil {
 		return shim.Error(fmt.Sprintf("保存数据项失败:%s", err))
 	}
 
@@ -59,7 +60,7 @@ func CreateDataItem(stub shim.ChaincodeStubInterface, args []string) pb.Response
 	if err != nil {
 		return shim.Error(fmt.Sprintf("反序列化出错: %s", err))
 	}
-	org.DataItems = append(org.DataItems, dataID)
+	org.DataList = append(org.DataList, dataID)
 
 	if err := utils.WriteLedger(org, stub, model.OrganizationKey, []string{org.ID}); err != nil {
 		return shim.Error(fmt.Sprintf("更新索引失败:%s", err))
@@ -74,8 +75,8 @@ func CreateDataItem(stub shim.ChaincodeStubInterface, args []string) pb.Response
 }
 
 // 查询数据项目录
-func QueryDataItemList(stub shim.ChaincodeStubInterface, args []string) pb.Response {
-	var dataitemList []model.DataItem
+func QueryDataList(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+	var dataList []model.Data
 
 	// TODO(获取args)
 
@@ -91,25 +92,25 @@ func QueryDataItemList(stub shim.ChaincodeStubInterface, args []string) pb.Respo
 			if err != nil {
 				return shim.Error(fmt.Sprintf("反序列化出错: %s", err))
 			}
-			for _, item := range org.DataItems {
-				results, err := utils.GetStateByPartialCompositeKeys(stub, model.DataItemKey, []string{item})
+			for _, item := range org.DataList {
+				results, err := utils.GetStateByPartialCompositeKeys(stub, model.DataKey, []string{item})
 				if err != nil {
 					return shim.Error(fmt.Sprintf("%s", err))
 				}
-				var data model.DataItem
+				var data model.Data
 				err = json.Unmarshal(results[0], &data)
 				if err != nil {
 					return shim.Error(fmt.Sprintf("反序列化出错: %s", err))
 				}
-				dataitemList = append(dataitemList, data)
+				dataList = append(dataList, data)
 			}
 		}
 	}
 
-	dataitemListByte, err := json.Marshal(dataitemList)
+	dataListByte, err := json.Marshal(dataList)
 	if err != nil {
 		return shim.Error(fmt.Sprintf("序列化出错: %s", err))
 	}
 
-	return shim.Success(dataitemListByte)
+	return shim.Success(dataListByte)
 }

@@ -38,21 +38,20 @@ func CreateOrganization(c *gin.Context) {
 	bodyBytes = append(bodyBytes, []byte(body.OrganizationIntroduction))
 	bodyBytes = append(bodyBytes, []byte(body.OrganizationSuperiorID))
 
-	fmt.Println(bodyBytes)
-
 	resp, err := bc.ChannelExecute("createOrganization", bodyBytes)
 	if err != nil {
 		appG.Response(http.StatusInternalServerError, "失败", err.Error())
 		return
 	}
 
-	var data map[string]interface{}
-	if err = json.Unmarshal(bytes.NewBuffer(resp.Payload).Bytes(), &data); err != nil {
-		appG.Response(http.StatusInternalServerError, "失败", err.Error())
-		return
-	}
+	fmt.Println(resp)
+	// var data map[string]interface{}
+	// if err = json.Unmarshal(bytes.NewBuffer(resp.Payload).Bytes(), &data); err != nil {
+	// 	appG.Response(http.StatusInternalServerError, "失败", err.Error())
+	// 	return
+	// }
 
-	appG.Response(http.StatusOK, "成功", data)
+	// appG.Response(http.StatusOK, "成功", data)
 }
 
 type QueryOrganizationBody struct {
@@ -78,6 +77,8 @@ func QueryOrganizationList(c *gin.Context) {
 		appG.Response(http.StatusInternalServerError, "失败", err.Error())
 		return
 	}
+
+	fmt.Println("Good")
 
 	var data map[string]interface{}
 	if err = json.Unmarshal(bytes.NewBuffer(resp.Payload).Bytes(), &data); err != nil {

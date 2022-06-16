@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
@@ -16,21 +15,22 @@ import (
 )
 
 func CreateAPI(stub shim.ChaincodeStubInterface, args []string) pb.Response {
-	if len(args) != 8 {
+	if len(args) != 10 {
 		return shim.Error("参数个数不满足")
 	}
 
 	apiName := args[0]
-	apiID := uuid.New().String()
-	apiIntroduction := args[1]
-	apiAuthor := args[2]
-	apiURL := args[3]
-	apiType := args[4]
-	apiRequest := args[5]
-	apiResponse := args[6]
-	apiVersion := args[7]
+	apiID := args[1]
+	apiIntroduction := args[2]
+	apiAuthor := args[3]
+	apiURL := args[4]
+	apiType := args[5]
+	apiRequest := args[6]
+	apiResponse := args[7]
+	apiVersion := args[8]
+	apiCreated := args[9]
 
-	if apiName == "" || apiAuthor == "" || apiURL == "" || apiType == "" || apiVersion == "" {
+	if apiName == "" || apiID == "" || apiAuthor == "" || apiURL == "" || apiType == "" || apiVersion == "" || apiCreated == "" {
 		return shim.Error("参数存在空值")
 	}
 
@@ -44,7 +44,8 @@ func CreateAPI(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 		Request:      apiRequest,
 		Response:     apiResponse,
 		Version:      apiVersion,
-		Created:      time.Now(),
+		Created:      apiCreated,
+		Hash:         utils.GetSHA256String(args),
 	}
 
 	if err := utils.WriteLedger(api, stub, model.APIKey, []string{apiID}); err != nil {
@@ -77,9 +78,14 @@ func CreateAPI(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 }
 
 func RequestAPI(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+	if len(args) != 4 {
+		return shim.Error("参数个数不满足")
+	}
+
 	reqID := args[0]
 	apiID := args[1]
 	apiArgs := args[2]
+	apiTime := args[3]
 
 	results, err := utils.GetStateByPartialCompositeKeys(stub, model.APIKey, []string{apiID})
 
@@ -106,16 +112,16 @@ func RequestAPI(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 		ID:      uuid.New().String(),
 		ReqID:   reqID,
 		APIID:   apiID,
-		ReqHash: utils.GetSHA256String(reqID + apiID + apiArgs),
-		ResHash: utils.GetSHA256String(string(body)),
-		Time:    time.Now(),
+		ReqHash: utils.GetSHA256String(args),
+		ResHash: utils.GetSHA256String([]string{string(body)}),
+		Time:    apiTime,
 	}
 
 	if err := utils.WriteLedger(log, stub, model.APIRequestKey, []string{log.ID}); err != nil {
 		return shim.Error(fmt.Sprintf("写入API调用日志失败:%s", err))
 	}
 
-	return shim.Success([]byte(body))
+	return shim.Success(body)
 }
 
 // 查询API列表
