@@ -9,7 +9,6 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/google/uuid"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	pb "github.com/hyperledger/fabric/protos/peer"
 )
@@ -78,14 +77,15 @@ func CreateAPI(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 }
 
 func RequestAPI(stub shim.ChaincodeStubInterface, args []string) pb.Response {
-	if len(args) != 4 {
+	if len(args) != 5 {
 		return shim.Error("参数个数不满足")
 	}
 
-	reqID := args[0]
-	apiID := args[1]
-	apiArgs := args[2]
-	apiTime := args[3]
+	logID := args[0]
+	reqID := args[1]
+	apiID := args[2]
+	apiArgs := args[3]
+	apiTime := args[4]
 
 	results, err := utils.GetStateByPartialCompositeKeys(stub, model.APIKey, []string{apiID})
 
@@ -109,7 +109,7 @@ func RequestAPI(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 	body, _ := ioutil.ReadAll(response.Body)
 
 	log := &model.RequestAPILog{
-		ID:      uuid.New().String(),
+		ID:      logID,
 		ReqID:   reqID,
 		APIID:   apiID,
 		ReqHash: utils.GetSHA256String(args),

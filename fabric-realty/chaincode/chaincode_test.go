@@ -137,8 +137,10 @@ func Test_CreateOrganization(t *testing.T) {
 	})
 	fmt.Println("查询API:", string(resp9.Payload))
 
+	log1ID := uuid.New().String()
 	resp10 := checkInvoke(t, stub, [][]byte{
 		[]byte("requestAPI"),
+		[]byte(log1ID),
 		[]byte(org1ID),
 		[]byte(api1ID),
 		[]byte(`{"identityCard":"320506199612168412"}`),

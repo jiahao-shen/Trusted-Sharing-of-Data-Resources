@@ -135,6 +135,11 @@ type API struct {
 	Hash         string `json:"hash"`         // Hash值
 }
 
+type Field struct {
+	Name string `json:"name"` // 字段名称
+	Type string `json:"type"` // 字段类型
+}
+
 type RequestAPILog struct {
 	ID      string `json:"id"`      // 日志标识符
 	ReqID   string `json:"reqId"`   // 请求方标识符

@@ -4,7 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"html"
-	"io/ioutil"
+
+	// "io/ioutil"
 	"net/http"
 	"time"
 )
@@ -24,14 +25,14 @@ type testResponse struct {
 func test(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(time.Now())
 
-	body, _ := ioutil.ReadAll(r.Body)
+	// body, _ := ioutil.ReadAll(r.Body)
 
-	var request testRequest
-	err := json.Unmarshal(body, &request)
-	if err != nil {
-		fmt.Println("反序列化出错:", err)
-	}
-	fmt.Println(request)
+	// var request testRequest
+	// err := json.Unmarshal(body, &request)
+	// if err != nil {
+	// 	fmt.Println("反序列化出错:", err)
+	// }
+	// fmt.Println(request)
 
 	response := &testResponse{
 		NATTResult: "阴性",

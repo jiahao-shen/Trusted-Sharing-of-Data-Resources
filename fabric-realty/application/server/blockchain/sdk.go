@@ -10,13 +10,12 @@ import (
 var (
 	// TODO: 正式部署的时候记得切换配置文件
 	// configPath    = "config.yaml"                                // 部署配置文件路径
-	configPath    = "test.yaml"              // 测试配置文件路径
-	sdk           *fabsdk.FabricSDK          // Fabric SDK
-	channelName   = "appchannel"             // 通道名称
-	user          = "Admin"                  // 用户
-	chainCodeName = "fabric-realty"          // 链码名称
-	endpoints     = []string{"peer0.jd.com"} // 要发送交易的节点
-	// endpoints     = []string{"peer0.jd.com", "peer0.taobao.com"} // 要发送交易的节点
+	configPath    = "test.yaml"                                  // 测试配置文件路径
+	sdk           *fabsdk.FabricSDK                              // Fabric SDK
+	channelName   = "appchannel"                                 // 通道名称
+	user          = "Admin"                                      // 用户
+	chainCodeName = "fabric-realty"                              // 链码名称
+	endpoints     = []string{"peer0.jd.com", "peer0.taobao.com"} // 要发送交易的节点
 )
 
 // Init 初始化

@@ -33,6 +33,11 @@ func InitRouter() *gin.Engine {
 		// 创建机构
 		apiV1.POST("/createOrganization", v1.CreateOrganization)
 		apiV1.POST("/queryOrganizationList", v1.QueryOrganizationList)
+		apiV1.POST("/createData", v1.CreateData)
+		apiV1.POST("/queryDataList", v1.QueryDataList)
+		apiV1.POST("/createAPI", v1.CreateAPI)
+		apiV1.POST("/requestAPI", v1.RequestAPI)
+		apiV1.POST("/queryAPIList", v1.QueryAPIList)
 	}
 	// 静态文件路由
 	r.StaticFS("/web", http.Dir("./dist/"))
