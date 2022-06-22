@@ -48,7 +48,7 @@ func CreateAPI(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 	}
 
 	if err := utils.WriteLedger(api, stub, model.APIKey, []string{apiID}); err != nil {
-		return shim.Error(fmt.Sprintf("保存数据项失败:%s", err))
+		return shim.Error(fmt.Sprintf("保存API失败:%s", err))
 	}
 
 	results, err := utils.GetStateByPartialCompositeKeys(stub, model.OrganizationKey, []string{apiAuthor})
