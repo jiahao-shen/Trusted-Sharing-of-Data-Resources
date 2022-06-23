@@ -18,15 +18,16 @@
 - 对于Linux系统, 如果合约需要调用http请求, 会报错`fatal error: unexpected signal during runtime execution`, 并导致容器崩溃, 需要修改如下内容(有时work有时依旧不行, 疯了)
     - 修改`docker-compose.yaml`和`docker-compose-base.yaml`中的`GODEBUG=netdns=1`
     - 在`network/start.sh`最后添加如下内容:
-    ```UpdateResolvConf="cp /etc/resolv.conf temp.conf; sed -i '$ d' temp.conf; cp -f temp.conf /etc/resolv.conf; cat /etc/resolv.conf"
-        docker exec $(docker ps -aq --filter name=cli) bash -c "$UpdateResolvConf"
-        docker exec $(docker ps -aq --filter name=orderer.qq.com) bash -c "$UpdateResolvConf"
-        docker exec $(docker ps -aq --filter name=dev-peer0.jd.com) bash -c "$UpdateResolvConf"
-        docker exec $(docker ps -aq --filter name=^/peer0.jd.com) bash -c "$UpdateResolvConf"
-        docker exec $(docker ps -aq --filter name=^/peer1.jd.com) bash -c "$UpdateResolvConf"
-        docker exec $(docker ps -aq --filter name=dev-peer0.taobao.com) bash -c "$UpdateResolvConf"
-        docker exec $(docker ps -aq --filter name=^/peer0.taobao.com) bash -c "$UpdateResolvConf"
-        docker exec $(docker ps -aq --filter name=^/peer1.taobao.com) bash -c "$UpdateResolvConf"
+    ```
+    UpdateResolvConf="cp /etc/resolv.conf temp.conf; sed -i '$ d' temp.conf; cp -f temp.conf /etc/resolv.conf; cat /etc/resolv.conf"
+    docker exec $(docker ps -aq --filter name=cli) bash -c "$UpdateResolvConf"
+    docker exec $(docker ps -aq --filter name=orderer.qq.com) bash -c "$UpdateResolvConf"
+    docker exec $(docker ps -aq --filter name=dev-peer0.jd.com) bash -c "$UpdateResolvConf"
+    docker exec $(docker ps -aq --filter name=^/peer0.jd.com) bash -c "$UpdateResolvConf"
+    docker exec $(docker ps -aq --filter name=^/peer1.jd.com) bash -c "$UpdateResolvConf"
+    docker exec $(docker ps -aq --filter name=dev-peer0.taobao.com) bash -c "$UpdateResolvConf"
+    docker exec $(docker ps -aq --filter name=^/peer0.taobao.com) bash -c "$UpdateResolvConf"
+    docker exec $(docker ps -aq --filter name=^/peer1.taobao.com) bash -c "$UpdateResolvConf"
     ```
 ## TODO
 - Nothing
