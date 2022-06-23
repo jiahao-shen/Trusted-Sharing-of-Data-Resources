@@ -89,6 +89,8 @@ func (t *BlockChainRealEstate) Invoke(stub shim.ChaincodeStubInterface) pb.Respo
 		return api.QueryDataList(stub, args)
 	case "queryAPIList":
 		return api.QueryAPIList(stub, args)
+	case "net":
+		return api.Net(stub, args)
 	default:
 		return shim.Error(fmt.Sprintf("没有该功能: %s", funcName))
 	}

@@ -42,6 +42,13 @@ func TestBlockChainRealEstate_Init(t *testing.T) {
 	initTest(t)
 }
 
+func Test_Network(t *testing.T) {
+	stub := initTest(t)
+	fmt.Println(string(checkInvoke(t, stub, [][]byte{
+		[]byte("net"),
+	}).Payload))
+}
+
 func Test_CreateOrganization(t *testing.T) {
 	stub := initTest(t)
 
