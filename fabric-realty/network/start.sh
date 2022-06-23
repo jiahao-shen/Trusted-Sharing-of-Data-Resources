@@ -72,3 +72,17 @@ sleep 5
 echo "十二、验证链码"
 docker exec cli bash -c "$TaobaoPeer0Cli peer chaincode invoke -C appchannel -n fabric-realty -c '{\"Args\":[\"hello\"]}'"
 docker exec cli bash -c "$JDPeer0Cli peer chaincode invoke -C appchannel -n fabric-realty -c '{\"Args\":[\"hello\"]}'"
+
+# echo "十三、修改/etc/resolv.conf"
+# UpdateResolvConf="cp /etc/resolv.conf temp.conf; sed -i '$ d' temp.conf; cp -f temp.conf /etc/resolv.conf; cat /etc/resolv.conf"
+# docker exec $(docker ps -aq --filter name=cli) bash -c "$UpdateResolvConf"
+# docker exec $(docker ps -aq --filter name=orderer.qq.com) bash -c "$UpdateResolvConf"
+# docker exec $(docker ps -aq --filter name=dev-peer0.jd.com) bash -c "$UpdateResolvConf"
+# docker exec $(docker ps -aq --filter name=^/peer0.jd.com) bash -c "$UpdateResolvConf"
+# docker exec $(docker ps -aq --filter name=^/peer1.jd.com) bash -c "$UpdateResolvConf"
+# docker exec $(docker ps -aq --filter name=dev-peer0.taobao.com) bash -c "$UpdateResolvConf"
+# docker exec $(docker ps -aq --filter name=^/peer0.taobao.com) bash -c "$UpdateResolvConf"
+# docker exec $(docker ps -aq --filter name=^/peer1.taobao.com) bash -c "$UpdateResolvConf"
+
+# JDPeer0Cli="CORE_PEER_ADDRESS=peer0.jd.com:7051 CORE_PEER_LOCALMSPID=JDMSP CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/peer/jd.com/users/Admin@jd.com/msp"
+# docker exec cli bash -c "$JDPeer0Cli peer chaincode invoke -C appchannel -n fabric-realty -c '{\"Args\":[\"net\"]}'"
