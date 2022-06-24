@@ -98,3 +98,8 @@ func QueryOrganizationList(stub shim.ChaincodeStubInterface, args []string) pb.R
 
 	return shim.Success(organizationListByte)
 }
+
+// TODO
+func QueryOrganizationByID(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+	return shim.Success(nil)
+}

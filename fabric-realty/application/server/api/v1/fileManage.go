@@ -40,7 +40,7 @@ func CreateFileOperation(c *gin.Context) {
 	bodyBytes = append(bodyBytes, []byte(body.FilePath))
 	bodyBytes = append(bodyBytes, []byte(body.Type))
 	//调用智能合约
-	resp, err := bc.ChannelExecute("createFileOperation", bodyBytes)
+	resp, err := bc.ChannelExecute("createFileOperation", bodyBytes, nil)
 	if err != nil {
 		appG.Response(http.StatusInternalServerError, "失败", err.Error())
 		return
@@ -70,7 +70,7 @@ func QueryFileOperationList(c *gin.Context) {
 		bodyBytes = append(bodyBytes, []byte(body.FilePath))
 	}
 	//调用智能合约
-	resp, err := bc.ChannelQuery("queryFileOperationList", bodyBytes)
+	resp, err := bc.ChannelQuery("queryFileOperationList", bodyBytes, nil)
 	if err != nil {
 		appG.Response(http.StatusInternalServerError, "失败", err.Error())
 		return

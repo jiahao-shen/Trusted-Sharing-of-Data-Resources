@@ -51,7 +51,7 @@ func CreateAPI(c *gin.Context) {
 	bodyBytes = append(bodyBytes, []byte(body.APIVersion))
 	bodyBytes = append(bodyBytes, []byte(time.Now().String()))
 
-	resp, err := bc.ChannelExecute("createAPI", bodyBytes)
+	resp, err := bc.ChannelExecute("createAPI", bodyBytes, nil)
 	if err != nil {
 		appG.Response(http.StatusInternalServerError, "失败", err.Error())
 		return
@@ -93,7 +93,7 @@ func RequestAPI(c *gin.Context) {
 	bodyBytes = append(bodyBytes, []byte(body.APIArgs))
 	bodyBytes = append(bodyBytes, []byte(time.Now().String()))
 
-	resp, err := bc.ChannelExecute("requestAPI", bodyBytes)
+	resp, err := bc.ChannelExecute("requestAPI", bodyBytes, nil)
 	if err != nil {
 		appG.Response(http.StatusInternalServerError, "失败", err.Error())
 		return
@@ -120,7 +120,7 @@ func QueryAPIList(c *gin.Context) {
 		bodyBytes = append(bodyBytes, []byte(value))
 	}
 
-	resp, err := bc.ChannelExecute("queryAPIList", bodyBytes)
+	resp, err := bc.ChannelExecute("queryAPIList", bodyBytes, nil)
 	if err != nil {
 		appG.Response(http.StatusInternalServerError, "失败", err.Error())
 		return

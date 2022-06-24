@@ -62,7 +62,7 @@ func CreateSelling(c *gin.Context) {
 	bodyBytes = append(bodyBytes, []byte(strconv.FormatFloat(body.Price, 'E', -1, 64)))
 	bodyBytes = append(bodyBytes, []byte(strconv.Itoa(body.SalePeriod)))
 	//调用智能合约
-	resp, err := bc.ChannelExecute("createSelling", bodyBytes)
+	resp, err := bc.ChannelExecute("createSelling", bodyBytes, nil)
 	if err != nil {
 		appG.Response(http.StatusInternalServerError, "失败", err.Error())
 		return
@@ -92,7 +92,7 @@ func CreateSellingByBuy(c *gin.Context) {
 	bodyBytes = append(bodyBytes, []byte(body.Seller))
 	bodyBytes = append(bodyBytes, []byte(body.Buyer))
 	//调用智能合约
-	resp, err := bc.ChannelExecute("createSellingByBuy", bodyBytes)
+	resp, err := bc.ChannelExecute("createSellingByBuy", bodyBytes, nil)
 	if err != nil {
 		appG.Response(http.StatusInternalServerError, "失败", err.Error())
 		return
@@ -118,7 +118,7 @@ func QuerySellingList(c *gin.Context) {
 		bodyBytes = append(bodyBytes, []byte(body.Seller))
 	}
 	//调用智能合约
-	resp, err := bc.ChannelQuery("querySellingList", bodyBytes)
+	resp, err := bc.ChannelQuery("querySellingList", bodyBytes, nil)
 	if err != nil {
 		appG.Response(http.StatusInternalServerError, "失败", err.Error())
 		return
@@ -147,7 +147,7 @@ func QuerySellingListByBuyer(c *gin.Context) {
 	var bodyBytes [][]byte
 	bodyBytes = append(bodyBytes, []byte(body.Buyer))
 	//调用智能合约
-	resp, err := bc.ChannelQuery("querySellingListByBuyer", bodyBytes)
+	resp, err := bc.ChannelQuery("querySellingListByBuyer", bodyBytes, nil)
 	if err != nil {
 		appG.Response(http.StatusInternalServerError, "失败", err.Error())
 		return
@@ -179,7 +179,7 @@ func UpdateSelling(c *gin.Context) {
 	bodyBytes = append(bodyBytes, []byte(body.Buyer))
 	bodyBytes = append(bodyBytes, []byte(body.Status))
 	//调用智能合约
-	resp, err := bc.ChannelExecute("updateSelling", bodyBytes)
+	resp, err := bc.ChannelExecute("updateSelling", bodyBytes, nil)
 	if err != nil {
 		appG.Response(http.StatusInternalServerError, "失败", err.Error())
 		return

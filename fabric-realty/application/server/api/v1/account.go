@@ -32,7 +32,7 @@ func QueryAccountList(c *gin.Context) {
 		bodyBytes = append(bodyBytes, []byte(val.AccountId))
 	}
 	//调用智能合约
-	resp, err := bc.ChannelQuery("queryAccountList", bodyBytes)
+	resp, err := bc.ChannelQuery("queryAccountList", bodyBytes, nil)
 	if err != nil {
 		appG.Response(http.StatusInternalServerError, "失败", err.Error())
 		return

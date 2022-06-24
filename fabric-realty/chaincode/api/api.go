@@ -163,3 +163,13 @@ func QueryAPIList(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 	}
 	return shim.Success(apiListByte)
 }
+
+// TODO
+func QueryAPIByID(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+	return shim.Success(nil)
+}
+
+// TODO
+func QueryABIByOrganizationID(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+	return shim.Success(nil)
+}

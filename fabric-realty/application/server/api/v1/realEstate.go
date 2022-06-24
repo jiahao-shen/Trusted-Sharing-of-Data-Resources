@@ -41,7 +41,7 @@ func CreateRealEstate(c *gin.Context) {
 	bodyBytes = append(bodyBytes, []byte(strconv.FormatFloat(body.TotalArea, 'E', -1, 64)))
 	bodyBytes = append(bodyBytes, []byte(strconv.FormatFloat(body.LivingSpace, 'E', -1, 64)))
 	//调用智能合约
-	resp, err := bc.ChannelExecute("createRealEstate", bodyBytes)
+	resp, err := bc.ChannelExecute("createRealEstate", bodyBytes, nil)
 	if err != nil {
 		appG.Response(http.StatusInternalServerError, "失败", err.Error())
 		return
@@ -67,7 +67,7 @@ func QueryRealEstateList(c *gin.Context) {
 		bodyBytes = append(bodyBytes, []byte(body.Proprietor))
 	}
 	//调用智能合约
-	resp, err := bc.ChannelQuery("queryRealEstateList", bodyBytes)
+	resp, err := bc.ChannelQuery("queryRealEstateList", bodyBytes, nil)
 	if err != nil {
 		appG.Response(http.StatusInternalServerError, "失败", err.Error())
 		return

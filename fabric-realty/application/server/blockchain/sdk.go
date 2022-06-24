@@ -10,12 +10,12 @@ import (
 var (
 	// TODO: 正式部署的时候记得切换配置文件
 	// configPath    = "config.yaml"                                // 部署配置文件路径
-	configPath    = "test.yaml"                                  // 测试配置文件路径
-	sdk           *fabsdk.FabricSDK                              // Fabric SDK
-	channelName   = "appchannel"                                 // 通道名称
-	user          = "Admin"                                      // 用户
-	chainCodeName = "fabric-realty"                              // 链码名称
-	endpoints     = []string{"peer0.jd.com", "peer0.taobao.com"} // 要发送交易的节点
+	configPath    = "test.yaml"     // 测试配置文件路径
+	sdk           *fabsdk.FabricSDK // Fabric SDK
+	channelName   = "appchannel"    // 通道名称
+	user          = "Admin"         // 用户
+	chainCodeName = "fabric-realty" // 链码名称
+	// endpoints     = []string{"peer0.jd.com", "peer0.taobao.com"} // 要发送交易的节点
 )
 
 // Init 初始化
@@ -29,7 +29,13 @@ func Init() {
 }
 
 // ChannelExecute 区块链交互
-func ChannelExecute(fcn string, args [][]byte) (channel.Response, error) {
+func ChannelExecute(fcn string, args [][]byte, endpoints []string) (channel.Response, error) {
+	// 默认节点
+	if endpoints == nil {
+		endpoints = append(endpoints, "peer0.jd.com")
+		endpoints = append(endpoints, "peer0.taobao.com")
+	}
+
 	// 创建客户端，表明在通道的身份
 	ctx := sdk.ChannelContext(channelName, fabsdk.WithUser(user))
 	cli, err := channel.New(ctx)
@@ -50,7 +56,13 @@ func ChannelExecute(fcn string, args [][]byte) (channel.Response, error) {
 }
 
 // ChannelQuery 区块链查询
-func ChannelQuery(fcn string, args [][]byte) (channel.Response, error) {
+func ChannelQuery(fcn string, args [][]byte, endpoints []string) (channel.Response, error) {
+	// 默认节点
+	if endpoints == nil {
+		endpoints = append(endpoints, "peer0.jd.com")
+		endpoints = append(endpoints, "peer0.taobao.com")
+	}
+
 	// 创建客户端，表明在通道的身份
 	ctx := sdk.ChannelContext(channelName, fabsdk.WithUser(user))
 	cli, err := channel.New(ctx)

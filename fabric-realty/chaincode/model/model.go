@@ -103,6 +103,7 @@ type Organization struct {
 	DataList     []string `json:"datalist"`     // 数据项
 	APIList      []string `json:"apilist"`      // API列表
 	Created      string   `json:"created"`      // 创建时间
+	Node         string   `json:"node"`         // 所属节点
 	Hash         string   `json:"hash"`         // Hash值
 }
 

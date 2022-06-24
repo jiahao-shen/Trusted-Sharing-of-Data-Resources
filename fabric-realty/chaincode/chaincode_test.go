@@ -42,6 +42,30 @@ func TestBlockChainRealEstate_Init(t *testing.T) {
 	initTest(t)
 }
 
+func TestInitaliaze(t *testing.T) {
+	stub := initTest(t)
+	start := time.Now()
+	fmt.Println(string(checkInvoke(t, stub, [][]byte{
+		[]byte("queryOrganizationList"),
+	}).Payload))
+	end := time.Since(start)
+	fmt.Println("执行时间:", end)
+	start = time.Now()
+	fmt.Println(string(checkInvoke(t, stub, [][]byte{
+		[]byte("queryAPIList"),
+		[]byte("org-hospital"),
+	}).Payload))
+	end = time.Since(start)
+	fmt.Println("执行时间:", end)
+	start = time.Now()
+	fmt.Println(string(checkInvoke(t, stub, [][]byte{
+		[]byte("queryAPIList"),
+		[]byte("org-pharmacy"),
+	}).Payload))
+	end = time.Since(start)
+	fmt.Println("执行时间:", end)
+}
+
 func Test_Network(t *testing.T) {
 	stub := initTest(t)
 	fmt.Println(string(checkInvoke(t, stub, [][]byte{

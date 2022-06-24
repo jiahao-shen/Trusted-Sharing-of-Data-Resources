@@ -7,10 +7,11 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	"net/http"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 type CreateDataBody struct {
@@ -52,7 +53,7 @@ func CreateData(c *gin.Context) {
 	bodyBytes = append(bodyBytes, []byte(body.DataLocation))
 	bodyBytes = append(bodyBytes, []byte(time.Now().String()))
 
-	resp, err := bc.ChannelExecute("createData", bodyBytes)
+	resp, err := bc.ChannelExecute("createData", bodyBytes, nil)
 	if err != nil {
 		appG.Response(http.StatusInternalServerError, "失败", err.Error())
 		return
@@ -85,7 +86,7 @@ func QueryDataList(c *gin.Context) {
 		bodyBytes = append(bodyBytes, []byte(value))
 	}
 
-	resp, err := bc.ChannelExecute("queryDataList", bodyBytes)
+	resp, err := bc.ChannelExecute("queryDataList", bodyBytes, nil)
 	if err != nil {
 		appG.Response(http.StatusInternalServerError, "失败", err.Error())
 		return

@@ -43,7 +43,7 @@ func CreateOrganization(c *gin.Context) {
 	bodyBytes = append(bodyBytes, []byte(body.OrganizationSuperiorID))
 	bodyBytes = append(bodyBytes, []byte(time.Now().String()))
 
-	resp, err := bc.ChannelExecute("createOrganization", bodyBytes)
+	resp, err := bc.ChannelExecute("createOrganization", bodyBytes, nil)
 	if err != nil {
 		appG.Response(http.StatusInternalServerError, "失败", err.Error())
 		return
@@ -76,7 +76,7 @@ func QueryOrganizationList(c *gin.Context) {
 		bodyBytes = append(bodyBytes, []byte(value))
 	}
 
-	resp, err := bc.ChannelExecute("queryOrganizationList", bodyBytes)
+	resp, err := bc.ChannelExecute("queryOrganizationList", bodyBytes, nil)
 	if err != nil {
 		appG.Response(http.StatusInternalServerError, "失败", err.Error())
 		return

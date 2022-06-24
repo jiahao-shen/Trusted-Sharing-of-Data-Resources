@@ -49,7 +49,7 @@ func CreateDonating(c *gin.Context) {
 	bodyBytes = append(bodyBytes, []byte(body.Donor))
 	bodyBytes = append(bodyBytes, []byte(body.Grantee))
 	//调用智能合约
-	resp, err := bc.ChannelExecute("createDonating", bodyBytes)
+	resp, err := bc.ChannelExecute("createDonating", bodyBytes, nil)
 	if err != nil {
 		appG.Response(http.StatusInternalServerError, "失败", err.Error())
 		return
@@ -75,7 +75,7 @@ func QueryDonatingList(c *gin.Context) {
 		bodyBytes = append(bodyBytes, []byte(body.Donor))
 	}
 	//调用智能合约
-	resp, err := bc.ChannelQuery("queryDonatingList", bodyBytes)
+	resp, err := bc.ChannelQuery("queryDonatingList", bodyBytes, nil)
 	if err != nil {
 		appG.Response(http.StatusInternalServerError, "失败", err.Error())
 		return
@@ -104,7 +104,7 @@ func QueryDonatingListByGrantee(c *gin.Context) {
 	var bodyBytes [][]byte
 	bodyBytes = append(bodyBytes, []byte(body.Grantee))
 	//调用智能合约
-	resp, err := bc.ChannelQuery("queryDonatingListByGrantee", bodyBytes)
+	resp, err := bc.ChannelQuery("queryDonatingListByGrantee", bodyBytes, nil)
 	if err != nil {
 		appG.Response(http.StatusInternalServerError, "失败", err.Error())
 		return
@@ -136,7 +136,7 @@ func UpdateDonating(c *gin.Context) {
 	bodyBytes = append(bodyBytes, []byte(body.Grantee))
 	bodyBytes = append(bodyBytes, []byte(body.Status))
 	//调用智能合约
-	resp, err := bc.ChannelExecute("updateDonating", bodyBytes)
+	resp, err := bc.ChannelExecute("updateDonating", bodyBytes, nil)
 	if err != nil {
 		appG.Response(http.StatusInternalServerError, "失败", err.Error())
 		return

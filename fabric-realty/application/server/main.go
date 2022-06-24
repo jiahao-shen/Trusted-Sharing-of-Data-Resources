@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"application/blockchain"
-	"application/pkg/cron"
+	// "application/pkg/cron"
 	"application/routers"
 )
 
@@ -21,7 +21,7 @@ func main() {
 	blockchain.Init()
 	fmt.Println("Fabric Init")
 
-	go cron.Init()
+	// go cron.Init()
 
 	endPoint := fmt.Sprintf("0.0.0.0:%d", 8000)
 	server := &http.Server{

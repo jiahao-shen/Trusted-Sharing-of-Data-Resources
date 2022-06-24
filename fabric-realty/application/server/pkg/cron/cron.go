@@ -30,7 +30,7 @@ func Init() {
 func GoRun() {
 	log.Printf("定时任务已启动")
 	//先把所有销售查询出来
-	resp, err := bc.ChannelQuery("querySellingList", [][]byte{}) //调用智能合约
+	resp, err := bc.ChannelQuery("querySellingList", [][]byte{}, nil) //调用智能合约
 	if err != nil {
 		log.Printf("定时任务-querySellingList失败%s", err.Error())
 		return
@@ -59,7 +59,7 @@ func GoRun() {
 				bodyBytes = append(bodyBytes, []byte(v.Buyer))
 				bodyBytes = append(bodyBytes, []byte("expired"))
 				//调用智能合约
-				resp, err := bc.ChannelExecute("updateSelling", bodyBytes)
+				resp, err := bc.ChannelExecute("updateSelling", bodyBytes, nil)
 				if err != nil {
 					return
 				}
