@@ -103,37 +103,39 @@ type Organization struct {
 	DataList     []string `json:"datalist"`     // 数据项
 	APIList      []string `json:"apilist"`      // API列表
 	Created      string   `json:"created"`      // 创建时间
-	Node         string   `json:"node"`         // 所属节点
+	Nodes        []string `json:"nodes"`        // 所属节点
 	Hash         string   `json:"hash"`         // Hash值
 }
 
 type Data struct {
-	Name         string `json:"name"`         // 数据项名称
-	ID           string `json:"id"`           // 数据项ID
-	Introduction string `json:"introduction"` // 数据项介绍
-	Author       string `json:"author"`       // 所有者
-	Field        string `json:"type"`         //	数据类型
-	Shared       string `json:"shared"`       // 共享属性
-	Type         string `json:"resource"`     // 资源属性
-	Classified   string `json:"classified"`   // 涉密属性
-	Version      string `json:"version"`      // 版本号
-	Location     string `json:"location"`     // 存储路径
-	Created      string `json:"created"`      // 创建时间
-	Hash         string `json:"hash"`         // Hash值
+	Name         string   `json:"name"`         // 数据项名称
+	ID           string   `json:"id"`           // 数据项ID
+	Introduction string   `json:"introduction"` // 数据项介绍
+	Author       string   `json:"author"`       // 所有者
+	Field        string   `json:"type"`         // 数据类型
+	Shared       string   `json:"shared"`       // 共享属性
+	Type         string   `json:"resource"`     // 资源属性
+	Classified   string   `json:"classified"`   // 涉密属性
+	Version      string   `json:"version"`      // 版本号
+	Location     string   `json:"location"`     // 存储路径
+	Created      string   `json:"created"`      // 创建时间
+	Nodes        []string `json:"nodes"`        // 所属节点
+	Hash         string   `json:"hash"`         // Hash值
 }
 
 type API struct {
-	Name         string `json:"name"`         // API名称
-	ID           string `json:"id"`           // API标识符
-	Introduction string `json:"introduction"` // API介绍
-	Author       string `json:"author"`       // API所有者
-	URL          string `json:"url"`          // API请求地址
-	Type         string `json:"type"`         // 请求类型(OPTIONS, HEAD, GET, POST, PUT, DELETE, TRACE, CONNECT)
-	Request      string `json:"request"`      // 请求参数(JSON格式, 关键字和类型)
-	Response     string `json:"response"`     // 返回参数(JSON格式, 关键字和类型)
-	Version      string `json:"version"`      // API版本信息
-	Created      string `json:"created"`      // 创建时间
-	Hash         string `json:"hash"`         // Hash值
+	Name         string   `json:"name"`         // API名称
+	ID           string   `json:"id"`           // API标识符
+	Introduction string   `json:"introduction"` // API介绍
+	Author       string   `json:"author"`       // API所有者
+	URL          string   `json:"url"`          // API请求地址
+	Type         string   `json:"type"`         // 请求类型(OPTIONS, HEAD, GET, POST, PUT, DELETE, TRACE, CONNECT)
+	Request      string   `json:"request"`      // 请求参数(JSON格式, 关键字和类型)
+	Response     string   `json:"response"`     // 返回参数(JSON格式, 关键字和类型)
+	Version      string   `json:"version"`      // API版本信息
+	Created      string   `json:"created"`      // 创建时间
+	Nodes        []string `json:"nodes"`        // 所属节点
+	Hash         string   `json:"hash"`         // Hash值
 }
 
 type RequestAPILog struct {
