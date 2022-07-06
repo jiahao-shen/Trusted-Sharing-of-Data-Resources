@@ -1,0 +1,91 @@
+version: '2'
+ 
+services:
+  peer0.AHospital.trustchain.com:
+    container_name: peer0.AHospital.trustchain.com
+    hostname: peer0.AHospital.trustchain.com
+    image: hyperledger/fabric-peer:1.2.0
+    restart: always
+    environment:
+      - CORE_PEER_ID=peer0.AHospital.trustchain.com
+      - GODEBUG=netdns=go
+      - CORE_PEER_ADDRESS=peer0.AHospital.trustchain.com:7051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:7051
+      - CORE_PEER_CHAINCODEADDRESS=peer0.AHospital.trustchain.com:7052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.AHospital.trustchain.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.AHospital.trustchain.com:7051
+      - CORE_PEER_LOCALMSPID=AHospitalMSP # 当前节点对应的组织名
+      - CORE_PEER_TLS_CLIENTROOTCAS_FILES=/etc/hyperledger/fabric/peer/msp/tlscacerts/tlsca.AHospital.trustchain.com-cert.pem
+      # ---
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=trustchainv2_default # 此处的网络名需要修改为最初的工作目录
+      # - FABRIC_LOGGING_SPEC=DEBUG
+      - CORE_PEER_ENDORSER_ENABLED=true
+      - CORE_PEER_CHANNELSERVICE_ENABLED=true
+      - CORE_CHAINCODE_BUILDER=hyperledger/fabric-ccenv:1.4
+      - CORE_CHAINCODE_STARTUPTIMEOUT=10m
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
+      - CORE_PEER_GOSSIP_USELEADERELECTION=true
+      - CORE_PEER_GOSSIP_ORGLEADER=false
+      - CORE_PEER_PROFILE_ENABLED=true
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/peer/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/peer/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/peer/tls/ca.crt
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: peer node start
+    volumes:
+      # 注意同步时间
+      - /etc/localtime:/etc/localtime
+      - /var/run/:/host/var/run/
+      - ./crypto-config/peerOrganizations/AHospital.trustchain.com/peers/peer0.AHospital.trustchain.com:/etc/hyperledger/fabric/peer
+      - ./fabric-data/peer0.AHospital.trustchain.com:/var/hyperledger/production
+    ports:
+      - 7051:7051
+      - 7052:7052
+    networks:
+      default:
+        aliases:
+          - trustchainv2
+    extra_hosts:
+      - "orderer1.trustchain.com:192.168.8.112"
+      - "peer0.FJMPT.trustchain.com:192.168.8.96"
+      - "peer0.AHospital.trustchain.com:192.168.8.225"
+      - "peer0.BHospital.trustchain.com:192.168.8.94"
+  cli:
+    container_name: cli
+    image: hyperledger/fabric-tools:1.2.0
+    tty: true
+    stdin_open: true
+    environment:
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      #- FABRIC_LOGGING_SPEC=DEBUG
+      - FABRIC_LOGGING_SPEC=DEBUG
+      - CORE_PEER_ID=cli
+      - CORE_PEER_ADDRESS=peer0.AHospital.trustchain.com:7051
+      - CORE_PEER_LOCALMSPID=AHospitalMSP
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/AHospital.trustchain.com/peers/peer0.AHospital.trustchain.com/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/AHospital.trustchain.com/peers/peer0.AHospital.trustchain.com/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/AHospital.trustchain.com/peers/peer0.AHospital.trustchain.com/tls/ca.crt
+      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/AHospital.trustchain.com/users/Admin@AHospital.trustchain.com/msp
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: /bin/bash
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./chaincode/:/opt/gopath/src/github.com/chaincode
+        - ./crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
+        - ./channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts
+    networks:
+      default:
+        aliases:
+          - trustchainv2
+    depends_on: # 启动顺序
+      - peer0.AHospital.trustchain.com
+    extra_hosts:
+      - "orderer1.trustchain.com:192.168.8.112"
+      - "peer0.FJMPT.trustchain.com:192.168.8.96"
+      - "peer0.AHospital.trustchain.com:192.168.8.225"
+      - "peer0.BHospital.trustchain.com:192.168.8.94"

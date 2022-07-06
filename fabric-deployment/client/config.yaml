@@ -1,0 +1,83 @@
+version: 1.0.0
+
+# GO SDK使用的客户端部分。
+client:
+  # 客户端所属的组织，必须是organizations定义的组织
+  organization: Org_AHospital
+  # 日志级别
+  logging:
+    level: info
+  # MSP证书的根路径
+  cryptoconfig:
+    path: ../crypto-config
+
+# 通道定义
+channels:
+  appchannel:
+    orderers:
+      - orderer1.trustchain.com
+    peers:
+      peer0.AHospital.trustchain.com:
+        endorsingPeer: true
+        chaincodeQuery: true
+        ledgerQuery: true
+        eventSource: true
+      peer0.BHospital.trustchain.com:
+        endorsingPeer: true
+        chaincodeQuery: true
+        ledgerQuery: true
+        eventSource: true
+
+# 组织配置
+organizations:
+  Org_AHospital:
+    mspid: "AHospitalMSP"
+    cryptoPath: peerOrganizations/AHospital.trustchain.com/users/{username}@AHospital.trustchain.com/msp
+    peers:
+      - peer0.AHospital.trustchain.com
+
+# orderer节点列表
+orderers:
+  orderer1.trustchain.com:
+    url: 192.168.8.112:7050
+    # 传递给gRPC客户端构造函数
+    grpcOptions:
+      ssl-target-name-override: orderer1.trustchain.com
+      keep-alive-time: 0s
+      keep-alive-timeout: 20s
+      keep-alive-permit: false
+      fail-fast: false
+      allow-insecure: true
+
+# peers节点列表
+peers:
+  # peer节点定义，可以定义多个
+  peer0.AHospital.trustchain.com:
+    # URL用于发送背书和查询请求
+    url: 192.168.8.225:7051
+    # 传递给gRPC客户端构造函数
+    grpcOptions:
+      ssl-target-name-override: peer0.AHospital.trustchain.com
+      keep-alive-time: 0s
+      keep-alive-timeout: 20s
+      keep-alive-permit: false
+      fail-fast: false
+      allow-insecure: true
+  peer0.BHospital.trustchain.com:
+    url: 192.168.8.94:7051
+    grpcOptions:
+      ssl-target-name-override: peer0.BHospital.trustchain.com
+      keep-alive-time: 0s
+      keep-alive-timeout: 20s
+      keep-alive-permit: false
+      fail-fast: false
+      allow-insecure: true
+  peer0.FJMPT.trustchain.com:
+    url: 192.168.8.96:7051
+    grpcOptions:
+      ssl-target-name-override: peer0.FJMPT.trustchain.com
+      keep-alive-time: 0s
+      keep-alive-timeout: 20s
+      keep-alive-permit: false
+      fail-fast: false
+      allow-insecure: true
