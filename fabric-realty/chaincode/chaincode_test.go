@@ -79,8 +79,8 @@ func Test_CreateOrganization(t *testing.T) {
 	org1ID := uuid.New().String()
 	resp1 := checkInvoke(t, stub, [][]byte{
 		[]byte("createOrganization"),
-		[]byte("中华人民共和国国务院"),
 		[]byte(org1ID),
+		[]byte("中华人民共和国国务院"),
 		[]byte("government"),
 		[]byte(""),
 		[]byte(""),
@@ -91,8 +91,8 @@ func Test_CreateOrganization(t *testing.T) {
 	org2ID := uuid.New().String()
 	resp2 := checkInvoke(t, stub, [][]byte{
 		[]byte("createOrganization"),
-		[]byte("中华人民共和国国家卫生健康委员会"),
 		[]byte(org2ID),
+		[]byte("中华人民共和国国家卫生健康委员会"),
 		[]byte("government"),
 		[]byte(""),
 		[]byte(org1ID),
@@ -104,8 +104,8 @@ func Test_CreateOrganization(t *testing.T) {
 	data1field, _ := json.Marshal([]model.Field{{Name: "Identity Card", Type: "string"}, {Name: "NATT Result", Type: "string"}, {Name: "Time", Type: "time.time"}})
 	resp3 := checkInvoke(t, stub, [][]byte{
 		[]byte("createData"),
-		[]byte("核酸检测结果"),
 		[]byte(data1ID),
+		[]byte("核酸检测结果"),
 		[]byte("新冠肺炎-核酸检测结果"),
 		[]byte(org2ID),
 		[]byte(data1field),
@@ -138,8 +138,8 @@ func Test_CreateOrganization(t *testing.T) {
 	org3ID := uuid.New().String()
 	resp7 := checkInvoke(t, stub, [][]byte{
 		[]byte("createOrganization"),
-		[]byte("中国信息通信研究院"),
 		[]byte(org3ID),
+		[]byte("中国信息通信研究院"),
 		[]byte("government"),
 		[]byte(""),
 		[]byte(org1ID),
@@ -152,8 +152,8 @@ func Test_CreateOrganization(t *testing.T) {
 	api1Response, _ := json.Marshal([]model.Field{{Name: "Status", Type: "integer"}, {Name: "Message", Type: "string"}, {Name: "Data", Type: "list"}})
 	resp8 := checkInvoke(t, stub, [][]byte{
 		[]byte("createAPI"),
-		[]byte("获取行程数据"),
 		[]byte(api1ID),
+		[]byte("获取行程数据"),
 		[]byte("个人轨迹数据"),
 		[]byte(org3ID),
 		[]byte("http://127.0.0.1:8080/test"),
@@ -171,16 +171,16 @@ func Test_CreateOrganization(t *testing.T) {
 	})
 	fmt.Println("查询API:", string(resp9.Payload))
 
-	log1ID := uuid.New().String()
-	resp10 := checkInvoke(t, stub, [][]byte{
-		[]byte("requestAPI"),
-		[]byte(log1ID),
-		[]byte(org1ID),
-		[]byte(api1ID),
-		[]byte(`{"identityCard":"320506199612168412"}`),
-		[]byte(time.Now().String()),
-	})
-	fmt.Println("调用API:", string(resp10.Payload))
+	// log1ID := uuid.New().String()
+	// resp10 := checkInvoke(t, stub, [][]byte{
+	// 	[]byte("requestAPI"),
+	// 	[]byte(log1ID),
+	// 	[]byte(org1ID),
+	// 	[]byte(api1ID),
+	// 	[]byte(`{"identityCard":"320506199612168412"}`),
+	// 	[]byte(time.Now().String()),
+	// })
+	// fmt.Println("调用API:", string(resp10.Payload))
 }
 
 // 测试获取账户信息

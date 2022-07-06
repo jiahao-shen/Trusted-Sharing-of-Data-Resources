@@ -40,8 +40,8 @@ func CreateAPI(c *gin.Context) {
 	}
 
 	var bodyBytes [][]byte
-	bodyBytes = append(bodyBytes, []byte(body.APIName))
 	bodyBytes = append(bodyBytes, []byte(uuid.New().String()))
+	bodyBytes = append(bodyBytes, []byte(body.APIName))
 	bodyBytes = append(bodyBytes, []byte(body.APIIntroduction))
 	bodyBytes = append(bodyBytes, []byte(body.APIAuthor))
 	bodyBytes = append(bodyBytes, []byte(body.APIURL))

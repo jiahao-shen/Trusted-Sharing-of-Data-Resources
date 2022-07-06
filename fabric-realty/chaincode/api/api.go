@@ -18,8 +18,8 @@ func CreateAPI(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 		return shim.Error("参数个数不满足")
 	}
 
-	apiName := args[0]
-	apiID := args[1]
+	apiID := args[0]
+	apiName := args[1]
 	apiIntroduction := args[2]
 	apiAuthor := args[3]
 	apiURL := args[4]
@@ -29,13 +29,13 @@ func CreateAPI(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 	apiVersion := args[8]
 	apiCreated := args[9]
 
-	if apiName == "" || apiID == "" || apiAuthor == "" || apiURL == "" || apiType == "" || apiVersion == "" || apiCreated == "" {
+	if apiID == "" || apiName == "" || apiAuthor == "" || apiURL == "" || apiType == "" || apiVersion == "" || apiCreated == "" {
 		return shim.Error("参数存在空值")
 	}
 
 	api := &model.API{
-		Name:         apiName,
 		ID:           apiID,
+		Name:         apiName,
 		Introduction: apiIntroduction,
 		Author:       apiAuthor,
 		URL:          apiURL,
@@ -162,14 +162,4 @@ func QueryAPIList(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 		return shim.Error(fmt.Sprintf("序列化出错: %s", err))
 	}
 	return shim.Success(apiListByte)
-}
-
-// TODO
-func QueryAPIByID(stub shim.ChaincodeStubInterface, args []string) pb.Response {
-	return shim.Success(nil)
-}
-
-// TODO
-func QueryABIByOrganizationID(stub shim.ChaincodeStubInterface, args []string) pb.Response {
-	return shim.Success(nil)
 }

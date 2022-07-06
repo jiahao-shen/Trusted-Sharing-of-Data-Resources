@@ -36,8 +36,8 @@ func CreateOrganization(c *gin.Context) {
 	}
 
 	var bodyBytes [][]byte
-	bodyBytes = append(bodyBytes, []byte(body.OrganizationName))
 	bodyBytes = append(bodyBytes, []byte(uuid.New().String()))
+	bodyBytes = append(bodyBytes, []byte(body.OrganizationName))
 	bodyBytes = append(bodyBytes, []byte(body.OrganizationType))
 	bodyBytes = append(bodyBytes, []byte(body.OrganizationIntroduction))
 	bodyBytes = append(bodyBytes, []byte(body.OrganizationSuperiorID))

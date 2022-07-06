@@ -16,20 +16,20 @@ func CreateOrganization(stub shim.ChaincodeStubInterface, args []string) pb.Resp
 		return shim.Error("参数个数不满足")
 	}
 
-	orgName := args[0]
-	orgID := args[1]
+	orgID := args[0]
+	orgName := args[1]
 	orgType := args[2]
 	orgIntroduction := args[3]
 	orgSuperiorID := args[4]
 	orgCreated := args[5]
 
-	if orgName == "" || orgID == "" || orgType == "" || orgCreated == "" {
+	if orgID == "" || orgName == "" || orgType == "" || orgCreated == "" {
 		return shim.Error("参数存在空值")
 	}
 
 	org := &model.Organization{
-		Name:         orgName,
 		ID:           orgID,
+		Name:         orgName,
 		Type:         orgType,
 		Introduction: orgIntroduction,
 		Superior:     orgSuperiorID,
@@ -97,9 +97,4 @@ func QueryOrganizationList(stub shim.ChaincodeStubInterface, args []string) pb.R
 	}
 
 	return shim.Success(organizationListByte)
-}
-
-// TODO
-func QueryOrganizationByID(stub shim.ChaincodeStubInterface, args []string) pb.Response {
-	return shim.Success(nil)
 }

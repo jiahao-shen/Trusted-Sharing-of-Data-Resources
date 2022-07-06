@@ -41,8 +41,8 @@ func CreateData(c *gin.Context) {
 	}
 
 	var bodyBytes [][]byte
-	bodyBytes = append(bodyBytes, []byte(body.DataName))
 	bodyBytes = append(bodyBytes, []byte(uuid.New().String()))
+	bodyBytes = append(bodyBytes, []byte(body.DataName))
 	bodyBytes = append(bodyBytes, []byte(body.DataIntroduction))
 	bodyBytes = append(bodyBytes, []byte(body.DataAuthor))
 	bodyBytes = append(bodyBytes, []byte(body.DataField))

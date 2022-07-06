@@ -65,8 +65,8 @@ func (t *BlockChainRealEstate) Init(stub shim.ChaincodeStubInterface) pb.Respons
 	}
 
 	apiRegistration := &model.API{
-		Name:         "挂号",
 		ID:           "api-registration",
+		Name:         "挂号",
 		Introduction: "挂号",
 		Author:       "org-hospital",
 		URL:          baseURL + "/api/app/registration",
@@ -83,8 +83,8 @@ func (t *BlockChainRealEstate) Init(stub shim.ChaincodeStubInterface) pb.Respons
 	}
 
 	pharmacy := &model.Organization{
-		Name:         "北京同仁堂药店",
 		ID:           "org-pharmacy",
+		Name:         "北京同仁堂药店",
 		Type:         "药店",
 		Introduction: "中西医药",
 		Superior:     "",
@@ -100,8 +100,8 @@ func (t *BlockChainRealEstate) Init(stub shim.ChaincodeStubInterface) pb.Respons
 	}
 
 	apiQueryPerscription := &model.API{
-		Name:         "查询处方",
 		ID:           "api-queryPrescription",
+		Name:         "查询处方",
 		Introduction: "查询开药信息",
 		Author:       "org-pharmacy",
 		URL:          baseURL + "/api/app/queryPrescription",
@@ -162,16 +162,10 @@ func (t *BlockChainRealEstate) Invoke(stub shim.ChaincodeStubInterface) pb.Respo
 		return api.RequestAPI(stub, args)
 	case "queryOrganizationList":
 		return api.QueryOrganizationList(stub, args)
-	case "queryOrganizationByID":
-		return api.QueryOrganizationByID(stub, args)
 	case "queryDataList":
 		return api.QueryDataList(stub, args)
 	case "queryAPIList":
 		return api.QueryAPIList(stub, args)
-	case "queryAPIByID":
-		return api.QueryAPIByID(stub, args)
-	case "queryAPIByOrganizationID":
-		return api.QueryABIByOrganizationID(stub, args)
 	default:
 		return shim.Error(fmt.Sprintf("没有该功能: %s", funcName))
 	}

@@ -15,8 +15,8 @@ func CreateData(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 		return shim.Error("参数个数不满足")
 	}
 
-	dataName := args[0]
-	dataID := args[1]
+	dataID := args[0]
+	dataName := args[1]
 	dataIntroduction := args[2]
 	dataAuthor := args[3]
 	dataField := args[4]
@@ -27,13 +27,13 @@ func CreateData(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 	dataLocation := args[9]
 	dataCreated := args[10]
 
-	if dataName == "" || dataID == "" || dataAuthor == "" || dataVersion == "" || dataCreated == "" {
+	if dataID == "" || dataName == "" || dataAuthor == "" || dataVersion == "" || dataCreated == "" {
 		return shim.Error("参数存在空值")
 	}
 
 	dataItem := &model.Data{
-		Name:         dataName,
 		ID:           dataID,
+		Name:         dataName,
 		Introduction: dataIntroduction,
 		Author:       dataAuthor,
 		Field:        dataField,

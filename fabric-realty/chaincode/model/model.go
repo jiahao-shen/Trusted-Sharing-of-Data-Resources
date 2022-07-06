@@ -94,8 +94,8 @@ const (
 )
 
 type Organization struct {
-	Name         string   `json:"name"`         // 机构名称
 	ID           string   `json:"id"`           // 机构ID
+	Name         string   `json:"name"`         // 机构名称
 	Type         string   `json:"type"`         // 机构类型
 	Introduction string   `json:"introduction"` // 机构介绍
 	Superior     string   `json:"superior"`     // 上级单位
@@ -108,8 +108,8 @@ type Organization struct {
 }
 
 type Data struct {
-	Name         string   `json:"name"`         // 数据项名称
 	ID           string   `json:"id"`           // 数据项ID
+	Name         string   `json:"name"`         // 数据项名称
 	Introduction string   `json:"introduction"` // 数据项介绍
 	Author       string   `json:"author"`       // 所有者
 	Field        string   `json:"type"`         // 数据类型
@@ -124,8 +124,8 @@ type Data struct {
 }
 
 type API struct {
-	Name         string   `json:"name"`         // API名称
 	ID           string   `json:"id"`           // API标识符
+	Name         string   `json:"name"`         // API名称
 	Introduction string   `json:"introduction"` // API介绍
 	Author       string   `json:"author"`       // API所有者
 	URL          string   `json:"url"`          // API请求地址
