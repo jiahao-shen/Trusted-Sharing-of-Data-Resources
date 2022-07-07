@@ -1,4 +1,8 @@
 version: '2'
+
+networks:
+  default: 
+    name: fabric_network
  
 services:
   peer0.AHospital.trustchain.com:
@@ -17,9 +21,8 @@ services:
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.AHospital.trustchain.com:7051
       - CORE_PEER_LOCALMSPID=AHospitalMSP # 当前节点对应的组织名
       - CORE_PEER_TLS_CLIENTROOTCAS_FILES=/etc/hyperledger/fabric/peer/msp/tlscacerts/tlsca.AHospital.trustchain.com-cert.pem
-      # ---
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
-      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=trustchainv2_default # 此处的网络名需要修改为最初的工作目录
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=fabric_network
       # - FABRIC_LOGGING_SPEC=DEBUG
       - CORE_PEER_ENDORSER_ENABLED=true
       - CORE_PEER_CHANNELSERVICE_ENABLED=true
@@ -45,13 +48,11 @@ services:
       - 7051:7051
       - 7052:7052
     networks:
-      default:
-        aliases:
-          - trustchainv2
+      - default
     extra_hosts:
       - "orderer1.trustchain.com:192.168.8.112"
       - "peer0.FJMPT.trustchain.com:192.168.8.96"
-      - "peer0.AHospital.trustchain.com:192.168.8.225"
+      # - "peer0.AHospital.trustchain.com:192.168.8.225"
       - "peer0.BHospital.trustchain.com:192.168.8.94"
   cli:
     container_name: cli
@@ -61,7 +62,6 @@ services:
     environment:
       - GOPATH=/opt/gopath
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
-      #- FABRIC_LOGGING_SPEC=DEBUG
       - FABRIC_LOGGING_SPEC=DEBUG
       - CORE_PEER_ID=cli
       - CORE_PEER_ADDRESS=peer0.AHospital.trustchain.com:7051
@@ -79,13 +79,11 @@ services:
         - ./crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
         - ./channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts
     networks:
-      default:
-        aliases:
-          - trustchainv2
+      - default
     depends_on: # 启动顺序
       - peer0.AHospital.trustchain.com
     extra_hosts:
       - "orderer1.trustchain.com:192.168.8.112"
       - "peer0.FJMPT.trustchain.com:192.168.8.96"
-      - "peer0.AHospital.trustchain.com:192.168.8.225"
+      # - "peer0.AHospital.trustchain.com:192.168.8.225"
       - "peer0.BHospital.trustchain.com:192.168.8.94"
