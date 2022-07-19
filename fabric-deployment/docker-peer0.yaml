@@ -8,7 +8,7 @@ services:
   peer0.AHospital.trustchain.com:
     container_name: peer0.AHospital.trustchain.com
     hostname: peer0.AHospital.trustchain.com
-    image: hyperledger/fabric-peer:1.2.0
+    image: hyperledger/fabric-peer:1.4.12
     restart: always
     environment:
       - CORE_PEER_ID=peer0.AHospital.trustchain.com
@@ -42,6 +42,7 @@ services:
       # 注意同步时间
       - /etc/localtime:/etc/localtime
       - /var/run/:/host/var/run/
+      - ./crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
       - ./crypto-config/peerOrganizations/AHospital.trustchain.com/peers/peer0.AHospital.trustchain.com:/etc/hyperledger/fabric/peer
       - ./fabric-data/peer0.AHospital.trustchain.com:/var/hyperledger/production
     ports:
@@ -51,12 +52,13 @@ services:
       - default
     extra_hosts:
       - "orderer1.trustchain.com:192.168.8.112"
-      - "peer0.FJMPT.trustchain.com:192.168.8.96"
+      # - "peer0.AZWDT.trustchain.com:192.168.8.94"
+      # - "peer0.FJMPT.trustchain.com:192.168.8.96"
       # - "peer0.AHospital.trustchain.com:192.168.8.225"
-      - "peer0.BHospital.trustchain.com:192.168.8.94"
+      # - "peer0.BHospital.trustchain.com:192.168.8.241"
   cli:
     container_name: cli
-    image: hyperledger/fabric-tools:1.2.0
+    image: hyperledger/fabric-tools:1.4.12
     tty: true
     stdin_open: true
     environment:
@@ -84,6 +86,7 @@ services:
       - peer0.AHospital.trustchain.com
     extra_hosts:
       - "orderer1.trustchain.com:192.168.8.112"
-      - "peer0.FJMPT.trustchain.com:192.168.8.96"
+      # - "peer0.AZWDT.trustchain.com:192.168.8.94"
+      # - "peer0.FJMPT.trustchain.com:192.168.8.96"
       # - "peer0.AHospital.trustchain.com:192.168.8.225"
-      - "peer0.BHospital.trustchain.com:192.168.8.94"
+      # - "peer0.BHospital.trustchain.com:192.168.8.241"

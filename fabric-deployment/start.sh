@@ -1,0 +1,1 @@
+docker-compose -f docker-peer0.yaml up -d
