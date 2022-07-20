@@ -3,7 +3,7 @@ version: 1.0.0
 # GO SDK使用的客户端部分。
 client:
   # 客户端所属的组织，必须是organizations定义的组织
-  organization: OrgAZWDT
+  organization: OrgBHospital
   # 日志级别
   logging:
     level: info
@@ -19,7 +19,7 @@ channels:
     peers:
       peer0.AHospital.trustchain.com:
         endorsingPeer: false
-        chaincodeQuery: true
+        chaincodeQuery: false
         ledgerQuery: true
         eventSource: true
       peer0.BHospital.trustchain.com:
@@ -29,7 +29,7 @@ channels:
         eventSource: true
       peer0.AZWDT.trustchain.com:
         endorsingPeer: false
-        chaincodeQuery: true
+        chaincodeQuery: false
         ledgerQuery: true
         eventSource: true
 
@@ -50,74 +50,92 @@ organizations:
     cryptoPath: peerOrganizations/AZWDT.trustchain.com/users/{username}@AZWDT.trustchain.com/msp
     peers:
       - peer0.AZWDT.trustchain.com
-  # OrgFJMPT:
-  #   mspid: "FJMPTMSP"
-  #   cryptoPath: peerOrganizations/FJMPT.trustchain.com/users/{username}@FJMPT.trustchain.com/msp
-  #   peers:
-  #     - peer0.FJMPT.trustchain.com
+  OrgFJMPT:
+    mspid: "FJMPTMSP"
+    cryptoPath: peerOrganizations/FJMPT.trustchain.com/users/{username}@FJMPT.trustchain.com/msp
+    peers:
+      - peer0.FJMPT.trustchain.com
 
-    
     
 # orderer节点列表
 orderers:
+  _default:
+    grpcOptions:
+      keep-alive-time: 0s
+      keep-alive-timeout: 20s
+      keep-alive-permit: false
+      fail-fast: false
+      allow-insecure: false
+
   orderer1.trustchain.com:
     url: 192.168.8.112:7050
     # 传递给gRPC客户端构造函数
     grpcOptions:
       ssl-target-name-override: orderer1.trustchain.com
-      keep-alive-time: 0s
-      keep-alive-timeout: 20s
-      keep-alive-permit: false
-      fail-fast: false
-      allow-insecure: true
+    tlsCACerts:
+      path: ../crypto-config/ordererOrganizations/trustchain.com/tlsca/tlsca.trustchain.com-cert.pem
+
 
 # peers节点列表
 peers:
+  # 默认参数, 应用于所有节点
+  _default:
+    grpcOptions:
+      keep-alive-time: 0s
+      keep-alive-timeout: 20s
+      keep-alive-permit: false
+      fail-fast: false
+      allow-insecure: false
   # peer节点定义，可以定义多个
   peer0.AHospital.trustchain.com:
     # URL用于发送背书和查询请求
-    url: grpcs://192.168.8.225:7051
-    # 传递给gRPC客户端构造函数
+    url: 192.168.8.225:7051
     grpcOptions:
       ssl-target-name-override: peer0.AHospital.trustchain.com
-      keep-alive-time: 0s
-      keep-alive-timeout: 20s
-      keep-alive-permit: false
-      fail-fast: false
-      allow-insecure: true
+    # 传递给gRPC客户端构造函数
     tlsCACerts:
-      path: C:\Users\BUAA\Code\Trusted-Sharing-of-Data-Resources\fabric-deployment\crypto-config\peerOrganizations\AHospital.trustchain.com\tlsca\tlsca.AHospital.trustchain.com-cert.pem
+      path: ../crypto-config/peerOrganizations/AHospital.trustchain.com/tlsca/tlsca.AHospital.trustchain.com-cert.pem
       
   peer0.BHospital.trustchain.com:
-    url: grpcs://192.168.8.139:7051
+    url: 192.168.8.139:7051
     grpcOptions:
       ssl-target-name-override: peer0.BHospital.trustchain.com
-      keep-alive-time: 0s
-      keep-alive-timeout: 20s
-      keep-alive-permit: false
-      fail-fast: false
-      allow-insecure: true
     tlsCACerts:
-      path: C:\Users\BUAA\Code\Trusted-Sharing-of-Data-Resources\fabric-deployment\crypto-config\peerOrganizations\BHospital.trustchain.com\tlsca\tlsca.BHospital.trustchain.com-cert.pem
+      path: ../crypto-config/peerOrganizations/BHospital.trustchain.com/tlsca/tlsca.BHospital.trustchain.com-cert.pem
       
-  peer0.FJMPT.trustchain.com:
-    url: grpcs://192.168.8.96:7051
-    grpcOptions:
-      ssl-target-name-override: peer0.FJMPT.trustchain.com
-      keep-alive-time: 0s
-      keep-alive-timeout: 20s
-      keep-alive-permit: false
-      fail-fast: false
-      allow-insecure: true
-
   peer0.AZWDT.trustchain.com:
-    url: grpcs://192.168.8.81:7051
+    url: 192.168.8.81:7051
     grpcOptions:
       ssl-target-name-override: peer0.AZWDT.trustchain.com
-      keep-alive-time: 0s
-      keep-alive-timeout: 20s
-      keep-alive-permit: false
-      fail-fast: false
-      allow-insecure: true
     tlsCACerts:
-      path: C:\Users\BUAA\Code\Trusted-Sharing-of-Data-Resources\fabric-deployment\crypto-config\peerOrganizations\AZWDT.trustchain.com\tlsca\tlsca.AZWDT.trustchain.com-cert.pem
+      path: ../crypto-config/peerOrganizations/AZWDT.trustchain.com/tlsca/tlsca.AZWDT.trustchain.com-cert.pem
+  
+  # peer0.FJMPT.trustchain.com:
+  #   url: 192.168.8.96:7051
+  #   grpcOptions:
+  #     ssl-target-name-override: peer0.FJMPT.trustchain.com
+  #   tlsCACerts:
+  #     path: ../crypto-config/peerOrganizations/FJMPT.trustchain.com/tlsca/tlsca.FJMPT.trustchain.com-cert.pem
+
+entityMatchers:
+  peer:
+    - pattern: (\w*)peer0.AHospital.trustchain.com(\w*)
+      urlSubstitutionExp: 192.168.8.225:7051
+      sslTargetOverrideUrlSubstitutionExp: peer0.AHospital.trustchain.com
+      mappedHost: peer0.AHospital.trustchain.com
+
+    - pattern: (\w*)peer0.BHospital.trustchain.com(\w*)
+      urlSubstitutionExp: 192.168.8.139:7051
+      sslTargetOverrideUrlSubstitutionExp: peer0.BHospital.trustchain.com
+      mappedHost: peer0.BHospital.trustchain.com
+    
+    - pattern: (\w*)peer0.AZWDT.trustchain.com(\w*)
+      urlSubstitutionExp: 192.168.8.81:7051
+      sslTargetOverrideUrlSubstitutionExp: peer0.AZWDT.trustchain.com
+      mappedHost: peer0.AZWDT.trustchain.com
+
+  orderer:
+    - pattern: (\w*)orderer1.trustchain.com(\w*)
+      urlsubstitutionexp: 192.168.8.112:7050
+      ssltargetoverrideurlsubstitutionexp: orderer1.trustchain.com
+      mappedhost: orderer1.trustchain.com
