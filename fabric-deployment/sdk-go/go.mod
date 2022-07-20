@@ -1,4 +1,4 @@
-module client
+module sdk-go
 
 go 1.18
 

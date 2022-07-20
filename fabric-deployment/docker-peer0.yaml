@@ -52,10 +52,10 @@ services:
       - default
     extra_hosts:
       - "orderer1.trustchain.com:192.168.8.112"
-      # - "peer0.AZWDT.trustchain.com:192.168.8.94"
+      - "peer0.AHospital.trustchain.com:192.168.8.225"
+      - "peer0.BHospital.trustchain.com:192.168.8.139"
+      - "peer0.AZWDT.trustchain.com:192.168.8.81"
       # - "peer0.FJMPT.trustchain.com:192.168.8.96"
-      # - "peer0.AHospital.trustchain.com:192.168.8.225"
-      # - "peer0.BHospital.trustchain.com:192.168.8.241"
   cli:
     container_name: cli
     image: hyperledger/fabric-tools:1.4.12
@@ -86,7 +86,7 @@ services:
       - peer0.AHospital.trustchain.com
     extra_hosts:
       - "orderer1.trustchain.com:192.168.8.112"
-      # - "peer0.AZWDT.trustchain.com:192.168.8.94"
+      - "peer0.AHospital.trustchain.com:192.168.8.225"
+      - "peer0.BHospital.trustchain.com:192.168.8.139"
+      - "peer0.AZWDT.trustchain.com:192.168.8.81"
       # - "peer0.FJMPT.trustchain.com:192.168.8.96"
-      # - "peer0.AHospital.trustchain.com:192.168.8.225"
-      # - "peer0.BHospital.trustchain.com:192.168.8.241"

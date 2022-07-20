@@ -1,4 +1,4 @@
-package main
+package blockchain
 
 import (
 	"fmt"
@@ -79,20 +79,4 @@ func ChannelQuery(fcn string, args [][]byte, endpoints []string) (channel.Respon
 	}
 	//返回链码执行后的结果
 	return resp, nil
-}
-
-func main() {
-	Init()
-
-	resp, err := ChannelExecute("queryAPIList", nil, nil)
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	fmt.Println(resp.Payload)
-
-	// if err = json.Unmarshal(bytes.NewBuffer(resp.Payload).Bytes(), &data); err != nil {
-	// fmt.Println("反序列化失败")
-	// }
-
 }
