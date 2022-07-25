@@ -22,15 +22,24 @@ func main() {
 		fmt.Println(err)
 	}
 
-	var args [][]byte
-	args = append(args, []byte("a"))
-	resp, err := cli.Query(channel.Request{
+	resp, err := cli.Execute(channel.Request{
+		ChaincodeID: "mycc",
+		Fcn:         "invoke",
+		Args:        [][]byte{[]byte("b"), []byte("a"), []byte("5")},
+	}, channel.WithTargetEndpoints("peer0.BHospital.trustchain.com"))
+	if err != nil {
+		fmt.Println("调用合约失败")
+		fmt.Println(err)
+	}
+
+	resp, err = cli.Query(channel.Request{
 		ChaincodeID: "mycc",
 		Fcn:         "query",
-		Args:        args,
+		Args:        [][]byte{[]byte("a")},
 	}, channel.WithTargetEndpoints("peer0.BHospital.trustchain.com"))
 	if err != nil {
 		fmt.Println("查询链码失败")
+		fmt.Println(err)
 	}
 
 	fmt.Println(string(resp.Payload))
