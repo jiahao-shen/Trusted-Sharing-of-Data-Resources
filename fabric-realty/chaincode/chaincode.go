@@ -2,8 +2,6 @@ package main
 
 import (
 	"chaincode/api"
-	"chaincode/model"
-	"chaincode/pkg/utils"
 	"fmt"
 	"time"
 
@@ -44,78 +42,78 @@ func (t *BlockChainRealEstate) Init(stub shim.ChaincodeStubInterface) pb.Respons
 
 	// return shim.Success(nil)
 
-	baseURL := "http://host.docker.internal:8000"
+	// baseURL := "http://host.docker.internal:8000"
 	// baseURL := "http://172.17.0.1:8000"
 
-	hospital := &model.Organization{
-		Name:         "北京第三人民医院",
-		ID:           "org-hospital",
-		Type:         "医院",
-		Introduction: "公立",
-		Superior:     "",
-		Subordinates: []string{},
-		DataList:     []string{},
-		APIList:      []string{"api-registration"},
-		Created:      time.Now().String(),
-		Hash:         "",
-	}
+	// hospital := &model.Organization{
+	// 	Name:         "北京第三人民医院",
+	// 	ID:           "org-hospital",
+	// 	Type:         "医院",
+	// 	Introduction: "公立",
+	// 	Superior:     "",
+	// 	Subordinates: []string{},
+	// 	DataList:     []string{},
+	// 	APIList:      []string{"api-registration"},
+	// 	Created:      time.Now().String(),
+	// 	Hash:         "",
+	// }
 
-	if err := utils.WriteLedger(hospital, stub, model.OrganizationKey, []string{"org-hospital"}); err != nil {
-		return shim.Error(fmt.Sprintf("保存失败: %s", err))
-	}
+	// if err := utils.WriteLedger(hospital, stub, model.OrganizationKey, []string{"org-hospital"}); err != nil {
+	// 	return shim.Error(fmt.Sprintf("保存失败: %s", err))
+	// }
 
-	apiRegistration := &model.API{
-		ID:           "api-registration",
-		Name:         "挂号",
-		Introduction: "挂号",
-		Author:       "org-hospital",
-		URL:          baseURL + "/api/app/registration",
-		Type:         "POST",
-		Request:      "[{\"field\":\"name\",\"type\":\"string\"},{\"field\":\"identity\",\"type\":\"string\"}]",
-		Response:     "{}",
-		Version:      "v1.0.0",
-		Created:      time.Now().String(),
-		Hash:         "",
-	}
+	// apiRegistration := &model.API{
+	// 	ID:           "api-registration",
+	// 	Name:         "挂号",
+	// 	Introduction: "挂号",
+	// 	Author:       "org-hospital",
+	// 	URL:          baseURL + "/api/app/registration",
+	// 	Type:         "POST",
+	// 	Request:      "[{\"field\":\"name\",\"type\":\"string\"},{\"field\":\"identity\",\"type\":\"string\"}]",
+	// 	Response:     "{}",
+	// 	Version:      "v1.0.0",
+	// 	Created:      time.Now().String(),
+	// 	Hash:         "",
+	// }
 
-	if err := utils.WriteLedger(apiRegistration, stub, model.APIKey, []string{"api-registration"}); err != nil {
-		return shim.Error(fmt.Sprintf("保存失败: %s", err))
-	}
+	// if err := utils.WriteLedger(apiRegistration, stub, model.APIKey, []string{"api-registration"}); err != nil {
+	// 	return shim.Error(fmt.Sprintf("保存失败: %s", err))
+	// }
 
-	pharmacy := &model.Organization{
-		ID:           "org-pharmacy",
-		Name:         "北京同仁堂药店",
-		Type:         "药店",
-		Introduction: "中西医药",
-		Superior:     "",
-		Subordinates: []string{},
-		DataList:     []string{},
-		APIList:      []string{"api-queryPrescription"},
-		Created:      time.Now().String(),
-		Hash:         "",
-	}
+	// pharmacy := &model.Organization{
+	// 	ID:           "org-pharmacy",
+	// 	Name:         "北京同仁堂药店",
+	// 	Type:         "药店",
+	// 	Introduction: "中西医药",
+	// 	Superior:     "",
+	// 	Subordinates: []string{},
+	// 	DataList:     []string{},
+	// 	APIList:      []string{"api-queryPrescription"},
+	// 	Created:      time.Now().String(),
+	// 	Hash:         "",
+	// }
 
-	if err := utils.WriteLedger(pharmacy, stub, model.OrganizationKey, []string{"org-pharmacy"}); err != nil {
-		return shim.Error(fmt.Sprintf("保存失败: %s", err))
-	}
+	// if err := utils.WriteLedger(pharmacy, stub, model.OrganizationKey, []string{"org-pharmacy"}); err != nil {
+	// 	return shim.Error(fmt.Sprintf("保存失败: %s", err))
+	// }
 
-	apiQueryPerscription := &model.API{
-		ID:           "api-queryPrescription",
-		Name:         "查询处方",
-		Introduction: "查询开药信息",
-		Author:       "org-pharmacy",
-		URL:          baseURL + "/api/app/queryPrescription",
-		Type:         "POST",
-		Request:      "[{\"field\":\"identity\",\"type\":\"string\"},{\"field\":\"medicine\",\"type\":\"string\"}]",
-		Response:     "{}",
-		Version:      "v1.0.0",
-		Created:      time.Now().String(),
-		Hash:         "",
-	}
+	// apiQueryPerscription := &model.API{
+	// 	ID:           "api-queryPrescription",
+	// 	Name:         "查询处方",
+	// 	Introduction: "查询开药信息",
+	// 	Author:       "org-pharmacy",
+	// 	URL:          baseURL + "/api/app/queryPrescription",
+	// 	Type:         "POST",
+	// 	Request:      "[{\"field\":\"identity\",\"type\":\"string\"},{\"field\":\"medicine\",\"type\":\"string\"}]",
+	// 	Response:     "{}",
+	// 	Version:      "v1.0.0",
+	// 	Created:      time.Now().String(),
+	// 	Hash:         "",
+	// }
 
-	if err := utils.WriteLedger(apiQueryPerscription, stub, model.APIKey, []string{"api-queryPrescription"}); err != nil {
-		return shim.Error(fmt.Sprintf("保存失败: %s", err))
-	}
+	// if err := utils.WriteLedger(apiQueryPerscription, stub, model.APIKey, []string{"api-queryPrescription"}); err != nil {
+	// 	return shim.Error(fmt.Sprintf("保存失败: %s", err))
+	// }
 
 	return shim.Success(nil)
 }

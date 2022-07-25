@@ -44,16 +44,16 @@ organizations: # 机构配置
     cryptoPath: peerOrganizations/BHospital.trustchain.com/users/{username}@BHospital.trustchain.com/msp
     peers:
       - peer0.BHospital.trustchain.com
-  OrgAZWDT:
-    mspid: "AZWDTMSP"
-    cryptoPath: peerOrganizations/AZWDT.trustchain.com/users/{username}@AZWDT.trustchain.com/msp
-    peers:
-      - peer0.AZWDT.trustchain.com
-  OrgFJMPT:
-    mspid: "FJMPTMSP"
-    cryptoPath: peerOrganizations/FJMPT.trustchain.com/users/{username}@FJMPT.trustchain.com/msp
-    peers:
-      - peer0.FJMPT.trustchain.com
+  # OrgAZWDT:
+  #   mspid: "AZWDTMSP"
+  #   cryptoPath: peerOrganizations/AZWDT.trustchain.com/users/{username}@AZWDT.trustchain.com/msp
+  #   peers:
+  #     - peer0.AZWDT.trustchain.com
+  # OrgFJMPT:
+  #   mspid: "FJMPTMSP"
+  #   cryptoPath: peerOrganizations/FJMPT.trustchain.com/users/{username}@FJMPT.trustchain.com/msp
+  #   peers:
+  #     - peer0.FJMPT.trustchain.com
 
 orderers: # order节点配置
   _default: # 默认配置, 应用于所有节点
@@ -94,19 +94,19 @@ peers: # peer节点
     tlsCACerts:
       path: ../crypto-config/peerOrganizations/BHospital.trustchain.com/tlsca/tlsca.BHospital.trustchain.com-cert.pem
 
-  peer0.AZWDT.trustchain.com:
-    url: 192.168.8.81:7051
-    grpcOptions:
-      ssl-target-name-override: peer0.AZWDT.trustchain.com
-    tlsCACerts:
-      path: ../crypto-config/peerOrganizations/AZWDT.trustchain.com/tlsca/tlsca.AZWDT.trustchain.com-cert.pem
+  # peer0.AZWDT.trustchain.com:
+  #   url: 192.168.8.81:7051
+  #   grpcOptions:
+  #     ssl-target-name-override: peer0.AZWDT.trustchain.com
+  #   tlsCACerts:
+  #     path: ../crypto-config/peerOrganizations/AZWDT.trustchain.com/tlsca/tlsca.AZWDT.trustchain.com-cert.pem
 
-  peer0.FJMPT.trustchain.com:
-    url: 192.168.8.96:7051
-    grpcOptions:
-      ssl-target-name-override: peer0.FJMPT.trustchain.com
-    tlsCACerts:
-      path: ../crypto-config/peerOrganizations/FJMPT.trustchain.com/tlsca/tlsca.FJMPT.trustchain.com-cert.pem
+  # peer0.FJMPT.trustchain.com:
+  #   url: 192.168.8.96:7051
+  #   grpcOptions:
+  #     ssl-target-name-override: peer0.FJMPT.trustchain.com
+  #   tlsCACerts:
+  #     path: ../crypto-config/peerOrganizations/FJMPT.trustchain.com/tlsca/tlsca.FJMPT.trustchain.com-cert.pem
 
 entityMatchers:
   peer:
@@ -120,15 +120,15 @@ entityMatchers:
       sslTargetOverrideUrlSubstitutionExp: peer0.BHospital.trustchain.com
       mappedHost: peer0.BHospital.trustchain.com
 
-    - pattern: (\w*)peer0.AZWDT.trustchain.com(\w*)
-      urlSubstitutionExp: 192.168.8.81:7051
-      sslTargetOverrideUrlSubstitutionExp: peer0.AZWDT.trustchain.com
-      mappedHost: peer0.AZWDT.trustchain.com
+    # - pattern: (\w*)peer0.AZWDT.trustchain.com(\w*)
+    #   urlSubstitutionExp: 192.168.8.81:7051
+    #   sslTargetOverrideUrlSubstitutionExp: peer0.AZWDT.trustchain.com
+    #   mappedHost: peer0.AZWDT.trustchain.com
 
-    - pattern: (\w*)peer0.FJMPT.trustchain.com(\w*)
-      urlSubstitutionExp: 192.168.8.96:7051
-      sslTargetOverrideUrlSubstitutionExp: peer0.FJMPT.trustchain.com
-      mappedHost: peer0.FJMPT.trustchain.com
+    # - pattern: (\w*)peer0.FJMPT.trustchain.com(\w*)
+    #   urlSubstitutionExp: 192.168.8.96:7051
+    #   sslTargetOverrideUrlSubstitutionExp: peer0.FJMPT.trustchain.com
+    #   mappedHost: peer0.FJMPT.trustchain.com
 
   orderer:
     - pattern: (\w*)orderer1.trustchain.com(\w*)

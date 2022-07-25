@@ -1,8 +1,6 @@
 package blockchain
 
 import (
-	"fmt"
-
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/channel"
 	"github.com/hyperledger/fabric-sdk-go/pkg/core/config"
 	"github.com/hyperledger/fabric-sdk-go/pkg/fabsdk"
@@ -10,11 +8,12 @@ import (
 
 // 配置信息
 var (
-	configPath    = "config.yaml"   // 部署配置文件路径
-	sdk           *fabsdk.FabricSDK // Fabric SDK
-	channelName   = "appchannel"    // 通道名称
-	user          = "Admin"         // 用户
-	chainCodeName = "fabric-realty" // 链码名称
+	configPath    = "config.yaml"     // 部署配置文件路径
+	sdk           *fabsdk.FabricSDK   // Fabric SDK
+	channelName   = "medicinechannel" // 通道名称
+	user          = "Admin"           // 用户
+	chainCodeName = "chaincode"       // 链码名称
+	// chainCodeName = "mycc"            // 链码名称
 )
 
 // Init 初始化
@@ -31,7 +30,6 @@ func Init() {
 func ChannelExecute(fcn string, args [][]byte, endpoints []string) (channel.Response, error) {
 	// 默认节点
 	if endpoints == nil {
-		endpoints = append(endpoints, "peer0.AHospital.trustchain.com")
 		endpoints = append(endpoints, "peer0.BHospital.trustchain.com")
 	}
 
@@ -58,7 +56,6 @@ func ChannelExecute(fcn string, args [][]byte, endpoints []string) (channel.Resp
 func ChannelQuery(fcn string, args [][]byte, endpoints []string) (channel.Response, error) {
 	// 默认节点
 	if endpoints == nil {
-		endpoints = append(endpoints, "peer0.AHospital.trustchain.com")
 		endpoints = append(endpoints, "peer0.BHospital.trustchain.com")
 	}
 
