@@ -1,0 +1,68 @@
+{
+  "name": "trustchain",
+  "version": "1.0.0",
+  "client": {
+    "organization": "OrgBHospital",
+    "connection": {
+      "timeout": {
+        "peer": {
+          "endorser": "300"
+        },
+        "orderer": "300"
+      }
+    }
+  },
+  "channels": {
+    "medicinechannel": {
+      "orderers": [
+        "orderer1.trustchain.com"
+      ],
+      "peers": {
+        "peer0.BHospital.trustchain.com": {
+          "endorsingPeer": true,
+          "chaincodeQuery": true,
+          "ledgerQuery": true,
+          "eventSource": true
+        },
+      }
+    }
+  },
+  "organizations": {
+    "OrgBHospital": {
+      "mspid": "BHospitalMSP",
+      "peers": [
+        "peer0.BHospital.trustchain.com"
+      ],
+      "adminPrivateKeyPEM": {
+        "path": "src/main/resources/crypto-config/peerOrganizations/BHospital.trustchain.com/users/Admin@BHospital.trustchain.com/msp/keystore/75214e9125760153e6c131983549207b7d26a2f17cc96ceeb50329abc402f777_sk"
+      },
+      "signedCertPEM": {
+        "path": "src/main/resources/crypto-config/peerOrganizations/BHospital.trustchain.com/users/Admin@BHospital.trustchain.com/msp/signcerts/Admin@BHospital.trustchain.com-cert.pem"
+      }
+    }
+  },
+  "orderers": {
+    "orderer1.trustchain.com": {
+      "url": "grpcs://192.168.8.112:7050",
+      "grpcOptions": {
+        "ssl-target-name-override": "orderer1.trustchain.com",
+        "hostnameOverride": "orderer1.trustchain.com"
+      },
+      "tlsCACerts": {
+        "path": "src/main/resources/crypto-config/ordererOrganizations/trustchain.com/tlsca/tlsca.trustchain.com-cert.pem"
+      }
+    }
+  },
+  "peers": {
+    "peer0.BHospital.trustchain.com": {
+      "url": "grpcs://192.168.8.139:7051",
+      "grpcOptions": {
+        "ssl-target-name-override": "peer0.BHospital.trustchain.com",
+        "hostnameOverride": "peer0.BHospital.trustchain.com"
+      },
+      "tlsCACerts": {
+        "path": "src/main/resources/crypto-config/peerOrganizations/BHospital.trustchain.com/tlsca/tlsca.BHospital.trustchain.com-cert.pem"
+      }
+    }
+  }
+}
