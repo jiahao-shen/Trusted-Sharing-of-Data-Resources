@@ -1,24 +1,10 @@
 package com.trustchain.sdkjava.controller;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-import org.hyperledger.fabric.gateway.*;
-import org.hyperledger.fabric.sdk.*;
-import org.hyperledger.fabric.sdk.identity.X509Enrollment;
-import org.hyperledger.fabric.sdk.security.CryptoPrimitives;
-import org.hyperledger.fabric.sdk.security.CryptoSuite;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
-import org.hyperledger.fabric.sdk.BlockEvent.TransactionEvent;
-
-import javax.print.attribute.standard.Media;
-import java.io.Reader;
 import java.io.IOException;
-import java.io.Serializable;
-import java.nio.file.Path;
-import java.nio.file.Files;
+import java.io.Reader;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.InvalidKeyException;
 import java.security.PrivateKey;
@@ -28,6 +14,18 @@ import java.util.Collection;
 import java.util.EnumSet;
 import java.util.Properties;
 import java.util.Set;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import org.hyperledger.fabric.gateway.*;
+import org.hyperledger.fabric.sdk.*;
+import org.hyperledger.fabric.sdk.BlockEvent.TransactionEvent;
+import org.hyperledger.fabric.sdk.identity.X509Enrollment;
+import org.hyperledger.fabric.sdk.security.CryptoPrimitives;
+import org.hyperledger.fabric.sdk.security.CryptoSuite;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
+
 
 
 @RestController
