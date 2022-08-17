@@ -1,10 +1,14 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from "vue-router"
-import HelloWorld from "./components/HelloWorld.vue"
-import { ref } from "vue"
+import { RouterLink, RouterView } from 'vue-router'
+import HelloWorld from './components/HelloWorld.vue'
+import { ref, onMounted, onActivated, onBeforeUpdate } from 'vue'
+import { ArrowRight } from '@element-plus/icons-vue'
+import { useRoute } from 'vue-router'
 
-let userName = "沈嘉浩"
-let userImgUrl = "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"
+let user = {
+	name: '沈嘉浩',
+	imgURL: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
+}
 const sideMenuCollapsed = ref(false)
 </script>
 
@@ -13,15 +17,15 @@ const sideMenuCollapsed = ref(false)
 		<el-header class="header">
 			<div style="display: flex; justify-content: space-between; width: 100%; height: 100%">
 				<div style="display: flex">
-					<el-image src="src/assets/logo.svg" style="margin: 5px" @click="sideMenuCollapsed = !sideMenuCollapsed" />
-					<h2 style="margin: auto 5px">数据资源可信共享平台</h2>
+					<el-image src="/src/assets/logo.svg" style="margin: 5px" @click="sideMenuCollapsed = !sideMenuCollapsed" />
+					<h1 style="margin: auto 5px">数据资源可信共享平台</h1>
 				</div>
 				<div style="display: flex">
 					<el-button size="large" icon="Search" style="margin: auto 5px" round>搜索</el-button>
-					<el-avatar size="default" :src="userImgUrl" style="margin: auto 5px" />
+					<el-avatar size="default" :src="user.imgURL" style="margin: auto 5px" />
 					<el-menu mode="horizontal" :ellipsis="false">
 						<el-sub-menu index="user">
-							<template #title>{{ userName }}</template>
+							<template #title>{{ user.name }}</template>
 							<el-menu-item index="user-info">个人信息</el-menu-item>
 							<el-menu-item index="user-logout">退出登录</el-menu-item>
 						</el-sub-menu>
@@ -71,14 +75,29 @@ const sideMenuCollapsed = ref(false)
 					</el-sub-menu>
 				</el-menu>
 			</el-aside>
-			<el-main>
-				<RouterView/>
-			</el-main>
+
+			<el-container>
+				<el-main class="main">
+					<!-- <el-breadcrumb :separator-icon="ArrowRight">
+						<el-breadcrumb-item>{{ $route }}</el-breadcrumb-item>
+					</el-breadcrumb> -->
+					<RouterView />
+				</el-main>
+				<el-footer class="footer">
+					<h4 style="margin: 5px">Copyright @ 2022 北京航空航天大学.</h4>
+				</el-footer>
+			</el-container>
 		</el-container>
 	</el-container>
 </template>
 
 <style scoped>
+.footer {
+	height: 40px;
+	background-color: #dddddd;
+	border-top: 1px solid var(--el-border-color);
+	text-align: center;
+}
 .el-menu--horizontal {
 	border-bottom: none;
 }
@@ -112,83 +131,3 @@ const sideMenuCollapsed = ref(false)
 	border-right: 1px solid var(--el-border-color);
 }
 </style>
-
-<!-- <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
-    </div>
-  </header>
-
-  <RouterView />
-</template>
-
-<style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-nav {
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
-}
-
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
-}
-
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
-}
-</style> -->
