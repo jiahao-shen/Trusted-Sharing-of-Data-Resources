@@ -92,8 +92,12 @@ const sideMenuCollapsed = ref(false)
 </template>
 
 <style scoped>
+.main {
+	padding: 0;
+}
 .footer {
 	height: 40px;
+	color: #888888;
 	background-color: #dddddd;
 	border-top: 1px solid var(--el-border-color);
 	text-align: center;
