@@ -97,7 +97,7 @@ const sideMenuCollapsed = ref(false)
 }
 .footer {
 	height: 40px;
-	color: #888888;
+	color: #aaaaaa;
 	background-color: #dddddd;
 	border-top: 1px solid var(--el-border-color);
 	text-align: center;

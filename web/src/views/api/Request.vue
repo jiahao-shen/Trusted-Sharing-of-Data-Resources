@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<!-- <script setup lang="ts">
 const formData = {
 	inforData: [
 		{
@@ -61,4 +61,27 @@ function rules() {}
 	<el-button @click="rules">点击校验</el-button>
 </template>
 
-<style></style>
+<style></style> -->
+<template>
+	<el-form :model="forms" ref="forms" :rules="rules">
+		<el-table :data="forms.data">
+			<el-table-column prop="fundRatio" label="当前占比（%）" width="119"></el-table-column>
+			<el-table-column prop="fundRatio">
+				<template #default="scope">
+					<el-form-item :prop="'data.' + scope.$index + '.fundRatioA'" :rules="rules.numVerify">
+						<el-input v-model="scope.row.fundRatioA"></el-input>
+					</el-form-item>
+				</template>
+			</el-table-column>
+		</el-table>
+		<el-button type="primary" @click="">提交</el-button>
+	</el-form>
+</template>
+<script setup lang="ts">
+let forms = {
+	data: [],
+}
+let rules = {
+	numVerify: [{ required: true, message: '占比应在1-99之间', trigger: 'blur' }],
+}
+</script>
