@@ -1,19 +1,45 @@
 <script setup lang="ts">
-import type { FormRules } from "element-plus"
-import { ref, reactive } from "vue"
-import { required } from '@/utils/validators.ts"
+import { ref, reactive } from 'vue'
+import { useRouter } from 'vue-router'
+import { required } from '@/utils/validators'
+import { ElNotification } from 'element-plus'
+import type { FormInstance, FormRules } from 'element-plus'
 
-const loginForm = reactive({
-	username: "",
-	password: "",
-})
-
-const rules = reactive<FormRules>({
-	username: required(),
-	password: required(),
+const router = useRouter()
+const formRef = ref<FormInstance>()
+const form = reactive({
+	username: '',
+	password: '',
 })
 
 const remeber = ref()
+
+const rules = reactive<FormRules>({
+	username: required('用户名'),
+	password: required('密码'),
+})
+
+const login = async (formEl: FormInstance | undefined) => {
+	if (!formEl) {
+		return
+	}
+	await formEl.validate((valid, fields) => {
+		if (valid) {
+			ElNotification({
+				title: 'Login',
+				message: form.username + ',' + form.password,
+				type: 'success',
+			})
+			router.push({ path: '/dashboard' })
+		} else {
+			ElNotification({
+				title: 'Login',
+				message: '表单验证失败',
+				type: 'error',
+			})
+		}
+	})
+}
 </script>
 <template>
 	<div class="flex w-full h-full">
@@ -24,23 +50,23 @@ const remeber = ref()
 			</div>
 		</div>
 		<div class="flex w-[40%] h-full justify-center items-center">
-			<el-card class="w-[80%]">
+			<el-card class="w-[80%] max-w-500px">
 				<div class="text-center m-20px">
 					<h1 class="text-2xl">登 录</h1>
 				</div>
-				<el-form class="p-10px" label-position="top" size="large" :model="loginForm">
-					<el-form-item label="用户名" class="my-10px">
-						<el-input placeholder="请输入用户名" v-model="loginForm.username" clearable />
+				<el-form class="p-10px" label-position="top" size="large" :model="form" :rules="rules" ref="formRef">
+					<el-form-item label="用户名" class="my-10px" prop="username">
+						<el-input placeholder="请输入用户名" v-model="form.username" clearable />
 					</el-form-item>
-					<el-form-item label="密码" class="my-10px">
-						<el-input placeholder="请输入密码" v-model="loginForm.password" clearable show-password />
+					<el-form-item label="密码" class="my-10px" prop="password">
+						<el-input placeholder="请输入密码" v-model="form.password" clearable show-password />
 					</el-form-item>
 					<div class="w-full my-10px flex justify-between">
 						<el-checkbox v-model="remeber" label="记住我" />
 						<el-link type="primary" :underline="false">忘记密码</el-link>
 					</div>
 					<div class="w-full my-10px">
-						<el-button class="w-full" type="primary">登录</el-button>
+						<el-button class="w-full" type="primary" @click="login(formRef)">登录</el-button>
 					</div>
 					<div class="w-full my-10px">
 						<el-button class="my-10px w-full">注册</el-button>
