@@ -12,6 +12,8 @@
     "@element-plus/icons-vue": "^2.0.9",
     "@iconify/iconify": "^2.2.1",
     "element-plus": "^2.2.13",
+    "pinia": "^2.0.20",
+    "pinia-plugin-persist": "^1.0.0",
     "vue": "^3.2.37",
     "vue-router": "^4.1.3"
   },

@@ -75,22 +75,17 @@ const login = async (formEl: FormInstance | undefined) => {
 						<span class="text-base font-normal">其他登录方式</span>
 					</el-divider>
 					<div class="w-full m-10px px-30px py-10px flex justify-between">
-						<el-icon :size="40" class="cursor-pointer">
-							<span class="iconify" data-icon="ant-design:github-filled" data-inline="false" style="color: #999" />
+						<el-icon :size="40" class="cursor-pointer" color="#999">
+							<span class="iconify" data-icon="ant-design:github-filled" data-inline="false" />
 						</el-icon>
-						<el-icon :size="40" class="cursor-pointer">
-							<span class="iconify" data-icon="ant-design:qq-circle-filled" data-inline="false" style="color: #999" />
+						<el-icon :size="40" class="cursor-pointer" color="#999">
+							<span class="iconify" data-icon="ant-design:qq-circle-filled" data-inline="false" />
 						</el-icon>
-						<el-icon :size="40" class="cursor-pointer">
-							<span class="iconify" data-icon="ant-design:wechat-filled" data-inline="false" style="color: #999" />
+						<el-icon :size="40" class="cursor-pointer" color="#999">
+							<span class="iconify" data-icon="ant-design:wechat-filled" data-inline="false" />
 						</el-icon>
-						<el-icon :size="40" class="cursor-pointer">
-							<span
-								class="iconify"
-								data-icon="ant-design:alipay-circle-filled"
-								data-inline="false"
-								style="color: #999"
-							/>
+						<el-icon :size="40" class="cursor-pointer" color="#999">
+							<span class="iconify" data-icon="ant-design:alipay-circle-filled" data-inline="false" />
 						</el-icon>
 					</div>
 				</el-form>
