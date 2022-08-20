@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
-import { required } from '@/utils/validators'
+import { validators } from '@/utils/validators'
 import { ElNotification } from 'element-plus'
 import type { FormInstance, FormRules } from 'element-plus'
 
@@ -15,8 +15,8 @@ const form = reactive({
 const remeber = ref()
 
 const rules = reactive<FormRules>({
-	username: required('用户名'),
-	password: required('密码'),
+	username: validators.required('用户名'),
+	password: validators.required('密码'),
 })
 
 const login = async (formEl: FormInstance | undefined) => {
@@ -26,17 +26,17 @@ const login = async (formEl: FormInstance | undefined) => {
 	await formEl.validate((valid, fields) => {
 		if (valid) {
 			ElNotification({
-				title: 'Login',
+				title: '登录成功',
 				message: form.username + ',' + form.password,
 				type: 'success',
 			})
-			router.push({ path: '/dashboard' })
+			router.push('/dashboard')
 		} else {
-			ElNotification({
-				title: 'Login',
-				message: '表单验证失败',
-				type: 'error',
-			})
+			// ElNotification({
+			// 	title: '登录失败',
+			// 	message: '',
+			// 	type: 'error',
+			// })
 		}
 	})
 }
@@ -52,7 +52,7 @@ const login = async (formEl: FormInstance | undefined) => {
 		<div class="flex w-[40%] h-full justify-center items-center">
 			<el-card class="w-[80%] max-w-500px">
 				<div class="text-center m-20px">
-					<h1 class="text-2xl">登 录</h1>
+					<span class="text-2xl">登 录</span>
 				</div>
 				<el-form class="p-10px" label-position="top" size="large" :model="form" :rules="rules" ref="formRef">
 					<el-form-item label="用户名" class="my-10px" prop="username">
