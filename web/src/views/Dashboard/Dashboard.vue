@@ -18,6 +18,11 @@ const user = {
 	imgURL: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
 }
 
+const collapse = ref(false)
+const toggleCollapse = () => {
+	collapse.value = !collapse.value
+}
+
 getBreadcrumb(route.matched)
 
 watch(
@@ -34,12 +39,12 @@ const logout = () => {
 
 <template>
 	<div class="w-full h-100vh flex">
-		<div class="w-250px h-full flex flex-col">
+		<div :class="[`${collapse ? 'w-auto' : 'w-300px'}`, 'h-full flex flex-col']">
 			<div class="w-full !h-60px p-5px flex items-center border-b-1 border-[var(--el-border-color)]">
-				<el-image class="h-full" src="/src/assets/img/logo.svg" />
-				<h1 class="text-2xl mx-10px">Hawk Eye</h1>
+				<el-image class="h-40px ml-5px" src="/src/assets/img/logo.svg" />
+				<h1 class="text-2xl mx-10px" v-if="!collapse">Hawk Eye</h1>
 			</div>
-			<el-menu class="flex-grow" :collapse="false" router>
+			<el-menu class="flex-grow" :collapse="collapse" router>
 				<el-sub-menu index="control">
 					<template #title>
 						<el-icon><Setting /></el-icon>
@@ -86,6 +91,7 @@ const logout = () => {
 						:size="30"
 						icon="ant-design:menu-fold-outlined"
 						color="#888888"
+						@click="toggleCollapse"
 					/>
 
 					<el-breadcrumb class="mx-10px my-auto" separator="/">

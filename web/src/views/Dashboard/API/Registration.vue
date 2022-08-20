@@ -137,13 +137,13 @@ const deleteResponseItem = (index: number) => {
 				<el-row :gutter="60">
 					<el-col :span="8">
 						<el-form-item label="名称" prop="name">
-							<el-input placeholder="请输入API名称" v-model="apiForm.name" />
+							<el-input placeholder="请输入API名称" v-model="apiForm.name" clearable/>
 						</el-form-item>
 					</el-col>
 
 					<el-col :span="12">
 						<el-form-item label="地址" prop="url">
-							<el-input placeholder="请输入URL" v-model="apiForm.url">
+							<el-input placeholder="请输入URL" v-model="apiForm.url" clearable>
 								<template #prepend>
 									<el-select placeholder="选择" class="w-100px" v-model="apiForm.protol">
 										<el-option label="http://" value="http" />
@@ -206,7 +206,7 @@ const deleteResponseItem = (index: number) => {
 
 					<el-col :span="4">
 						<el-form-item label="版本信息" prop="version">
-							<el-input placeholder="请输入API版本号" v-model="apiForm.version" />
+							<el-input placeholder="请输入API版本号" v-model="apiForm.version" clearable/>
 						</el-form-item>
 					</el-col>
 				</el-row>
