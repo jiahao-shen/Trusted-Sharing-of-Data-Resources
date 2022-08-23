@@ -45,7 +45,7 @@ export const validators = {
 		}
 	},
 	json: (rule: any, value: string, callback: any) => {
-		if (value.trim() == '') {
+		if (value.trim() === '') {
 			callback()
 		} else {
 			try {

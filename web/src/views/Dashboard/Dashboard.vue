@@ -1,11 +1,14 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { unref, ref, watch, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useFullscreen } from '@vueuse/core'
 import { Icon } from '@/components/Icon'
+import { useAppStore } from '@/store/app'
 
 const route = useRoute()
 const router = useRouter()
+const appStore = useAppStore()
+
 const breadcrumbList = ref(Array())
 const { toggle, isFullscreen } = useFullscreen()
 
@@ -13,14 +16,10 @@ const getBreadcrumb = (matched: Array<any>) => {
 	breadcrumbList.value = matched
 }
 
-const user = {
-	name: '沈嘉浩',
-	imgURL: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
-}
+const collapse = computed(() => appStore.getCollapse)
 
-const collapse = ref(false)
 const toggleCollapse = () => {
-	collapse.value = !collapse.value
+	appStore.setCollapse(!unref(collapse))
 }
 
 getBreadcrumb(route.matched)
@@ -33,6 +32,7 @@ watch(
 )
 
 const logout = () => {
+	appStore.setUser(null)
 	router.push('/login')
 }
 </script>
@@ -110,10 +110,10 @@ const logout = () => {
 						@click="toggle"
 					/>
 					<el-button class="mx-5px my-auto" size="large" icon="Search" round>搜索</el-button>
-					<el-avatar size="default" :src="user.imgURL" style="margin: auto 5px" />
+					<el-avatar size="default" :src="appStore.getUser.imgURL" style="margin: auto 5px" />
 					<el-menu mode="horizontal" :ellipsis="false">
 						<el-sub-menu index="user">
-							<template #title>{{ user.name }}</template>
+							<template #title>{{ appStore.getUser.username }}</template>
 							<el-menu-item index="user-info">个人信息</el-menu-item>
 							<el-menu-item index="user-logout" @click="logout">退出登录</el-menu-item>
 						</el-sub-menu>

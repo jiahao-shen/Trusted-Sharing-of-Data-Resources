@@ -3,19 +3,18 @@ import router from './router'
 import './assets/main.css'
 import 'virtual:windi.css'
 import { createApp } from 'vue'
-
+import { createPinia } from 'pinia'
+import piniaPersist from 'pinia-plugin-persist'
 import '@purge-icons/generated'
 import 'element-plus/dist/index.css'
 import ElementPlus from 'element-plus'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
-import { createPinia } from 'pinia'
-import piniaPluginPersist from 'pinia-plugin-persist'
-
-const store = createPinia()
-store.use(piniaPluginPersist)
 
 const app = createApp(App)
-app.use(store)
+
+const pinia = createPinia()
+pinia.use(piniaPersist)
+app.use(pinia)
 app.use(router)
 app.use(ElementPlus)
 

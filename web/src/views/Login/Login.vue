@@ -4,8 +4,11 @@ import { useRouter } from 'vue-router'
 import { validators } from '@/utils/validators'
 import { ElNotification } from 'element-plus'
 import type { FormInstance, FormRules } from 'element-plus'
+import { useAppStore } from '@/store/app'
+import { service } from '@/api/login'
 
 const router = useRouter()
+const appStore = useAppStore()
 const formRef = ref<FormInstance>()
 const form = reactive({
 	username: '',
@@ -23,20 +26,28 @@ const login = async (formEl: FormInstance | undefined) => {
 	if (!formEl) {
 		return
 	}
+
 	await formEl.validate((valid, fields) => {
 		if (valid) {
-			ElNotification({
-				title: '登录成功',
-				message: form.username + ',' + form.password,
-				type: 'success',
+			service.login().then((res: any) => {
+				if (res.status === 200) {
+					appStore.setUser(res.data)
+					ElNotification({
+						title: '登录成功',
+						message: res.data,
+						type: 'success',
+					})
+					router.push('/dashboard')
+				}
+			}).catch((err: any) => {
+				console.log(err)
 			})
-			router.push('/dashboard')
 		} else {
-			// ElNotification({
-			// 	title: '登录失败',
-			// 	message: '',
-			// 	type: 'error',
-			// })
+			ElNotification({
+				title: '登录失败',
+				message: '',
+				type: 'error',
+			})
 		}
 	})
 }
@@ -74,7 +85,7 @@ const login = async (formEl: FormInstance | undefined) => {
 					<el-divider>
 						<span class="text-base font-normal">其他登录方式</span>
 					</el-divider>
-					<div class="w-full m-10px px-30px py-10px flex justify-between">
+					<div class="w-full px-30px py-10px flex justify-between">
 						<el-icon :size="40" class="cursor-pointer" color="#999">
 							<span class="iconify" data-icon="ant-design:github-filled" data-inline="false" />
 						</el-icon>

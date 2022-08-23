@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { useAppStore } from '@/store/app'
 
 const router = createRouter({
 	history: createWebHistory(import.meta.env.BASE_URL),
@@ -6,7 +7,7 @@ const router = createRouter({
 		{
 			path: '/',
 			name: '主页',
-			redirect: '/login',
+			redirect: '/dashboard',
 		},
 		{
 			path: '/about',
@@ -39,7 +40,6 @@ const router = createRouter({
 						},
 					],
 				},
-				
 			],
 		},
 		{
@@ -50,30 +50,40 @@ const router = createRouter({
 					path: '403',
 					component: () => import('../views/Error/Error.vue'),
 					props: {
-						type: '403'
+						type: '403',
 					},
 				},
 				{
 					path: '404',
 					component: () => import('../views/Error/Error.vue'),
 					props: {
-						type: '404'
+						type: '404',
 					},
 				},
 				{
 					path: '500',
 					component: () => import('../views/Error/Error.vue'),
 					props: {
-						type: '500'
+						type: '500',
 					},
 				},
-			]
+			],
 		},
 		{
 			path: '/:path(.*)*',
 			redirect: '/error/404',
-		}
+		},
 	],
+})
+
+router.beforeEach((to, from, next) => {
+	const appStore = useAppStore()
+		
+	if (appStore.getUsername === '' && to.path !== '/login') {
+		next('/login')
+	} else {
+		next()
+	}
 })
 
 export default router
