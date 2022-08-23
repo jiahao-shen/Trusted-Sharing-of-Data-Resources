@@ -60,7 +60,7 @@ const logout = () => {
 						<el-icon><Collection /></el-icon>
 						<span class="text-base">API管理</span>
 					</template>
-					<el-menu-item index="/dashboard/api/registration">API注册</el-menu-item>
+					<el-menu-item index="/dashboard/api/register">API注册</el-menu-item>
 					<el-menu-item index="/dashboard/api/request">API申请</el-menu-item>
 					<el-menu-item index="/dashboard/api/authorization">API授权</el-menu-item>
 					<el-menu-item index="/dashboard/api/information">我的API</el-menu-item>
@@ -70,7 +70,7 @@ const logout = () => {
 						<el-icon><Message /></el-icon>
 						<span class="text-base">消息协同</span>
 					</template>
-					<el-menu-item index="topic-registration">Topic注册</el-menu-item>
+					<el-menu-item index="topic-register">Topic注册</el-menu-item>
 					<el-menu-item index="topic-request">Topic申请</el-menu-item>
 					<el-menu-item index="topic-information">我的Topic</el-menu-item>
 				</el-sub-menu>

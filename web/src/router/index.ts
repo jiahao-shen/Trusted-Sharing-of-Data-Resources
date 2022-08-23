@@ -1,11 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
 
 const router = createRouter({
 	history: createWebHistory(import.meta.env.BASE_URL),
 	routes: [
 		{
-			// TODO:
 			path: '/',
 			name: '主页',
 			redirect: '/login',
@@ -30,9 +28,9 @@ const router = createRouter({
 					name: 'API管理',
 					children: [
 						{
-							path: 'registration',
+							path: 'register',
 							name: 'API注册',
-							component: () => import('../views/Dashboard/API/Registration.vue'),
+							component: () => import('../views/Dashboard/API/Register.vue'),
 						},
 						{
 							path: 'request',
@@ -44,6 +42,37 @@ const router = createRouter({
 				
 			],
 		},
+		{
+			path: '/error',
+			redirect: '/error/404',
+			children: [
+				{
+					path: '403',
+					component: () => import('../views/Error/Error.vue'),
+					props: {
+						type: '403'
+					},
+				},
+				{
+					path: '404',
+					component: () => import('../views/Error/Error.vue'),
+					props: {
+						type: '404'
+					},
+				},
+				{
+					path: '500',
+					component: () => import('../views/Error/Error.vue'),
+					props: {
+						type: '500'
+					},
+				},
+			]
+		},
+		{
+			path: '/:path(.*)*',
+			redirect: '/error/404',
+		}
 	],
 })
 
