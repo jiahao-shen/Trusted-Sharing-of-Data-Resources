@@ -1,74 +1,74 @@
 <script setup lang="ts">
-import { v4 } from 'uuid'
-import { ref, reactive } from 'vue'
-import { ElNotification } from 'element-plus'
-import { validators } from '@/utils/validators'
-import { Plus, Delete } from '@element-plus/icons-vue'
-import type { FormInstance, FormRules } from 'element-plus'
+import { v4 } from "uuid"
+import { ref, reactive } from "vue"
+import { ElNotification } from "element-plus"
+import { validators } from "@/utils/validators"
+import { Plus, Delete } from "@element-plus/icons-vue"
+import type { FormInstance, FormRules } from "element-plus"
 
 const formRef = ref<FormInstance>()
 const apiForm = reactive({
-	name: '',
-	protol: 'http',
-	url: '',
-	method: 'get',
-	introduction: '',
-	category: '1',
-	version: 'v1.0.0',
-	permission: 'yes',
+	name: "",
+	protol: "http",
+	url: "",
+	method: "get",
+	introduction: "",
+	category: "1",
+	version: "v1.0.0",
+	permission: "yes",
 	headerList: Array(),
-	headerText: '',
+	headerText: "",
 	requestList: Array(),
-	requestText: '',
+	requestText: "",
 	responseList: Array(),
-	responseText: '',
+	responseText: "",
 })
 
 const apiRules = reactive<FormRules>({
-	name: [validators.required('名称'), validators.lengthRange(3, 20, '名称'), validators.notEmpty('名称')],
-	url: [validators.required('URL'), validators.url(), validators.notEmpty('URL')],
-	method: [validators.required('请求类型')],
-	introduction: [validators.lengthRange(undefined, 200, '功能介绍')],
-	category: [validators.required('功能分类')],
-	permission: [validators.required('调用授权')],
+	name: [validators.required("名称"), validators.lengthRange(3, 20, "名称"), validators.notEmpty("名称")],
+	url: [validators.required("URL"), validators.url(), validators.notEmpty("URL")],
+	// method: [validators.required("请求类型")],
+	introduction: [validators.lengthRange(undefined, 200, "功能介绍")],
+	category: [validators.required("功能分类")],
+	permission: [validators.required("调用授权")],
 	version: [
-		validators.required('版本信息'),
-		validators.lengthRange(undefined, 10, '版本信息'),
-		validators.notEmpty('版本信息'),
+		validators.required("版本信息"),
+		validators.lengthRange(undefined, 10, "版本信息"),
+		validators.notEmpty("版本信息"),
 	],
 	headerText: [
 		{
 			validator: validators.json,
-			trigger: 'blur',
+			trigger: "blur",
 		},
 	],
 	requestText: [
 		{
 			validator: validators.json,
-			trigger: 'blur',
+			trigger: "blur",
 		},
 	],
 	responseText: [
 		{
 			validator: validators.json,
-			trigger: 'blur',
+			trigger: "blur",
 		},
 	],
 })
 
 const headerRules = reactive<FormRules>({
-	name: [validators.required('字段名'), validators.notEmpty('字段名')],
+	name: [validators.required("字段名"), validators.notEmpty("字段名")],
 })
 
 const requestRules = reactive<FormRules>({
-	name: [validators.required('字段名'), validators.notEmpty('字段名')],
-	type: [validators.required('字段类型')],
+	name: [validators.required("字段名"), validators.notEmpty("字段名")],
+	type: [validators.required("字段类型")],
 	specification: [],
 })
 
 const responseRules = reactive<FormRules>({
-	name: [validators.required('字段名'), validators.notEmpty('字段名')],
-	type: [validators.required('字段类型')],
+	name: [validators.required("字段名"), validators.notEmpty("字段名")],
+	type: [validators.required("字段类型")],
 })
 
 const submit = async (formEl: FormInstance | undefined) => {
@@ -78,12 +78,12 @@ const submit = async (formEl: FormInstance | undefined) => {
 	await formEl.validate((valid, fields) => {
 		if (valid) {
 			ElNotification({
-				title: 'API注册成功',
+				title: "API注册成功",
 				message: v4(),
-				type: 'success',
+				type: "success",
 			})
 		} else {
-			console.error('error', fields)
+			console.error("error", fields)
 		}
 	})
 }
@@ -98,9 +98,9 @@ const reset = (formEl: FormInstance | undefined) => {
 	apiForm.responseList = Array()
 }
 
-const headerType = ref('Form')
+const headerType = ref("Form")
 const addHeaderItem = () => {
-	apiForm.headerList.push({ name: '', required: 'true' })
+	apiForm.headerList.push({ name: "", required: "true" })
 }
 
 const deleteHeaderItem = (index: number) => {
@@ -108,18 +108,18 @@ const deleteHeaderItem = (index: number) => {
 	console.log(apiForm.headerList)
 }
 
-const requestType = ref('Form')
+const requestType = ref("Form")
 const addRequestItem = () => {
-	apiForm.requestList.push({ name: '', type: '', introduction: '', specification: '', required: 'true' })
+	apiForm.requestList.push({ name: "", type: "", introduction: "", specification: "", required: "true" })
 }
 
 const deleteRequestItem = (index: number) => {
 	apiForm.requestList.splice(index, 1)
 }
 
-const responseType = ref('Form')
+const responseType = ref("Form")
 const addResponseItem = () => {
-	apiForm.responseList.push({ name: '', type: '', introduction: '' })
+	apiForm.responseList.push({ name: "", type: "", introduction: "" })
 }
 
 const deleteResponseItem = (index: number) => {
@@ -137,7 +137,7 @@ const deleteResponseItem = (index: number) => {
 				<el-row :gutter="60">
 					<el-col :span="8">
 						<el-form-item label="名称" prop="name">
-							<el-input placeholder="请输入API名称" v-model="apiForm.name" clearable/>
+							<el-input placeholder="请输入API名称" v-model="apiForm.name" clearable />
 						</el-form-item>
 					</el-col>
 
@@ -222,7 +222,7 @@ const deleteResponseItem = (index: number) => {
 								</el-radio-group>
 							</div>
 							<div class="w-full" v-if="headerType === 'Form'">
-								<el-table :data="apiForm.headerList" height="500" empty-text="空" highlight-current-row>
+								<el-table :data="apiForm.headerList" height="400" empty-text="空" highlight-current-row>
 									<el-table-column label="No." type="index" width="60" />
 									<el-table-column label="字段名" width="160">
 										<template #default="scope">
@@ -256,12 +256,12 @@ const deleteResponseItem = (index: number) => {
 								<el-button class="w-full mt-20px" @click="addHeaderItem" :icon="Plus" />
 							</div>
 
-							<div class="w-full mt-20px" v-else-if="headerType === 'Json'">
+							<div class="w-full mt-10px" v-else-if="headerType === 'Json'">
 								<el-form-item prop="headerText">
 									<el-input
 										placeholder="请输入Header示例(Json格式)"
 										type="textarea"
-										:rows="25"
+										:rows="21"
 										v-model="apiForm.headerText"
 									/>
 								</el-form-item>
@@ -280,7 +280,7 @@ const deleteResponseItem = (index: number) => {
 							</div>
 
 							<div class="w-full" v-if="requestType === 'Form'">
-								<el-table :data="apiForm.requestList" height="500" empty-text="空" highlight-current-row>
+								<el-table :data="apiForm.requestList" height="400" empty-text="空" highlight-current-row>
 									<el-table-column label="No." type="index" width="60" />
 									<el-table-column label="字段名" width="150">
 										<template #default="scope">
@@ -339,12 +339,12 @@ const deleteResponseItem = (index: number) => {
 								<el-button class="w-full mt-20px" @click="addRequestItem" :icon="Plus" />
 							</div>
 
-							<div class="w-full mt-20px" v-else-if="requestType === 'Json'">
+							<div class="w-full mt-10px" v-else-if="requestType === 'Json'">
 								<el-form-item prop="requestText">
 									<el-input
 										placeholder="请输入Requst示例(Json格式)"
 										type="textarea"
-										:rows="25"
+										:rows="21"
 										v-model="apiForm.requestText"
 										clearable
 									/>
@@ -364,7 +364,7 @@ const deleteResponseItem = (index: number) => {
 							</div>
 
 							<div class="w-full" v-if="responseType === 'Form'">
-								<el-table :data="apiForm.responseList" height="500" empty-text="空" highlight-current-row>
+								<el-table :data="apiForm.responseList" height="400" empty-text="空" highlight-current-row>
 									<el-table-column label="No." type="index" width="60" />
 									<el-table-column label="字段名" width="150">
 										<template #default="scope">
@@ -404,12 +404,12 @@ const deleteResponseItem = (index: number) => {
 								<el-button class="w-full mt-20px" @click="addResponseItem" :icon="Plus" />
 							</div>
 
-							<div class="w-full mt-20px" v-else-if="responseType === 'Json'">
+							<div class="w-full mt-10px" v-else-if="responseType === 'Json'">
 								<el-form-item prop="responseText">
 									<el-input
 										placeholder="请输入Response示例(Json格式)"
 										type="textarea"
-										:rows="25"
+										:rows="21"
 										v-model="apiForm.responseText"
 									/>
 								</el-form-item>

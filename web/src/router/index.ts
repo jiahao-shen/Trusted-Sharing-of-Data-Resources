@@ -79,7 +79,7 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
 	const appStore = useAppStore()
 		
-	if (appStore.getUsername === '' && to.path !== '/login') {
+	if (appStore.getUser === null && to.path !== '/login') {
 		next('/login')
 	} else {
 		next()

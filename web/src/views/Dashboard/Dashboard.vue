@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { unref, ref, watch, computed } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import { useFullscreen } from '@vueuse/core'
-import { Icon } from '@/components/Icon'
-import { useAppStore } from '@/store/app'
+import { unref, ref, watch, computed } from "vue"
+import { useRoute, useRouter } from "vue-router"
+import { useFullscreen } from "@vueuse/core"
+import { Icon } from "@/components/Icon"
+import { useAppStore } from "@/store/app"
 
 const route = useRoute()
 const router = useRouter()
@@ -33,18 +33,22 @@ watch(
 
 const logout = () => {
 	appStore.setUser(null)
-	router.push('/login')
+	router.push("/login")
 }
 </script>
 
 <template>
 	<div class="w-full h-100vh flex">
-		<div :class="[`${collapse ? 'w-auto' : 'w-300px'}`, 'h-full flex flex-col']">
+		<!-- <div :class="[`${collapse ? 'w-auto' : 'w-300px'}`, 'h-full flex flex-col']"> -->
+		<div id="fuck" :class="{fuck1: collapse, fuck2: !collapse}">
 			<div class="w-full !h-60px p-5px flex items-center border-b-1 border-[var(--el-border-color)]">
 				<el-image class="h-40px ml-5px" src="/src/assets/img/logo.svg" />
 				<h1 class="text-2xl mx-10px" v-if="!collapse">Hawk Eye</h1>
 			</div>
-			<el-menu class="flex-grow" :collapse="collapse" router>
+
+			<el-button @click="toggleCollapse">fuck</el-button>
+
+			<!-- <el-menu class="flex-grow" :collapse="collapse" router>
 				<el-sub-menu index="control">
 					<template #title>
 						<el-icon><Setting /></el-icon>
@@ -81,15 +85,16 @@ const logout = () => {
 					</template>
 					<el-menu-item index="statistics">统计分析</el-menu-item>
 				</el-sub-menu>
-			</el-menu>
+			</el-menu> -->
 		</div>
+
 		<div class="w-full h-full flex flex-col">
 			<div class="w-full h-60px border-b-1 border-[var(--el-border-color)] flex justify-between">
 				<div class="h-full flex justify-center items-center">
 					<Icon
 						class="h-full hover:bg-gray-100 px-10px"
 						:size="30"
-						icon="ant-design:menu-fold-outlined"
+						:icon="collapse ? 'ant-design:menu-unfold-outlined' : 'ant-design:menu-fold-outlined'"
 						color="#888888"
 						@click="toggleCollapse"
 					/>
@@ -135,4 +140,29 @@ const logout = () => {
 .el-menu--horizontal {
 	border-bottom: none;
 }
+
+.fuck1 {
+	width: auto;
+	height: 100%;
+	transition: width 2s;
+	-webkit-transition: width 2s;
+	background: red;
+}
+
+.fuck2 {
+	width: 300px;
+	height: 100%;
+	transition: width 2s;
+	-webkit-transition: width 2s;
+	background: red;
+}
+
+/* #fuck {
+
+	transition: width 2s;
+} */
+
+/* #fuck:hover { */
+/* width: 300px; */
+/* } */
 </style>
