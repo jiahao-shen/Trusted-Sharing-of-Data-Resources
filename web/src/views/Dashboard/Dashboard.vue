@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { unref, ref, watch, computed } from "vue"
-import { useRoute, useRouter } from "vue-router"
-import { useFullscreen } from "@vueuse/core"
-import { Icon } from "@/components/Icon"
-import { useAppStore } from "@/store/app"
+import { unref, ref, watch, computed } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { useFullscreen } from '@vueuse/core'
+import { Icon } from '@/components/Icon'
+import { useAppStore } from '@/store/app'
 
 const route = useRoute()
 const router = useRouter()
@@ -17,9 +17,18 @@ const getBreadcrumb = (matched: Array<any>) => {
 }
 
 const collapse = computed(() => appStore.getCollapse)
+const showTitle = ref(!appStore.getCollapse)
 
 const toggleCollapse = () => {
 	appStore.setCollapse(!unref(collapse))
+
+	if (!unref(collapse)) {
+		setTimeout(() => {
+			showTitle.value = true
+		}, 200)
+	} else {
+		showTitle.value = false
+	}
 }
 
 getBreadcrumb(route.matched)
@@ -33,59 +42,63 @@ watch(
 
 const logout = () => {
 	appStore.setUser(null)
-	router.push("/login")
+	router.push('/login')
 }
 </script>
 
 <template>
 	<div class="w-full h-100vh flex">
-		<!-- <div :class="[`${collapse ? 'w-auto' : 'w-300px'}`, 'h-full flex flex-col']"> -->
-		<div id="fuck" :class="{fuck1: collapse, fuck2: !collapse}">
+		<div
+			:class="[
+				`${collapse ? 'w-65px' : 'w-300px'}`,
+				'h-full flex flex-col transition-all duration-[var(--el-transition-duration)]',
+			]"
+		>
 			<div class="w-full !h-60px p-5px flex items-center border-b-1 border-[var(--el-border-color)]">
-				<el-image class="h-40px ml-5px" src="/src/assets/img/logo.svg" />
-				<h1 class="text-2xl mx-10px" v-if="!collapse">Hawk Eye</h1>
+				<el-image class="h-40px w-40px ml-10px" src="/src/assets/img/logo.svg" />
+				<h1 class="text-2xl ml-20px" v-if="showTitle">Hawk Eye</h1>
 			</div>
 
-			<el-button @click="toggleCollapse">fuck</el-button>
-
-			<!-- <el-menu class="flex-grow" :collapse="collapse" router>
-				<el-sub-menu index="control">
-					<template #title>
-						<el-icon><Setting /></el-icon>
-						<span class="text-base">机构相关</span>
-					</template>
-					<el-menu-item index="control-personnel-management">人员管理</el-menu-item>
-					<el-menu-item index="control-approval-process">审批流程</el-menu-item>
-					<el-menu-item index="control-key-management">秘钥管理</el-menu-item>
-					<el-menu-item index="control-release-deployment">发布部署</el-menu-item>
-				</el-sub-menu>
-				<el-sub-menu index="api">
-					<template #title>
-						<el-icon><Collection /></el-icon>
-						<span class="text-base">API管理</span>
-					</template>
-					<el-menu-item index="/dashboard/api/register">API注册</el-menu-item>
-					<el-menu-item index="/dashboard/api/request">API申请</el-menu-item>
-					<el-menu-item index="/dashboard/api/authorization">API授权</el-menu-item>
-					<el-menu-item index="/dashboard/api/information">我的API</el-menu-item>
-				</el-sub-menu>
-				<el-sub-menu index="message">
-					<template #title>
-						<el-icon><Message /></el-icon>
-						<span class="text-base">消息协同</span>
-					</template>
-					<el-menu-item index="topic-register">Topic注册</el-menu-item>
-					<el-menu-item index="topic-request">Topic申请</el-menu-item>
-					<el-menu-item index="topic-information">我的Topic</el-menu-item>
-				</el-sub-menu>
-				<el-sub-menu index="statistics">
-					<template #title>
-						<el-icon><PieChart /></el-icon>
-						<span class="text-base">统计分析</span>
-					</template>
-					<el-menu-item index="statistics">统计分析</el-menu-item>
-				</el-sub-menu>
-			</el-menu> -->
+			<div class="border-r-1 border-[var(--el-border-color)] h-[calc(100%-60px)]">
+				<el-menu class="flex-grow" :collapse="collapse" router>
+					<el-sub-menu index="control">
+						<template #title>
+							<el-icon><Setting /></el-icon>
+							<span class="text-base">机构相关</span>
+						</template>
+						<el-menu-item index="control-personnel-management">人员管理</el-menu-item>
+						<el-menu-item index="control-approval-process">审批流程</el-menu-item>
+						<el-menu-item index="control-key-management">秘钥管理</el-menu-item>
+						<el-menu-item index="control-release-deployment">发布部署</el-menu-item>
+					</el-sub-menu>
+					<el-sub-menu index="api">
+						<template #title>
+							<el-icon><Collection /></el-icon>
+							<span class="text-base">API管理</span>
+						</template>
+						<el-menu-item index="/dashboard/api/register">API注册</el-menu-item>
+						<el-menu-item index="/dashboard/api/request">API申请</el-menu-item>
+						<el-menu-item index="/dashboard/api/authorization">API授权</el-menu-item>
+						<el-menu-item index="/dashboard/api/information">我的API</el-menu-item>
+					</el-sub-menu>
+					<el-sub-menu index="message">
+						<template #title>
+							<el-icon><Message /></el-icon>
+							<span class="text-base">消息协同</span>
+						</template>
+						<el-menu-item index="topic-register">Topic注册</el-menu-item>
+						<el-menu-item index="topic-request">Topic申请</el-menu-item>
+						<el-menu-item index="topic-information">我的Topic</el-menu-item>
+					</el-sub-menu>
+					<el-sub-menu index="statistics">
+						<template #title>
+							<el-icon><PieChart /></el-icon>
+							<span class="text-base">统计分析</span>
+						</template>
+						<el-menu-item index="statistics">统计分析</el-menu-item>
+					</el-sub-menu>
+				</el-menu>
+			</div>
 		</div>
 
 		<div class="w-full h-full flex flex-col">
@@ -141,28 +154,7 @@ const logout = () => {
 	border-bottom: none;
 }
 
-.fuck1 {
-	width: auto;
-	height: 100%;
-	transition: width 2s;
-	-webkit-transition: width 2s;
-	background: red;
+.el-menu--vertical {
+	border-right: none;
 }
-
-.fuck2 {
-	width: 300px;
-	height: 100%;
-	transition: width 2s;
-	-webkit-transition: width 2s;
-	background: red;
-}
-
-/* #fuck {
-
-	transition: width 2s;
-} */
-
-/* #fuck:hover { */
-/* width: 300px; */
-/* } */
 </style>
