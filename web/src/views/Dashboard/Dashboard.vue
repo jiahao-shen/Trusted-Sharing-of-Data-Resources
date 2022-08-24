@@ -55,7 +55,7 @@ const logout = () => {
 			]"
 		>
 			<div class="w-full !h-60px p-5px flex items-center border-b-1 border-[var(--el-border-color)]">
-				<el-image class="h-40px w-40px ml-10px" src="/src/assets/img/logo.svg" />
+				<el-image class="h-40px w-40px mx-7px" src="/src/assets/img/logo.svg" />
 				<h1 class="text-2xl ml-20px" v-if="showTitle">Hawk Eye</h1>
 			</div>
 
