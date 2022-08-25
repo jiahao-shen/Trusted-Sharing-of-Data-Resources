@@ -27,7 +27,7 @@ const apiForm = reactive({
 const apiRules = reactive<FormRules>({
 	name: [validators.required("名称"), validators.lengthRange(3, 20, "名称"), validators.notEmpty("名称")],
 	url: [validators.required("URL"), validators.url(), validators.notEmpty("URL")],
-	// method: [validators.required("请求类型")],
+	method: [validators.required("请求类型")],
 	introduction: [validators.lengthRange(undefined, 200, "功能介绍")],
 	category: [validators.required("功能分类")],
 	permission: [validators.required("调用授权")],
