@@ -34,6 +34,11 @@ const router = createRouter({
 							component: () => import('../views/Dashboard/API/Register.vue'),
 						},
 						{
+							path: 'register-form',
+							name: 'API注册表单',
+							component: () => import ('../views/Dashboard/API/components/RegisterForm.vue')
+						},
+						{
 							path: 'request',
 							name: 'API申请',
 							component: () => import('../views/Dashboard/API/Request.vue'),
@@ -78,7 +83,7 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
 	const appStore = useAppStore()
-		
+
 	if (appStore.getUser === null && to.path !== '/login') {
 		next('/login')
 	} else {

@@ -13,12 +13,15 @@
     "@iconify/iconify": "^2.2.1",
     "@types/uuid": "^8.3.4",
     "axios": "^0.27.2",
+    "css": "^3.0.0",
     "element-plus": "^2.2.13",
+    "moment": "^2.29.4",
     "pinia": "^2.0.20",
     "pinia-plugin-persist": "^1.0.0",
     "uuid": "^8.3.2",
     "vite-plugin-mock": "^2.9.6",
     "vue": "^3.2.37",
+    "vue-clipboard3": "^2.0.0",
     "vue-router": "^4.1.3"
   },
   "devDependencies": {

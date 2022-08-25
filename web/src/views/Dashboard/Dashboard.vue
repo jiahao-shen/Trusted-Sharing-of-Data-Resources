@@ -25,7 +25,7 @@ const toggleCollapse = () => {
 	if (!unref(collapse)) {
 		setTimeout(() => {
 			showTitle.value = true
-		}, 200)
+		}, 400)
 	} else {
 		showTitle.value = false
 	}
@@ -101,7 +101,12 @@ const logout = () => {
 			</div>
 		</div>
 
-		<div class="w-full h-full flex flex-col">
+		<div
+			:class="[
+				`${collapse ? 'w-[calc(100%-65px)]' : 'w-[calc(100%-300px)]'}`,
+				'h-full flex flex-col transition-all duration-[var(--el-transition-duration)]',
+			]"
+		>
 			<div class="w-full h-60px border-b-1 border-[var(--el-border-color)] flex justify-between">
 				<div class="h-full flex justify-center items-center">
 					<Icon
