@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { service } from '@/api/dashboard/api/register'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import useClipboard from 'vue-clipboard3'
 import { ElMessage } from 'element-plus'
 
 const { toClipboard } = useClipboard()
+const route = useRoute()
 const router = useRouter()
 
 const pageSize = 10
@@ -42,16 +43,17 @@ const copyID = async (text: string) => {
 </script>
 
 <template>
-	<div class="w-full p-20px">
+	<div class="w-full p-20px" v-if="route.name === 'API注册'">
 		<el-card class="w-full">
 			<template #header>
-				<span class="text-xl">当前注册</span>
+				<span class="text-2xl">API注册</span>
 			</template>
 
-			<el-table :data="showList" highlight-current-row>
+			<h2 class="text-xl">当前注册</h2>
+			<el-table :data="showList" highlight-current-row border>
 				<el-table-column label="No." type="index" :index="indexMethod" width="100" />
 				<el-table-column label="名称" prop="name" />
-				<el-table-column label="ID" prop="id">
+				<el-table-column label="ID" prop="id" width="400">
 					<template #default="scope">
 						<div class="cursor-pointer" @click="copyID(scope.row.id)">
 							<span>{{ scope.row.id }}</span>
@@ -92,12 +94,14 @@ const copyID = async (text: string) => {
 				/>
 			</div>
 
-			<el-button class="w-full mt-20px" plain @click="router.push('/dashboard/api/register-form')" size="large">
+			<el-button class="w-full mt-20px" plain @click="router.push('/dashboard/api/register/form')" size="large">
 				<el-icon><Plus /></el-icon>
 				&nbsp新增API
 			</el-button>
 		</el-card>
 	</div>
+
+	<router-view v-else />
 </template>
 
 <style lang="less" scoped>

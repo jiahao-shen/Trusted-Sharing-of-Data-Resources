@@ -71,7 +71,7 @@ const logout = () => {
 						<el-menu-item index="control-key-management">秘钥管理</el-menu-item>
 						<el-menu-item index="control-release-deployment">发布部署</el-menu-item>
 					</el-sub-menu>
-					<el-sub-menu index="api">
+					<el-sub-menu index="/dashboard/api">
 						<template #title>
 							<el-icon><Collection /></el-icon>
 							<span class="text-base">API管理</span>

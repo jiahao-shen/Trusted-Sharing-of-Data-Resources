@@ -27,21 +27,31 @@ const router = createRouter({
 				{
 					path: 'api',
 					name: 'API管理',
+					component: () => import('../views/Dashboard/API/API.vue'),
 					children: [
 						{
 							path: 'register',
 							name: 'API注册',
 							component: () => import('../views/Dashboard/API/Register.vue'),
-						},
-						{
-							path: 'register-form',
-							name: 'API注册表单',
-							component: () => import ('../views/Dashboard/API/components/RegisterForm.vue')
+							children: [
+								{
+									path: 'form',
+									name: '注册表单',
+									component: () => import('../views/Dashboard/API/components/RegisterForm.vue'),
+								},
+							],
 						},
 						{
 							path: 'request',
 							name: 'API申请',
 							component: () => import('../views/Dashboard/API/Request.vue'),
+							children: [
+								{
+									path: 'form',
+									name: '申请表单',
+									component: () => import('../views/Dashboard/API/components/RequestForm.vue'),
+								},
+							],
 						},
 					],
 				},
