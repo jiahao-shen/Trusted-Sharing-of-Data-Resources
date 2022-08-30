@@ -1,13 +1,13 @@
 <script lang="ts" setup>
-import { ref, reactive } from 'vue'
+import { ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { Search } from '@element-plus/icons-vue'
-import useClipboard from 'vue-clipboard3'
-import { ElMessage } from 'element-plus'
+import { CopyText } from '@/components/CopyText'
 import { service } from '@/api/dashboard/api/request'
+import { ElMessage } from 'element-plus'
+import { computed } from '@vue/reactivity'
 
 const route = useRoute()
-const { toClipboard } = useClipboard()
 
 const classList = ref(new Set())
 const functionList = ref(new Set())
@@ -16,20 +16,23 @@ const statusList = ref(new Set())
 const orgClass = ref('全部')
 const orgName = ref('')
 const apiName = ref('')
-const apiFunction = ref('')
-const apiStatus = ref('')
+const apiFunction = ref('全部')
+const apiStatus = ref('全部')
 
 const pageSize = 10
 const total = ref(0)
 let currentPage = 1
 let apiList: any[]
+let filterList: any[]
 let showList = ref(Array())
 
 service.getAPIList().then((res: any) => {
 	if (res.status === 200) {
 		apiList = res.data
-		total.value = apiList.length
-		showList.value = apiList.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+
+		filterList = apiList
+		total.value = filterList.length
+		showList.value = filterList.slice((currentPage - 1) * pageSize, currentPage * pageSize)
 
 		for (let item of apiList) {
 			classList.value.add(item.orgClass)
@@ -41,20 +44,48 @@ service.getAPIList().then((res: any) => {
 
 const handleCurrentChange = (value: number) => {
 	currentPage = value
-	showList.value = apiList.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+	showList.value = filterList.slice((currentPage - 1) * pageSize, currentPage * pageSize)
 }
 
 const indexMethod = (index: number) => {
 	return (currentPage - 1) * pageSize + index + 1
 }
 
-const copyID = async (text: string) => {
-	try {
-		await toClipboard(text)
-		ElMessage('复制成功')
-	} catch (err) {
-		console.error(err)
+const orgClassChange = (value: string) => {
+	computeFilter()
+}
+
+const computeFilter = () => {
+	if (orgClass.value === '全部') {
+		console.log('机构类别:全部')
+		filterList = apiList
+	} else {
+		console.log('机构类别:筛选')
+		filterList = apiList.filter((item) => item.orgClass === orgClass.value)
 	}
+
+	if (orgName.value.trim() !== '') {
+		console.log('机构名称')
+		filterList = filterList.filter((item) => item.orgName === orgName.value)
+	}
+
+	if (apiName.value.trim() !== '') {
+		console.log('API名称')
+		filterList = filterList.filter((item) => item.apiName === apiName.value)
+	}
+
+	if (apiFunction.value !== '全部') {
+		console.log('API功能')
+		filterList = filterList.filter((item) => item.apiFunction === apiFunction.value)
+	}
+
+	if (apiStatus.value !== '全部') {
+		console.log('API状态')
+		filterList = filterList.filter((item) => item.apiStatus === apiStatus.value)
+	}
+
+	total.value = filterList.length
+	showList.value = filterList.slice((currentPage - 1) * pageSize, currentPage * pageSize)
 }
 </script>
 
@@ -67,7 +98,7 @@ const copyID = async (text: string) => {
 
 			<div class="flex">
 				<span class="inline-flex items-center">机构类别:</span>
-				<el-radio-group class="mx-20px" v-model="orgClass" size="large">
+				<el-radio-group class="mx-20px" v-model="orgClass" size="large" @change="orgClassChange">
 					<el-radio-button label="全部" />
 					<el-radio-button v-for="item in classList" :label="item" />
 				</el-radio-group>
@@ -99,6 +130,7 @@ const copyID = async (text: string) => {
 				<el-col class="flex" :span="6">
 					<span class="inline-flex items-center">API功能:</span>
 					<el-select class="mx-20px" size="large" v-model="apiFunction">
+						<el-option label="全部" value="全部" />
 						<el-option v-for="item in functionList" :label="item" :value="item" />
 					</el-select>
 				</el-col>
@@ -106,6 +138,7 @@ const copyID = async (text: string) => {
 				<el-col class="flex" :span="6">
 					<span class="inline-flex items-center">API状态:</span>
 					<el-select class="mx-20px" size="large" v-model="apiStatus">
+						<el-option label="全部" value="全部" />
 						<el-option v-for="item in statusList" :label="item" :value="item" />
 					</el-select>
 				</el-col>
@@ -114,13 +147,11 @@ const copyID = async (text: string) => {
 			<el-table class="mt-20px" :data="showList" highlight-current-row border>
 				<el-table-column label="No." type="index" :index="indexMethod" width="100" />
 				<el-table-column label="机构" prop="orgName" />
+				<el-table-column label="机构类别" prop="orgClass" />
 				<el-table-column label="API名称" prop="apiName" />
 				<el-table-column label="ID" prop="apiID" width="400">
 					<template #default="scope">
-						<div class="cursor-pointer" @click="copyID(scope.row.apiID)">
-							<span>{{ scope.row.apiID }}</span>
-							<el-icon><CopyDocument /></el-icon>
-						</div>
+						<CopyText :text="scope.row.apiID" />
 					</template>
 				</el-table-column>
 				<el-table-column label="功能类型" prop="apiFunction" />

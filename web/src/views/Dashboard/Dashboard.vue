@@ -9,12 +9,8 @@ const route = useRoute()
 const router = useRouter()
 const appStore = useAppStore()
 
-const breadcrumbList = ref(Array())
+const breadcrumbList = computed(() => route.matched)
 const { toggle, isFullscreen } = useFullscreen()
-
-const getBreadcrumb = (matched: Array<any>) => {
-	breadcrumbList.value = matched
-}
 
 const collapse = computed(() => appStore.getCollapse)
 const showTitle = ref(!appStore.getCollapse)
@@ -30,15 +26,6 @@ const toggleCollapse = () => {
 		showTitle.value = false
 	}
 }
-
-getBreadcrumb(route.matched)
-
-watch(
-	() => route.path,
-	(value: String) => {
-		getBreadcrumb(route.matched)
-	}
-)
 
 const logout = () => {
 	appStore.setUser(null)

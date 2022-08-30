@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { service } from '@/api/dashboard/api/register'
+import { CopyText } from '@/components/CopyText'
 import { useRouter, useRoute } from 'vue-router'
-import useClipboard from 'vue-clipboard3'
-import { ElMessage } from 'element-plus'
+import { service } from '@/api/dashboard/api/register'
 
-const { toClipboard } = useClipboard()
 const route = useRoute()
 const router = useRouter()
 
@@ -32,14 +30,6 @@ const indexMethod = (index: number) => {
 	return (currentPage - 1) * pageSize + index + 1
 }
 
-const copyID = async (text: string) => {
-	try {
-		await toClipboard(text)
-		ElMessage('复制成功')
-	} catch (err) {
-		console.error(err)
-	}
-}
 </script>
 
 <template>
@@ -55,10 +45,7 @@ const copyID = async (text: string) => {
 				<el-table-column label="名称" prop="name" />
 				<el-table-column label="ID" prop="id" width="400">
 					<template #default="scope">
-						<div class="cursor-pointer" @click="copyID(scope.row.id)">
-							<span>{{ scope.row.id }}</span>
-							<el-icon><CopyDocument /></el-icon>
-						</div>
+						<CopyText :text="scope.row.id" />
 					</template>
 				</el-table-column>
 				<el-table-column label="状态" prop="status">
