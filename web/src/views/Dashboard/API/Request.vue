@@ -1,11 +1,9 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { useRoute } from 'vue-router'
-import { Search } from '@element-plus/icons-vue'
+import { Search, RefreshLeft } from '@element-plus/icons-vue'
 import { CopyText } from '@/components/CopyText'
 import { service } from '@/api/dashboard/api/request'
-import { ElMessage } from 'element-plus'
-import { computed } from '@vue/reactivity'
 
 const route = useRoute()
 
@@ -55,6 +53,32 @@ const orgClassChange = (value: string) => {
 	computeFilter()
 }
 
+const searchByOrgName = () => {
+	computeFilter()
+}
+
+const searchByAPIID = () => {
+	computeFilter()
+}
+
+const apiFunctionChange = (value: string) => {
+	computeFilter()
+}
+
+const apiStatusChange = (value: string) => {
+	computeFilter()
+}
+
+const resetFilter = () => {
+	orgClass.value = '全部'
+	orgName.value = ''
+	apiName.value = ''
+	apiFunction.value = '全部'
+	apiStatus.value = '全部'
+
+	computeFilter()
+}
+
 const computeFilter = () => {
 	if (orgClass.value === '全部') {
 		console.log('机构类别:全部')
@@ -66,12 +90,13 @@ const computeFilter = () => {
 
 	if (orgName.value.trim() !== '') {
 		console.log('机构名称')
-		filterList = filterList.filter((item) => item.orgName === orgName.value)
+		console.log(filterList)
+		filterList = filterList.filter((item) => item.orgName.includes(orgName.value))
 	}
 
 	if (apiName.value.trim() !== '') {
 		console.log('API名称')
-		filterList = filterList.filter((item) => item.apiName === apiName.value)
+		filterList = filterList.filter((item) => item.apiName.includes(apiName.value))
 	}
 
 	if (apiFunction.value !== '全部') {
@@ -109,7 +134,7 @@ const computeFilter = () => {
 				<div class="w-400px mx-20px inline-flex items-center">
 					<el-input size="large" v-model="orgName" placeholder="搜索" clearable>
 						<template #append>
-							<el-button :icon="Search" />
+							<el-button :icon="Search" @click="searchByOrgName" />
 						</template>
 					</el-input>
 				</div>
@@ -121,7 +146,7 @@ const computeFilter = () => {
 					<div class="w-400px mx-20px">
 						<el-input size="large" v-model="apiName" placeholder="搜索" clearable>
 							<template #append>
-								<el-button :icon="Search" />
+								<el-button :icon="Search" @click="searchByAPIID" />
 							</template>
 						</el-input>
 					</div>
@@ -129,7 +154,7 @@ const computeFilter = () => {
 
 				<el-col class="flex" :span="6">
 					<span class="inline-flex items-center">API功能:</span>
-					<el-select class="mx-20px" size="large" v-model="apiFunction">
+					<el-select class="mx-20px" size="large" v-model="apiFunction" @change="apiFunctionChange">
 						<el-option label="全部" value="全部" />
 						<el-option v-for="item in functionList" :label="item" :value="item" />
 					</el-select>
@@ -137,10 +162,15 @@ const computeFilter = () => {
 
 				<el-col class="flex" :span="6">
 					<span class="inline-flex items-center">API状态:</span>
-					<el-select class="mx-20px" size="large" v-model="apiStatus">
+					<el-select class="mx-20px" size="large" v-model="apiStatus" @change="apiStatusChange">
 						<el-option label="全部" value="全部" />
 						<el-option v-for="item in statusList" :label="item" :value="item" />
 					</el-select>
+				</el-col>
+
+				<el-col :span="2">
+					<span class="inline-flex items-center">全部重置:</span>
+					<el-button class="mx-20px" :icon="RefreshLeft" @click="resetFilter" />
 				</el-col>
 			</el-row>
 
@@ -181,4 +211,11 @@ const computeFilter = () => {
 	<router-view v-else />
 </template>
 
-<style scoped></style>
+<style lang="less" scoped>
+.operate {
+	.el-button {
+		padding: 0px;
+	}
+}
+
+</style>
