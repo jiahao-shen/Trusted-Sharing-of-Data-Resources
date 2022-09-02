@@ -8,7 +8,7 @@ export default [
 		response: () => {
 			return {
 				username: '沈嘉浩',
-				imgURL: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
+				imageURL: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
 			}
 		},
 	},

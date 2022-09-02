@@ -7,4 +7,8 @@ export const service = {
 			password: password,
 		})
 	},
+
+	logout: (username: string) => {
+		return http.post('/user/logout', {})
+	}
 }
