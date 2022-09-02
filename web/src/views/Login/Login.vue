@@ -6,6 +6,7 @@ import { ElNotification } from 'element-plus'
 import type { FormInstance, FormRules } from 'element-plus'
 import { useAppStore } from '@/store/app'
 import { service } from '@/api/login'
+import { http } from '@/api'
 
 const router = useRouter()
 const appStore = useAppStore()
@@ -29,8 +30,12 @@ const login = async (formEl: FormInstance | undefined) => {
 
 	await formEl.validate((valid, fields) => {
 		if (valid) {
-			service.login().then((res: any) => {
-				if (res.status === 200) {
+			http.get('/user/login').then((res) => {
+				console.log(res)
+			})
+			service
+				.login(form.username, form.password)
+				.then((res: any) => {
 					appStore.setUser(res.data)
 					ElNotification({
 						title: '登录成功',
@@ -38,16 +43,20 @@ const login = async (formEl: FormInstance | undefined) => {
 						type: 'success',
 					})
 					router.push('/dashboard')
-				}
-			}).catch((err: any) => {
-				console.log(err)
-			})
+				})
+				.catch((err: any) => {
+					ElNotification({
+						title: '登录失败',
+						message: err.response.data,
+						type: 'error',
+					})
+				})
 		} else {
-			ElNotification({
-				title: '登录失败',
-				message: '',
-				type: 'error',
-			})
+			// ElNotification({
+			// 	title: '登录失败',
+			// 	message: '',
+			// 	type: 'error',
+			// })
 		}
 	})
 }

@@ -10,7 +10,7 @@ import type { FormInstance, FormRules } from 'element-plus'
 const router = useRouter()
 
 const formRef = ref<FormInstance>()
-const apiForm = reactive({
+const form = reactive({
 	name: '',
 	protol: 'http',
 	url: '',
@@ -27,7 +27,7 @@ const apiForm = reactive({
 	responseText: '',
 })
 
-const apiRules = reactive<FormRules>({
+const rules = reactive<FormRules>({
 	name: [validators.required('名称'), validators.lengthRange(3, 20, '名称'), validators.notEmpty('名称')],
 	url: [validators.required('URL'), validators.url(), validators.notEmpty('URL')],
 	method: [validators.required('请求类型')],
@@ -96,37 +96,37 @@ const reset = (formEl: FormInstance | undefined) => {
 		return
 	}
 	formEl.resetFields()
-	apiForm.headerList = Array()
-	apiForm.requestList = Array()
-	apiForm.responseList = Array()
+	form.headerList = Array()
+	form.requestList = Array()
+	form.responseList = Array()
 }
 
 const headerType = ref('Form')
 const addHeaderItem = () => {
-	apiForm.headerList.push({ name: '', required: 'true' })
+	form.headerList.push({ name: '', required: 'true' })
 }
 
 const deleteHeaderItem = (index: number) => {
-	apiForm.headerList.splice(index, 1)
-	console.log(apiForm.headerList)
+	form.headerList.splice(index, 1)
+	console.log(form.headerList)
 }
 
 const requestType = ref('Form')
 const addRequestItem = () => {
-	apiForm.requestList.push({ name: '', type: '', introduction: '', specification: '', required: 'true' })
+	form.requestList.push({ name: '', type: '', introduction: '', specification: '', required: 'true' })
 }
 
 const deleteRequestItem = (index: number) => {
-	apiForm.requestList.splice(index, 1)
+	form.requestList.splice(index, 1)
 }
 
 const responseType = ref('Form')
 const addResponseItem = () => {
-	apiForm.responseList.push({ name: '', type: '', introduction: '' })
+	form.responseList.push({ name: '', type: '', introduction: '' })
 }
 
 const deleteResponseItem = (index: number) => {
-	apiForm.responseList.splice(index, 1)
+	form.responseList.splice(index, 1)
 }
 </script>
 
@@ -136,19 +136,19 @@ const deleteResponseItem = (index: number) => {
 			<template #header>
 				<span class="text-2xl">API注册</span>
 			</template>
-			<el-form ref="formRef" :model="apiForm" :rules="apiRules" label-position="top" size="large" id="apiForm">
+			<el-form ref="formRef" :model="form" :rules="rules" label-position="top" size="large" id="form">
 				<el-row :gutter="60">
 					<el-col :span="8">
 						<el-form-item label="名称" prop="name">
-							<el-input placeholder="请输入API名称" v-model="apiForm.name" clearable />
+							<el-input placeholder="请输入API名称" v-model="form.name" clearable />
 						</el-form-item>
 					</el-col>
 
 					<el-col :span="12">
 						<el-form-item label="地址" prop="url">
-							<el-input placeholder="请输入URL" v-model="apiForm.url" clearable>
+							<el-input placeholder="请输入URL" v-model="form.url" clearable>
 								<template #prepend>
-									<el-select placeholder="选择" class="w-100px" v-model="apiForm.protol">
+									<el-select placeholder="选择" class="w-100px" v-model="form.protol">
 										<el-option label="http://" value="http" />
 										<el-option label="https://" value="https" />
 									</el-select>
@@ -159,7 +159,7 @@ const deleteResponseItem = (index: number) => {
 
 					<el-col :span="3">
 						<el-form-item label="请求类型" prop="method">
-							<el-select placeholder="选择" v-model="apiForm.method">
+							<el-select placeholder="选择" v-model="form.method">
 								<el-option label="GET" value="get" />
 								<el-option label="POST" value="post" />
 								<el-option label="PUT" value="put" />
@@ -182,14 +182,14 @@ const deleteResponseItem = (index: number) => {
 								maxlength="200"
 								show-word-limit
 								placeholder="请用文字说明API具体功能"
-								v-model="apiForm.introduction"
+								v-model="form.introduction"
 							/>
 						</el-form-item>
 					</el-col>
 
 					<el-col :span="3">
 						<el-form-item label="功能分类" prop="category">
-							<el-select placeholder="选择" v-model="apiForm.category">
+							<el-select placeholder="选择" v-model="form.category">
 								<el-option label="1" value="1" />
 								<el-option label="2" value="2" />
 								<el-option label="3" value="3" />
@@ -200,7 +200,7 @@ const deleteResponseItem = (index: number) => {
 
 					<el-col :span="3">
 						<el-form-item label="调用授权" prop="permission">
-							<el-select placeholder="选择" v-model="apiForm.permission">
+							<el-select placeholder="选择" v-model="form.permission">
 								<el-option label="是" value="yes" />
 								<el-option label="否" value="no" />
 							</el-select>
@@ -209,12 +209,12 @@ const deleteResponseItem = (index: number) => {
 
 					<el-col :span="4">
 						<el-form-item label="版本信息" prop="version">
-							<el-input placeholder="请输入API版本号" v-model="apiForm.version" clearable />
+							<el-input placeholder="请输入API版本号" v-model="form.version" clearable />
 						</el-form-item>
 					</el-col>
 				</el-row>
 
-				<el-row :gutter="40">
+				<el-row :gutter="60">
 					<el-col :span="5">
 						<el-form-item>
 							<div class="w-full flex justify-between">
@@ -225,7 +225,7 @@ const deleteResponseItem = (index: number) => {
 								</el-radio-group>
 							</div>
 							<div class="w-full" v-if="headerType === 'Form'">
-								<el-table :data="apiForm.headerList" height="400" empty-text="空" highlight-current-row>
+								<el-table :data="form.headerList" height="400" empty-text="空" highlight-current-row>
 									<el-table-column label="No." type="index" width="60" />
 									<el-table-column label="字段名" width="160">
 										<template #default="scope">
@@ -265,7 +265,7 @@ const deleteResponseItem = (index: number) => {
 										placeholder="请输入Header示例(Json格式)"
 										type="textarea"
 										:rows="21"
-										v-model="apiForm.headerText"
+										v-model="form.headerText"
 									/>
 								</el-form-item>
 							</div>
@@ -283,7 +283,7 @@ const deleteResponseItem = (index: number) => {
 							</div>
 
 							<div class="w-full" v-if="requestType === 'Form'">
-								<el-table :data="apiForm.requestList" height="400" empty-text="空" highlight-current-row>
+								<el-table :data="form.requestList" height="400" empty-text="空" highlight-current-row>
 									<el-table-column label="No." type="index" width="60" />
 									<el-table-column label="字段名" width="150">
 										<template #default="scope">
@@ -348,7 +348,7 @@ const deleteResponseItem = (index: number) => {
 										placeholder="请输入Requst示例(Json格式)"
 										type="textarea"
 										:rows="21"
-										v-model="apiForm.requestText"
+										v-model="form.requestText"
 										clearable
 									/>
 								</el-form-item>
@@ -367,7 +367,7 @@ const deleteResponseItem = (index: number) => {
 							</div>
 
 							<div class="w-full" v-if="responseType === 'Form'">
-								<el-table :data="apiForm.responseList" height="400" empty-text="空" highlight-current-row>
+								<el-table :data="form.responseList" height="400" empty-text="空" highlight-current-row>
 									<el-table-column label="No." type="index" width="60" />
 									<el-table-column label="字段名" width="150">
 										<template #default="scope">
@@ -413,7 +413,7 @@ const deleteResponseItem = (index: number) => {
 										placeholder="请输入Response示例(Json格式)"
 										type="textarea"
 										:rows="21"
-										v-model="apiForm.responseText"
+										v-model="form.responseText"
 									/>
 								</el-form-item>
 							</div>
@@ -421,7 +421,7 @@ const deleteResponseItem = (index: number) => {
 					</el-col>
 				</el-row>
 
-				<el-row :gutter="40" class="m-20px">
+				<el-row :gutter="60" class="m-20px">
 					<el-col :span="4" :offset="6">
 						<el-button type="success" @click="submit(formRef)" class="w-full">注册</el-button>
 					</el-col>
@@ -437,9 +437,11 @@ const deleteResponseItem = (index: number) => {
 	</div>
 </template>
 
-<style scoped>
-#apiForm >>> .el-form-item__label {
-	font-size: 1rem;
+<style lang="less" scoped>
+#form {
+	/deep/ .el-form-item__label {
+		font-size: 1em;
+	}
 }
 
 .table-title {

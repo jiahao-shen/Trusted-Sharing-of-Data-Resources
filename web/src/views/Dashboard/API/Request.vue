@@ -1,11 +1,12 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { Search, RefreshLeft } from '@element-plus/icons-vue'
 import { CopyText } from '@/components/CopyText'
 import { service } from '@/api/dashboard/api/request'
 
 const route = useRoute()
+const router = useRouter()
 
 const classList = ref(new Set())
 const functionList = ref(new Set())
@@ -112,6 +113,12 @@ const computeFilter = () => {
 	total.value = filterList.length
 	showList.value = filterList.slice((currentPage - 1) * pageSize, currentPage * pageSize)
 }
+
+const showDetails = () => {}
+
+const requestAPI = (apiID: any) => {
+	router.push({ name: '申请表单', query: { apiID: apiID } })
+}
 </script>
 
 <template>
@@ -188,10 +195,10 @@ const computeFilter = () => {
 				<el-table-column label="状态" prop="apiStatus" />
 
 				<el-table-column label="操作">
-					<template #default scope>
+					<template #default="scope">
 						<div class="w-full h-full flex items-center operate">
 							<el-button type="primary" text>详情</el-button>
-							<el-button type="primary" text>申请</el-button>
+							<el-button type="primary" text @click="requestAPI(scope.row.apiID)">申请</el-button>
 						</div>
 					</template>
 				</el-table-column>
@@ -217,5 +224,4 @@ const computeFilter = () => {
 		padding: 0px;
 	}
 }
-
 </style>

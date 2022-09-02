@@ -120,7 +120,7 @@ const logout = () => {
 						@click="toggle"
 					/>
 					<el-button class="mx-5px my-auto" size="large" icon="Search" round>搜索</el-button>
-					<el-avatar size="default" :src="appStore.getUser.imgURL" style="margin: auto 5px" />
+					<el-avatar size="default" :src="appStore.getUser.imageURL" style="margin: auto 5px" />
 					<el-menu mode="horizontal" :ellipsis="false">
 						<el-sub-menu index="user">
 							<template #title>{{ appStore.getUser.username }}</template>
