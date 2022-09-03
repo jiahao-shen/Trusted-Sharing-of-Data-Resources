@@ -6,14 +6,14 @@ const http: AxiosInstance = axios.create({
 	timeout: 10000,
 })
 
-// http.interceptors.request.use((config: AxiosRequestConfig) => {
-// 	// TODO:
-// 	return config
-// })
+http.interceptors.request.use((config: AxiosRequestConfig) => {
+	// TODO:
+	return config
+})
 
-// http.interceptors.response.use((response: AxiosResponse<any>) => {
-// 	// TODO:
-// 	return response
-// })
+http.interceptors.response.use((response: AxiosResponse<any>) => {
+	// TODO:
+	return response
+})
 
 export { http }

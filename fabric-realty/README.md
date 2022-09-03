@@ -1,94 +1,31 @@
-> 🚀 本项目使用 Hyperledger Fabric 构建底层区块链网络, go 编写智能合约，应用层使用 gin+fabric-sdk-go ，前端使用 vue+element-ui
+# fabric-realty
 
-如果想要联系我，可以关注我的公众号【SuperGopher】
-
-![微信公众号.png](https://user-images.githubusercontent.com/55381228/155444889-eacc0104-cd85-45c9-b7b7-9036e0c2334c.jpg)
-
-## 教程
-
-[万字长文，教你用go开发区块链应用](https://mp.weixin.qq.com/s/yDmGwfRjXxDJfgv1d0p3Ig)
-
-## 环境要求
-
-安装了 Docker 和 Docker Compose 的 Linux 环境
-
-附 Docker 安装教程：[点此跳转](Install.md)
-
-## 部署
-
-1. 克隆本项目放在任意目录下，例：`/root/fabric-realty`
-
-
-2. 给予项目权限，执行 `sudo chmod -R +x /root/fabric-realty/`
-
-
-3. 进入 `network` 目录，执行 `./start.sh` 启动区块链网络以及部署智能合约
-
-
-4. 进入 `application` 目录，执行 `./build.sh` 编译镜像，完成后继续执行 `./start.sh`
-   启动应用，最后可使用浏览器访问 [http://localhost:8000/web](http://localhost:8000/web)
-
-
-5. （可选）进入 `network/explorer` 目录，执行 `./start.sh` 启动区块链浏览器后，访问 [http://localhost:8080](http://localhost:8080)，用户名 admin，密码
-   123456
-
-## 停止或重启
-
-注意，默认执行 `./start.sh` 脚本时都会调用 `./stop.sh` ，所以如果想持久化数据的情况下停止或重启本项目，请不要重新执行 `./start.sh` ，正确姿势参考：
-
-1. （如果启动了区块链浏览器）进入 `network/explorer` 目录，执行 `docker-compose stop` 停止区块链浏览器，执行 `docker-compose start`
-   启动区块链浏览器，执行 `docker-compose restart` 重启区块链浏览器
-
-2. 进入 `network` 目录，执行 `docker-compose stop` 停止区块链网络，执行 `docker-compose start`
-   启动区块链网络，执行 `docker-compose restart` 重启区块链网络
-
-3. 进入 `application` 目录，区块链应用是无状态的，可以直接执行 `./stop.sh` 关闭区块链应用，执行 `./start.sh` 关闭区块链应用
-
-## 完全清理环境
-
-注意，该操作会将所有数据清空。按照该顺序：
-
-1. （如果启动了区块链浏览器）进入 `network/explorer` 目录，执行 `./stop.sh` 关闭区块链浏览器
-
-2. 进入 `network` 目录，执行 `./stop.sh` 关闭区块链网络并清理链码容器
-
-3. 进入 `application` 目录，执行 `./stop.sh` 关闭区块链应用
-
-## 目录结构
-
-- `application/server` : `fabric-sdk-go` 调用链码（即智能合约），`gin` 提供外部访问接口（RESTful API）
-
-
-- `application/web` : `vue` + `element-ui` 提供前端展示页面
-
-
-- `chaincode` : go 编写的链码（即智能合约）
-
-
-- `network` : Hyperledger Fabric 区块链网络配置
-
-## 功能流程
-
-管理员为用户业主创建房地产。
-
-业主查看名下房产信息。
-
-业主发起销售，所有人都可查看销售列表，购买者购买后进行扣款操作，并等待业主确认收款，交易完成后，更新房产持有人。在有效期期间可以随时取消交易，有效期到期后自动关闭交易。
-
-业主发起捐赠，指定受赠人，受赠人确认接收受赠前，双方可取消捐赠/受赠。
-
-## 演示效果
-
-![login](https://user-images.githubusercontent.com/55381228/159389012-4d3d8617-2bd8-4d9c-bacf-452f97cc9bbc.png)
-
-![addreal](https://user-images.githubusercontent.com/55381228/159389026-9ca119bd-fd5f-4b89-b003-a09907ce0cdf.png)
-
-![info](https://user-images.githubusercontent.com/55381228/159389035-b84f2de1-18f9-48a7-93f5-db9dd20a5a4c.png)
-
-![explorer](https://user-images.githubusercontent.com/55381228/159389002-0dbe329a-09aa-4aaf-aba8-4a98e4fdcc39.png)
-
-## 喝杯奶茶
-
-|  ![微信打赏](https://user-images.githubusercontent.com/55381228/155450359-0ce92911-fd3f-4d6b-9878-e40a17b34652.jpg)   | ![支付宝打赏](https://user-images.githubusercontent.com/55381228/155450383-509d0475-5497-4983-8583-137946b4d78e.jpg)  |
-|  ----  | ----  |
-| 微信  | 支付宝 |
+## 注意事项
+1. fabric-realty的版本为1.14, 服务器上安装的版本为1.18 
+2. 当使用第三方库或依赖时需要注意:
+    - 可以通过`chaincode_test.go`单元测试, 但进行docker部署时需要进行打包
+    - 打包方式: 先执行`go mod tidy`, 再运行`go mod vendor`, 打包完后需要删除多余的依赖, 仅保留第三方包即可
+    - 运行`chaincode_test.go`时需要删除`vendor`目录
+3. 当使用多个节点进行背书策略时, 需要保证执行结果的一致性, 因此不建议将id或者time的生成放进智能合约中
+4. 测试fabric-sdk-go调用合约时, 不必再使用docker进行部署, 可以直接在本地运行, 具体操作如下:
+    - 将`application/server/blockchain/sdk.go`文件中的配置文件替换为`test.yaml`
+    - 进入`application/server`目录下, 直接运行`go run main.go`
+    - 实际部署时记得将配置文件替换为原来的`config.yaml`
+5. 当docker容器需要访问外部宿主机时, 可以使用域名`host.docker.internal`或者`172.17.0.1`地址
+6. 对于Linux系统, 如果合约调用的http请求中包含域名, 会报错并导致docker容器崩溃, 该问题产生的原因参考[链接](https://developer.aliyun.com/article/238940), 解决方法如下:
+    - 修改`network/docker-compose.yaml`和`network/docker-compose-base.yaml`中的`GODEBUG=netdns=1`
+    - 在`network/start.sh`文件末尾添加如下内容:
+    ```
+    echo "修改DNS配置文件"
+    UpdateResolvConf="cp /etc/resolv.conf temp.conf; sed -i '$ d' temp.conf; cp -f temp.conf /etc/resolv.conf; cat /etc/resolv.conf"
+    docker exec $(docker ps -aq --filter name=cli) bash -c "$UpdateResolvConf"
+    docker exec $(docker ps -aq --filter name=orderer.qq.com) bash -c "$UpdateResolvConf"
+    docker exec $(docker ps -aq --filter name=dev-peer0.jd.com) bash -c "$UpdateResolvConf"
+    docker exec $(docker ps -aq --filter name=^/peer0.jd.com) bash -c "$UpdateResolvConf"
+    docker exec $(docker ps -aq --filter name=^/peer1.jd.com) bash -c "$UpdateResolvConf"
+    docker exec $(docker ps -aq --filter name=dev-peer0.taobao.com) bash -c "$UpdateResolvConf"
+    docker exec $(docker ps -aq --filter name=^/peer0.taobao.com) bash -c "$UpdateResolvConf"
+    docker exec $(docker ps -aq --filter name=^/peer1.taobao.com) bash -c "$UpdateResolvConf"
+    ```
+    - 以上操作无法完全解决该问题(仍然会随机产生), 最好的解决办法是往链码容器`dev-peer`中添加环境变量`GODEBUG=netdns=1`, 但当前暂时无法得知该容器的生成方式, 因此无法修改
+    - 当前解决方案: 直接使用IP地址进行http请求, 绕过域名解析

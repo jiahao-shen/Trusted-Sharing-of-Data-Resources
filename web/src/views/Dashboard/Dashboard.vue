@@ -2,7 +2,7 @@
 import { unref, ref, watch, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useFullscreen } from '@vueuse/core'
-import { Icon } from '@/components/Icon'
+import { Icon } from '@iconify/vue'
 import { useAppStore } from '@/store/app'
 
 const route = useRoute()
@@ -97,10 +97,10 @@ const logout = () => {
 			<div class="w-full h-60px border-b-1 border-[var(--el-border-color)] flex justify-between">
 				<div class="h-full flex justify-center items-center">
 					<Icon
-						class="h-full hover:bg-gray-100 px-10px"
-						:size="30"
+						class="h-full px-10px cursor-pointer hover:bg-gray-100"
 						:icon="collapse ? 'ant-design:menu-unfold-outlined' : 'ant-design:menu-fold-outlined'"
-						color="#888888"
+						height="40px"
+						color="#999"
 						@click="toggleCollapse"
 					/>
 
@@ -113,12 +113,13 @@ const logout = () => {
 
 				<div class="h-full flex justify-center items-center">
 					<Icon
-						class="h-full hover:bg-gray-100 px-10px"
-						:size="30"
+						class="h-full px-10px cursor-pointer hover:bg-gray-100"
 						:icon="isFullscreen ? 'zmdi:fullscreen-exit' : 'zmdi:fullscreen'"
-						color="#888888"
+						height="40px"
+						color="#999"
 						@click="toggle"
 					/>
+
 					<el-button class="mx-5px my-auto" size="large" icon="Search" round>搜索</el-button>
 					<el-avatar size="default" :src="appStore.getUser.imageURL" style="margin: auto 5px" />
 					<el-menu mode="horizontal" :ellipsis="false">

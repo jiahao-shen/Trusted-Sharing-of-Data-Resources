@@ -3,7 +3,7 @@ import type { MockMethod } from 'vite-plugin-mock'
 export default [
 	{
 		url: '/user/login',
-		method: 'get',
+		method: 'post',
 		statusCode: 200,
 		response: () => {
 			return {

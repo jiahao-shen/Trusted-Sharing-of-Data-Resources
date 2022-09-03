@@ -408,7 +408,7 @@ const deleteResponseItem = (index: number) => {
 </template>
 <style lang="less" scoped>
 #form {
-	/deep/ .el-form-item__label {
+	:deep(.el-form-item__label) {
 		font-size: 1em;
 	}
 }

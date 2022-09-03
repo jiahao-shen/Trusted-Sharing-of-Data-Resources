@@ -175,7 +175,7 @@ const requestAPI = (apiID: any) => {
 					</el-select>
 				</el-col>
 
-				<el-col :span="2">
+				<el-col :span="3">
 					<span class="inline-flex items-center">全部重置:</span>
 					<el-button class="mx-20px" :icon="RefreshLeft" @click="resetFilter" />
 				</el-col>

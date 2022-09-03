@@ -1,9 +1,15 @@
 package com.trustchain.sdkjava.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.trustchain.sdkjava.SdkJavaApplication;
+import com.trustchain.sdkjava.mapper.UserMapper;
 import com.trustchain.sdkjava.model.User;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,14 +18,19 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class LoginController {
+
+    @Autowired
+    private UserMapper userMapper;
+
+    private static final Logger logger = LogManager.getLogger(LoginController.class);
+
     @PostMapping("/user/login")
     public ResponseEntity<Object> Login(@RequestBody LoginRequest login) {
-        System.out.println(login);
-        // TODO: 连接数据库
-        if (login.getUsername().equals("test") && login.getPassword().equals("test")) {
-            User user = new User();
-            user.setUsername("test");
-            user.setImageURL("https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png");
+        logger.info(login);
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("username", login.getUsername()).eq("password", login.getPassword());
+        User user = userMapper.selectOne(queryWrapper);
+        if (user != null) {
             return ResponseEntity.status(HttpStatus.OK).body(user);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("用户名或密码错误");

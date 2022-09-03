@@ -6,7 +6,7 @@ import { ElNotification } from 'element-plus'
 import type { FormInstance, FormRules } from 'element-plus'
 import { useAppStore } from '@/store/app'
 import { service } from '@/api/login'
-import { http } from '@/api'
+import { Icon } from '@iconify/vue'
 
 const router = useRouter()
 const appStore = useAppStore()
@@ -30,9 +30,6 @@ const login = async (formEl: FormInstance | undefined) => {
 
 	await formEl.validate((valid, fields) => {
 		if (valid) {
-			http.get('/user/login').then((res) => {
-				console.log(res)
-			})
 			service
 				.login(form.username, form.password)
 				.then((res: any) => {
@@ -51,12 +48,6 @@ const login = async (formEl: FormInstance | undefined) => {
 						type: 'error',
 					})
 				})
-		} else {
-			// ElNotification({
-			// 	title: '登录失败',
-			// 	message: '',
-			// 	type: 'error',
-			// })
 		}
 	})
 }
@@ -95,18 +86,10 @@ const login = async (formEl: FormInstance | undefined) => {
 						<span class="text-base font-normal">其他登录方式</span>
 					</el-divider>
 					<div class="w-full px-30px py-10px flex justify-between">
-						<el-icon :size="40" class="cursor-pointer" color="#999">
-							<span class="iconify" data-icon="ant-design:github-filled" data-inline="false" />
-						</el-icon>
-						<el-icon :size="40" class="cursor-pointer" color="#999">
-							<span class="iconify" data-icon="ant-design:qq-circle-filled" data-inline="false" />
-						</el-icon>
-						<el-icon :size="40" class="cursor-pointer" color="#999">
-							<span class="iconify" data-icon="ant-design:wechat-filled" data-inline="false" />
-						</el-icon>
-						<el-icon :size="40" class="cursor-pointer" color="#999">
-							<span class="iconify" data-icon="ant-design:alipay-circle-filled" data-inline="false" />
-						</el-icon>
+						<Icon class="cursor-pointer" icon="ant-design:github-filled" height="40px" color="#999" />
+						<Icon class="cursor-pointer" icon="ant-design:qq-circle-filled" height="40px" color="#999" />
+						<Icon class="cursor-pointer" icon="ant-design:wechat-filled" height="40px" color="#999" />
+						<Icon class="cursor-pointer" icon="ant-design:alipay-circle-filled" height="40px" color="#999" />
 					</div>
 				</el-form>
 			</el-card>
