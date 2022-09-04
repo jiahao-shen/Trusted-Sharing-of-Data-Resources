@@ -1,4 +1,4 @@
-import { http } from '@/api'
+import { http } from '@/service'
 
 export const service = {
 	getAPIList: () => {

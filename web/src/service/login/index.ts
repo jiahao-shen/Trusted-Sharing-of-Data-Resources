@@ -1,11 +1,11 @@
-import { http } from '@/api'
+import { http } from '@/service'
 import sha256 from 'crypto-js/sha256'
 
 export const service = {
-	login: (username: string, password: string) => {
+	login: (form: any) => {
 		return http.post('/user/login', {
-			username: username,
-			password: sha256(password).toString(),
+			username: form.username,
+			password: sha256(form.password).toString(),
 		})
 	},
 

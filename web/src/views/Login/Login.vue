@@ -5,7 +5,7 @@ import { validators } from '@/utils/validators'
 import { ElNotification } from 'element-plus'
 import type { FormInstance, FormRules } from 'element-plus'
 import { useAppStore } from '@/store/app'
-import { service } from '@/api/login'
+import { service } from '@/service/login'
 import { Icon } from '@iconify/vue'
 
 const router = useRouter()
@@ -31,7 +31,7 @@ const login = async (formEl: FormInstance | undefined) => {
 	await formEl.validate((valid, fields) => {
 		if (valid) {
 			service
-				.login(form.username, form.password)
+				.login(form)
 				.then((res: any) => {
 					appStore.setUser(res.data)
 					ElNotification({
@@ -48,6 +48,8 @@ const login = async (formEl: FormInstance | undefined) => {
 						type: 'error',
 					})
 				})
+		} else {
+			// TODO:
 		}
 	})
 }

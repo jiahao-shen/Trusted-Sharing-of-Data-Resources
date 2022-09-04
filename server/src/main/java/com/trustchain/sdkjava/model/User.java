@@ -1,5 +1,7 @@
 package com.trustchain.sdkjava.model;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
@@ -11,7 +13,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 @AllArgsConstructor
 @TableName("User")
 public class User {
-    @TableField("username")
+    @TableId(value="username", type= IdType.INPUT)
     private String username;
 
     @TableField("password")

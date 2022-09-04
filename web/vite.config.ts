@@ -31,10 +31,10 @@ export default defineConfig({
 	server: {
 		// 反向代理
 		proxy: {
-			'/api': {
+			'/server': {
 				target: 'http://localhost:8080',
 				changeOrigin: true,
-				rewrite: (path) => path.replace(/^\/api/, ''),
+				rewrite: (path) => path.replace(/^\/server/, ''),
 			},
 		},
 	},

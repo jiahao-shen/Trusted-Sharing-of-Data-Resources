@@ -1,28 +1,31 @@
 <script setup lang="ts">
-import { v4 } from 'uuid'
 import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElNotification } from 'element-plus'
 import { validators } from '@/utils/validators'
 import { Plus, Delete } from '@element-plus/icons-vue'
 import type { FormInstance, FormRules } from 'element-plus'
+import { service } from '@/service/dashboard/api/register'
 
 const router = useRouter()
 
 const formRef = ref<FormInstance>()
 const form = reactive({
 	name: '',
-	protol: 'http',
+	protocol: 'http',
 	url: '',
 	method: 'get',
 	introduction: '',
 	category: '1',
 	version: 'v1.0.0',
 	permission: 'yes',
+	headerType: 'form',
 	headerList: Array(),
 	headerText: '',
+	requestType: 'form',
 	requestList: Array(),
 	requestText: '',
+	responseType: 'form',
 	responseList: Array(),
 	responseText: '',
 })
@@ -80,13 +83,25 @@ const submit = async (formEl: FormInstance | undefined) => {
 	}
 	await formEl.validate((valid, fields) => {
 		if (valid) {
-			ElNotification({
-				title: 'API注册成功',
-				message: v4(),
-				type: 'success',
-			})
+			service
+				.registerAPI(form)
+				.then((res: any) => {
+					ElNotification({
+						title: 'API注册成功',
+						message: res.data,
+						type: 'success',
+					})
+					router.push('/dashboard/api/register')
+				})
+				.catch((err: any) => {
+					ElNotification({
+						title: 'API注册失败',
+						message: err.response.data,
+						type: 'error',
+					})
+				})
 		} else {
-			console.error('error', fields)
+			// TODO:
 		}
 	})
 }
@@ -101,7 +116,6 @@ const reset = (formEl: FormInstance | undefined) => {
 	form.responseList = Array()
 }
 
-const headerType = ref('Form')
 const addHeaderItem = () => {
 	form.headerList.push({ name: '', required: 'true' })
 }
@@ -111,7 +125,6 @@ const deleteHeaderItem = (index: number) => {
 	console.log(form.headerList)
 }
 
-const requestType = ref('Form')
 const addRequestItem = () => {
 	form.requestList.push({ name: '', type: '', introduction: '', specification: '', required: 'true' })
 }
@@ -120,7 +133,6 @@ const deleteRequestItem = (index: number) => {
 	form.requestList.splice(index, 1)
 }
 
-const responseType = ref('Form')
 const addResponseItem = () => {
 	form.responseList.push({ name: '', type: '', introduction: '' })
 }
@@ -148,7 +160,7 @@ const deleteResponseItem = (index: number) => {
 						<el-form-item label="地址" prop="url">
 							<el-input placeholder="请输入URL" v-model="form.url" clearable>
 								<template #prepend>
-									<el-select placeholder="选择" class="w-100px" v-model="form.protol">
+									<el-select placeholder="选择" class="w-100px" v-model="form.protocol">
 										<el-option label="http://" value="http" />
 										<el-option label="https://" value="https" />
 									</el-select>
@@ -219,12 +231,12 @@ const deleteResponseItem = (index: number) => {
 						<el-form-item>
 							<div class="w-full flex justify-between">
 								<label class="table-title">请求头</label>
-								<el-radio-group v-model="headerType" size="default">
-									<el-radio-button label="Form" />
-									<el-radio-button label="Json" />
+								<el-radio-group v-model="form.headerType" size="default">
+									<el-radio-button label="form">Form</el-radio-button>
+									<el-radio-button label="json">Json</el-radio-button>
 								</el-radio-group>
 							</div>
-							<div class="w-full" v-if="headerType === 'Form'">
+							<div class="w-full" v-if="form.headerType === 'form'">
 								<el-table :data="form.headerList" height="400" empty-text="空" highlight-current-row>
 									<el-table-column label="No." type="index" width="60" />
 									<el-table-column label="字段名" width="160">
@@ -259,7 +271,7 @@ const deleteResponseItem = (index: number) => {
 								<el-button class="w-full mt-20px" @click="addHeaderItem" :icon="Plus" />
 							</div>
 
-							<div class="w-full mt-10px" v-else-if="headerType === 'Json'">
+							<div class="w-full mt-10px" v-else-if="form.headerType === 'json'">
 								<el-form-item prop="headerText">
 									<el-input
 										placeholder="请输入Header示例(Json格式)"
@@ -276,13 +288,13 @@ const deleteResponseItem = (index: number) => {
 						<el-form-item>
 							<div class="w-full flex justify-between">
 								<label class="table-title">请求体</label>
-								<el-radio-group v-model="requestType" size="default">
-									<el-radio-button label="Form" />
-									<el-radio-button label="Json" />
+								<el-radio-group v-model="form.requestType" size="default">
+									<el-radio-button label="form">Form</el-radio-button>
+									<el-radio-button label="json">Json</el-radio-button>
 								</el-radio-group>
 							</div>
 
-							<div class="w-full" v-if="requestType === 'Form'">
+							<div class="w-full" v-if="form.requestType === 'form'">
 								<el-table :data="form.requestList" height="400" empty-text="空" highlight-current-row>
 									<el-table-column label="No." type="index" width="60" />
 									<el-table-column label="字段名" width="150">
@@ -342,7 +354,7 @@ const deleteResponseItem = (index: number) => {
 								<el-button class="w-full mt-20px" @click="addRequestItem" :icon="Plus" />
 							</div>
 
-							<div class="w-full mt-10px" v-else-if="requestType === 'Json'">
+							<div class="w-full mt-10px" v-else-if="form.requestType === 'json'">
 								<el-form-item prop="requestText">
 									<el-input
 										placeholder="请输入Requst示例(Json格式)"
@@ -360,13 +372,13 @@ const deleteResponseItem = (index: number) => {
 						<el-form-item>
 							<div class="w-full flex justify-between">
 								<label class="table-title">返回体</label>
-								<el-radio-group v-model="responseType" size="default">
-									<el-radio-button label="Form" />
-									<el-radio-button label="Json" />
+								<el-radio-group v-model="form.responseType" size="default">
+									<el-radio-button label="form">Form</el-radio-button>
+									<el-radio-button label="json">Json</el-radio-button>
 								</el-radio-group>
 							</div>
 
-							<div class="w-full" v-if="responseType === 'Form'">
+							<div class="w-full" v-if="form.responseType === 'form'">
 								<el-table :data="form.responseList" height="400" empty-text="空" highlight-current-row>
 									<el-table-column label="No." type="index" width="60" />
 									<el-table-column label="字段名" width="150">
@@ -407,7 +419,7 @@ const deleteResponseItem = (index: number) => {
 								<el-button class="w-full mt-20px" @click="addResponseItem" :icon="Plus" />
 							</div>
 
-							<div class="w-full mt-10px" v-else-if="responseType === 'Json'">
+							<div class="w-full mt-10px" v-else-if="form.responseType === 'json'">
 								<el-form-item prop="responseText">
 									<el-input
 										placeholder="请输入Response示例(Json格式)"
