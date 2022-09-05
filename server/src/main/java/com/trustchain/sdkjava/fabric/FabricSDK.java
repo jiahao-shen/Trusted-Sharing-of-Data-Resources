@@ -23,7 +23,7 @@ public class FabricSDK {
     private HFClient client;
     private Channel channel;
 
-    FabricSDK() {
+    public FabricSDK() {
         try {
             client = HFClient.createNewInstance();
             client.setCryptoSuite(CryptoSuite.Factory.getCryptoSuite());
@@ -45,7 +45,7 @@ public class FabricSDK {
         }
     }
 
-    String query(String functionName, String... args) {
+    public String query(String functionName, String... args) {
         try {
             QueryByChaincodeRequest req = client.newQueryProposalRequest();
             req.setChaincodeName(contractName);
@@ -59,7 +59,7 @@ public class FabricSDK {
         }
     }
 
-    String invoke(String functionName, String... args) {
+    public String invoke(String functionName, String... args) {
         try {
             TransactionProposalRequest req = client.newTransactionProposalRequest();
             req.setChaincodeName(contractName);

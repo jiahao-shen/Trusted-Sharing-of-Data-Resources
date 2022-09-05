@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.UUID;
+
 @RestController
 public class APIController {
     private static final Logger logger = LogManager.getLogger(APIController.class);
@@ -18,10 +20,10 @@ public class APIController {
     public ResponseEntity<Object> register(@RequestBody APIRegisterRequest request) {
         logger.info(request);
 
-        FabricGateway fg = new FabricGateway();
-        System.out.println(fg.query("queryOrganizationList"));
-
-        return ResponseEntity.status(HttpStatus.OK).body("good");
+//        FabricGateway fg = new FabricGateway();
+//        System.out.println(fg.query("queryOrganizationList"));
+        UUID uuid = UUID.randomUUID();
+        return ResponseEntity.status(HttpStatus.OK).body(uuid);
     }
 }
 
