@@ -21,10 +21,10 @@ function removeUnwantedImages() {
 }
 
 echo "清理环境"
-mkdir -p config
-mkdir -p crypto-config
-rm -rf config/*
-rm -rf crypto-config/*
+# mkdir -p config
+# mkdir -p crypto-config
+# rm -rf config/*
+# rm -rf crypto-config/*
 docker-compose down -v
 clearContainers
 removeUnwantedImages

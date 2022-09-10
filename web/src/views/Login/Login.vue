@@ -36,7 +36,6 @@ const login = async (formEl: FormInstance | undefined) => {
 					appStore.setUser(res.data)
 					ElNotification({
 						title: '登录成功',
-						message: res.data,
 						type: 'success',
 					})
 					router.push('/dashboard')
@@ -53,6 +52,10 @@ const login = async (formEl: FormInstance | undefined) => {
 		}
 	})
 }
+
+const register = () => {
+}
+
 </script>
 <template>
 	<div class="flex w-full h-full">
@@ -82,7 +85,7 @@ const login = async (formEl: FormInstance | undefined) => {
 						<el-button class="w-full" type="primary" @click="login(formRef)">登录</el-button>
 					</div>
 					<div class="w-full my-10px">
-						<el-button class="my-10px w-full">注册</el-button>
+						<el-button class="my-10px w-full" @click="register">注册</el-button>
 					</div>
 					<el-divider>
 						<span class="text-base font-normal">其他登录方式</span>

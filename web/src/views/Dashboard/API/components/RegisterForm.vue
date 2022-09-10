@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
-import { ElNotification } from 'element-plus'
+import { ElNotification, ElMessageBox } from 'element-plus'
 import { validators } from '@/utils/validators'
 import { Plus, Delete } from '@element-plus/icons-vue'
-import type { FormInstance, FormRules } from 'element-plus'
+import type { FormInstance, FormRules, Action } from 'element-plus'
 import { service } from '@/service/dashboard/api/register'
 
 const router = useRouter()
@@ -88,7 +88,6 @@ const submit = async (formEl: FormInstance | undefined) => {
 				.then((res: any) => {
 					ElNotification({
 						title: 'API注册成功',
-						message: res.data,
 						type: 'success',
 					})
 					router.push('/dashboard/api/register')

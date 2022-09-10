@@ -14,6 +14,8 @@ import java.util.Properties;
 import java.util.Set;
 
 public class FabricSDK {
+    private final String userName = "Admin";
+    private final String mspID = "BHospitalMSP";
     private final String channelName = "medicinechannel";
     private final String contractName = "chaincode";
     private final String cryptoPath = "src/main/resources/crypto-config/";
@@ -27,7 +29,7 @@ public class FabricSDK {
         try {
             client = HFClient.createNewInstance();
             client.setCryptoSuite(CryptoSuite.Factory.getCryptoSuite());
-            client.setUserContext(new LocalUser("Admin", "BHospitalMSP", keyFile, certFile));
+            client.setUserContext(new LocalUser(userName, mspID, keyFile, certFile));
 
             channel = client.newChannel(channelName);
             Properties proper;
@@ -67,7 +69,6 @@ public class FabricSDK {
             req.setArgs(args);
             Collection<ProposalResponse> res = channel.sendTransactionProposal(req);
             BlockEvent.TransactionEvent event = channel.sendTransaction(res).get();
-            System.out.println(event.isValid());
             return res.toArray(new ProposalResponse[0])[0].getProposalResponse().getResponse().getPayload().toStringUtf8();
         } catch (Exception e) {
             e.printStackTrace();

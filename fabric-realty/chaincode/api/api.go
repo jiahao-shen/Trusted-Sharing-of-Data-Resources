@@ -14,7 +14,7 @@ import (
 )
 
 func CreateAPI(stub shim.ChaincodeStubInterface, args []string) pb.Response {
-	if len(args) != 10 {
+	if len(args) != 14 {
 		return shim.Error("参数个数不满足")
 	}
 
@@ -23,13 +23,18 @@ func CreateAPI(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 	apiIntroduction := args[2]
 	apiAuthor := args[3]
 	apiURL := args[4]
-	apiType := args[5]
-	apiRequest := args[6]
-	apiResponse := args[7]
-	apiVersion := args[8]
-	apiCreated := args[9]
+	apiMethod := args[5]
+	apiHeader := args[6]
+	apiHeaderType := args[7]
+	apiRequest := args[8]
+	apiRequestType := args[9]
+	apiResponse := args[10]
+	apiResponseType := args[11]
+	apiVersion := args[12]
+	apiCreated := args[13]
 
-	if apiID == "" || apiName == "" || apiAuthor == "" || apiURL == "" || apiType == "" || apiVersion == "" || apiCreated == "" {
+	// TODO: 预判断
+	if apiID == "" || apiName == "" || apiAuthor == "" || apiURL == "" || apiMethod == "" || apiVersion == "" || apiCreated == "" {
 		return shim.Error("参数存在空值")
 	}
 
@@ -39,9 +44,13 @@ func CreateAPI(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 		Introduction: apiIntroduction,
 		Author:       apiAuthor,
 		URL:          apiURL,
-		Type:         apiType,
+		Method:       apiMethod,
+		Header:       apiHeader,
+		HeaderType:   apiHeaderType,
 		Request:      apiRequest,
+		RequestType:  apiRequestType,
 		Response:     apiResponse,
+		ResponseType: apiResponseType,
 		Version:      apiVersion,
 		Created:      apiCreated,
 		Hash:         utils.GetSHA256String(args),

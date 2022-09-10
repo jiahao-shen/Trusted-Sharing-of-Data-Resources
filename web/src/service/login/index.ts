@@ -8,8 +8,7 @@ export const service = {
 			password: sha256(form.password).toString(),
 		})
 	},
-
-	logout: (username: string) => {
-		return http.post('/user/logout', {})
+	logout: () => {
+		return http.get('/user/logout')
 	}
 }

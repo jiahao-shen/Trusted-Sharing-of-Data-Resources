@@ -8,9 +8,12 @@ import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpSession;
 
 @RestController
 public class LoginController {
@@ -21,21 +24,23 @@ public class LoginController {
     private static final Logger logger = LogManager.getLogger(LoginController.class);
 
     @PostMapping("/user/login")
-    public ResponseEntity<Object> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<Object> login(@RequestBody LoginRequest request, HttpSession session) {
         logger.info(request);
 
         User user = userMapper.selectById(request.getUsername());
 
         if (user != null && user.getPassword().equals(request.getPassword())) {
+            session.setAttribute("user", user);
             return ResponseEntity.status(HttpStatus.OK).body(user);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("用户名或密码错误");
         }
     }
 
-    @PostMapping("/user/logout")
-    public ResponseEntity<Object> logout(@RequestBody Object request) {
-        return ResponseEntity.status(HttpStatus.OK).body("Nothing");
+    @GetMapping("/user/logout")
+    public ResponseEntity<Object> logout(HttpSession session) {
+        session.setAttribute("user", null);
+        return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 }
 

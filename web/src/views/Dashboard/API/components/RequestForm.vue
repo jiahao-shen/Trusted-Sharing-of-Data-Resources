@@ -52,12 +52,17 @@ const rules = reactive<FormRules>({
 
 const headerRules = reactive<FormRules>({
 	name: [validators.required('字段名'), validators.notEmpty('字段名')],
+	value: [validators.required('值')],
 })
 
 const requestRules = reactive<FormRules>({
 	name: [validators.required('字段名'), validators.notEmpty('字段名')],
-	type: [validators.required('字段类型')],
-	specification: [],
+	value: [validators.required('值')],
+})
+
+const responseRules = reactive<FormRules>({
+	name: [validators.required('字段名'), validators.notEmpty('字段名')],
+	value: [validators.required('值')],
 })
 
 const submit = async (formEl: FormInstance | undefined) => {
@@ -87,14 +92,11 @@ const reset = (formEl: FormInstance | undefined) => {
 	form.responseList = Array()
 }
 
-const responseRules = reactive<FormRules>({
-	name: [validators.required('字段名'), validators.notEmpty('字段名')],
-	type: [validators.required('字段类型')],
-})
+
 
 const headerType = ref('Form')
 const addHeaderItem = () => {
-	form.headerList.push({ name: '', required: 'true' })
+	form.headerList.push({ name: '', value: '' })
 }
 
 const deleteHeaderItem = (index: number) => {
@@ -104,7 +106,7 @@ const deleteHeaderItem = (index: number) => {
 
 const requestType = ref('Form')
 const addRequestItem = () => {
-	form.requestList.push({ name: '', type: '', introduction: '', specification: '', required: 'true' })
+	form.requestList.push({ name: '', value: '' })
 }
 
 const deleteRequestItem = (index: number) => {
@@ -113,7 +115,7 @@ const deleteRequestItem = (index: number) => {
 
 const responseType = ref('Form')
 const addResponseItem = () => {
-	form.responseList.push({ name: '', type: '', introduction: '' })
+	form.responseList.push({ name: '', value: '' })
 }
 
 const deleteResponseItem = (index: number) => {
@@ -185,7 +187,7 @@ const deleteResponseItem = (index: number) => {
 				</el-row>
 
 				<el-row :gutter="60" v-if="form.type === 'web'">
-					<el-col :span="5">
+					<el-col :span="8">
 						<el-form-item>
 							<div class="w-full flex justify-between">
 								<label class="table-title">请求头</label>
@@ -197,20 +199,17 @@ const deleteResponseItem = (index: number) => {
 							<div class="w-full" v-if="headerType === 'Form'">
 								<el-table :data="form.headerList" height="400" empty-text="空" highlight-current-row>
 									<el-table-column label="No." type="index" width="60" />
-									<el-table-column label="字段名" width="160">
+									<el-table-column label="字段名" width="300">
 										<template #default="scope">
 											<el-form-item :prop="'headerList.' + scope.$index + '.name'" :rules="headerRules.name">
 												<el-input class="mt-0" placeholder="请输入字段名" v-model="scope.row.name" />
 											</el-form-item>
 										</template>
 									</el-table-column>
-									<el-table-column label="必填">
+									<el-table-column label="值">
 										<template #default="scope">
-											<el-form-item :prop="'headerList.' + scope.$index + '.required'">
-												<el-select class="mt-0" v-model="scope.row.required">
-													<el-option label="是" value="true" />
-													<el-option label="否" value="false" />
-												</el-select>
+											<el-form-item :prop="'headerList.' + scope.$index + '.value'" :rules="headerRules.value">
+												<el-input class="mt-0" placeholder="请输入值" v-model="scope.row.value" />
 											</el-form-item>
 										</template>
 									</el-table-column>
@@ -242,7 +241,7 @@ const deleteResponseItem = (index: number) => {
 						</el-form-item>
 					</el-col>
 
-					<el-col :span="11">
+					<el-col :span="8">
 						<el-form-item>
 							<div class="w-full flex justify-between">
 								<label class="table-title">请求体</label>
@@ -255,44 +254,18 @@ const deleteResponseItem = (index: number) => {
 							<div class="w-full" v-if="requestType === 'Form'">
 								<el-table :data="form.requestList" height="400" empty-text="空" highlight-current-row>
 									<el-table-column label="No." type="index" width="60" />
-									<el-table-column label="字段名" width="150">
+									<el-table-column label="字段名" width="300">
 										<template #default="scope">
 											<el-form-item :prop="'requestList.' + scope.$index + '.name'" :rules="requestRules.name">
 												<el-input placeholder="请输入字段名" v-model="scope.row.name" />
 											</el-form-item>
 										</template>
 									</el-table-column>
-									<el-table-column label="字段类型" width="160">
-										<template #default="scope">
-											<el-form-item :prop="'requestList.' + scope.$index + '.type'" :rules="requestRules.type">
-												<el-input placeholder="请输入字段类型" v-model="scope.row.type" />
-											</el-form-item>
-										</template>
-									</el-table-column>
 
-									<el-table-column label="字段说明" width="180">
+									<el-table-column label="值">
 										<template #default="scope">
-											<el-form-item :prop="'requestList.' + scope.$index + '.introduction'">
-												<el-input placeholder="请简要说明该字段" v-model="scope.row.introduction" />
-											</el-form-item>
-										</template>
-									</el-table-column>
-
-									<el-table-column label="字段要求" width="250">
-										<template #default="scope">
-											<el-form-item :prop="'requestList.' + scope.$index + '.specification'">
-												<el-input placeholder="请输入字段要求(建议使用正则表达式)" v-model="scope.row.specification" />
-											</el-form-item>
-										</template>
-									</el-table-column>
-
-									<el-table-column label="必填">
-										<template #default="scope">
-											<el-form-item :prop="'requestList.' + scope.$index + '.required'">
-												<el-select class="mt-0" v-model="scope.row.required">
-													<el-option label="是" value="true" />
-													<el-option label="否" value="false" />
-												</el-select>
+											<el-form-item :prop="'requestList.' + scope.$index + '.value'" :rules="requestRules.value">
+												<el-input class="mt-0" placeholder="请输入值" v-model="scope.row.value" />
 											</el-form-item>
 										</template>
 									</el-table-column>
@@ -339,25 +312,18 @@ const deleteResponseItem = (index: number) => {
 							<div class="w-full" v-if="responseType === 'Form'">
 								<el-table :data="form.responseList" height="400" empty-text="空" highlight-current-row>
 									<el-table-column label="No." type="index" width="60" />
-									<el-table-column label="字段名" width="150">
+									<el-table-column label="字段名" width="300">
 										<template #default="scope">
 											<el-form-item :prop="'responseList.' + scope.$index + '.name'" :rules="responseRules.name">
 												<el-input placeholder="请输入字段名" v-model="scope.row.name" />
 											</el-form-item>
 										</template>
 									</el-table-column>
-									<el-table-column label="字段类型" width="160">
+									
+									<el-table-column label="值">
 										<template #default="scope">
-											<el-form-item :prop="'responseList.' + scope.$index + '.type'" :rules="responseRules.type">
-												<el-input placeholder="请输入字段类型" v-model="scope.row.type" />
-											</el-form-item>
-										</template>
-									</el-table-column>
-
-									<el-table-column label="字段说明">
-										<template #default="scope">
-											<el-form-item :prop="'responseList.' + scope.$index + '.introduction'">
-												<el-input placeholder="请简要说明该字段" v-model="scope.row.introduction" />
+											<el-form-item :prop="'responseList.' + scope.$index + '.value'" :rules="responseRules.value">
+												<el-input class="mt-0" placeholder="请输入值" v-model="scope.row.value" />
 											</el-form-item>
 										</template>
 									</el-table-column>

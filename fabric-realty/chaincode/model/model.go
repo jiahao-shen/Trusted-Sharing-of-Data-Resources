@@ -129,9 +129,13 @@ type API struct {
 	Introduction string   `json:"introduction"` // API介绍
 	Author       string   `json:"author"`       // API所有者
 	URL          string   `json:"url"`          // API请求地址
-	Type         string   `json:"type"`         // 请求类型(OPTIONS, HEAD, GET, POST, PUT, DELETE, TRACE, CONNECT)
-	Request      string   `json:"request"`      // 请求参数(JSON格式, 关键字和类型)
+	Method       string   `json:"method"`       // 请求类型(OPTIONS, HEAD, GET, POST, PUT, DELETE, TRACE, CONNECT)
+	Header       string   `json:"header"`       // 请求头
+	HeaderType   string   `json:"headerType"`   // 请求头类型
+	Request      string   `json:"request"`      // 请求体(JSON格式, 关键字和类型)
+	RequestType  string   `json:"requestType"`  // 请求体类型(Form或JSON)
 	Response     string   `json:"response"`     // 返回参数(JSON格式, 关键字和类型)
+	ResponseType string   `json:"responseType"` // 返回体类型(Form或JSON)
 	Version      string   `json:"version"`      // API版本信息
 	Created      string   `json:"created"`      // 创建时间
 	Nodes        []string `json:"nodes"`        // 所属节点

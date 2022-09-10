@@ -25,19 +25,29 @@ let apiList: any[]
 let filterList: any[]
 let showList = ref(Array())
 
-service.getAPIList().then((res: any) => {
+service.getAllAPIList().then((res: any) => {
 	if (res.status === 200) {
-		apiList = res.data
-
-		filterList = apiList
-		total.value = filterList.length
-		showList.value = filterList.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+		apiList = []
+		for (let item of res.data) {
+			apiList.push({
+				orgName: item.author,
+				orgClass: "类别一",
+				apiName: item.name,
+				apiID: item.id,
+				apiFunction: "功能一",
+				apiStatus: "可用"
+			})
+		}
 
 		for (let item of apiList) {
 			classList.value.add(item.orgClass)
 			functionList.value.add(item.apiFunction)
 			statusList.value.add(item.apiStatus)
 		}
+
+		filterList = apiList
+		total.value = filterList.length
+		showList.value = filterList.slice((currentPage - 1) * pageSize, currentPage * pageSize)
 	}
 })
 

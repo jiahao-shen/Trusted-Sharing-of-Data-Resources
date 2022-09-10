@@ -4,6 +4,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useFullscreen } from '@vueuse/core'
 import { Icon } from '@iconify/vue'
 import { useAppStore } from '@/store/app'
+import { service } from '@/service/login'
 
 const route = useRoute()
 const router = useRouter()
@@ -28,8 +29,13 @@ const toggleCollapse = () => {
 }
 
 const logout = () => {
-	appStore.setUser(null)
-	router.push('/login')
+	service
+		.logout()
+		.then((res: any) => {
+			appStore.setUser(null)
+			router.push('/login')
+		})
+		.catch((err: any) => {})
 }
 </script>
 

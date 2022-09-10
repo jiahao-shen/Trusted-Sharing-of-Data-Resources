@@ -10,6 +10,7 @@ import 'element-plus/dist/index.css'
 import ElementPlus from 'element-plus'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import zhCn from 'element-plus/es/locale/lang/zh-cn'
+import JsonViewer from 'vue-json-viewer'
 
 const app = createApp(App)
 
@@ -20,6 +21,7 @@ app.use(router)
 app.use(ElementPlus, {
 	locale: zhCn
 })
+app.use(JsonViewer)
 
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 	app.component(key, component)

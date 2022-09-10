@@ -1,14 +1,22 @@
 package com.trustchain.sdkjava;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.trustchain.sdkjava.fabric.FabricGateway;
 import com.trustchain.sdkjava.mapper.UserMapper;
 import com.trustchain.sdkjava.model.User;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.UUID;
 
 @SpringBootTest
 class SdkJavaApplicationTests {
@@ -48,6 +56,27 @@ class SdkJavaApplicationTests {
 
 //        logger.info(user);
         logger.error(endTime - startTime);
+    }
+
+    @Test
+    void testFabric() {
+        FabricGateway fg = new FabricGateway();
+
+//        try {
+//            JSONArray jsonArray = new JSONArray(fg.query("queryAPIList"));
+//            for (int i = 0; i < jsonArray.length(); i++) {
+//                System.out.println(jsonArray.getJSONObject(i).get("id"));
+//            }
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+        System.out.println(fg.query("queryAPIList"));
+//        fg.invoke("createOrganization", "test", "test", "test", "test", "", "now");
+//        System.out.println(fg.query("queryOrganizationList"));
+//        UUID apiID = UUID.randomUUID();
+//        System.out.println(apiID);
+//        System.out.println(new Date().getTime());
+//        System.out.println(LocalDateTime.now());
     }
 
 }

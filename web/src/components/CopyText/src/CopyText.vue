@@ -11,9 +11,9 @@ const props = defineProps<{
 const copyText = async () => {
 	try {
 		await toClipboard(props.text)
-		ElMessage({ message: `复制成功: ${props.text}`, type: 'success' })
+		ElMessage({ message: `复制成功`, type: 'success' })
 	} catch (err) {
-		ElMessage({ message: `复制失败: ${err}`, type: 'error' })
+		ElMessage({ message: `复制失败`, type: 'error' })
 	}
 }
 </script>

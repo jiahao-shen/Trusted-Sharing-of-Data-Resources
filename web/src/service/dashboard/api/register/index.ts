@@ -1,4 +1,5 @@
 import { http } from '@/service'
+import { Axios } from 'axios';
 
 export const service = {
 	registerAPI: (form: any) => {

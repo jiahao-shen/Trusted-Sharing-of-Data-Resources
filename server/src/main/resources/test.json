@@ -1,0 +1,56 @@
+{
+  "name": "trustchain",
+  "version": "1.0.0",
+  "client": {
+    "organization": "JD",
+    "connection": {
+      "timeout": {
+        "peer": {
+          "endorser": "300"
+        },
+        "orderer": "300"
+      }
+    }
+  },
+  "channels": {
+    "appchannel": {
+      "orderers": [
+        "orderer.qq.com"
+      ],
+      "peers": {
+        "peer0.jd.com": {
+          "endorsingPeer": true,
+          "chaincodeQuery": true,
+          "ledgerQuery": true,
+          "eventSource": true
+        }
+      }
+    }
+  },
+  "organizations": {
+    "JD": {
+      "mspid": "JDMSP",
+      "peers": [
+        "peer0.jd.com"
+      ]
+    }
+  },
+  "orderers": {
+    "orderer.qq.com": {
+      "url": "grpc://localhost:7050",
+      "grpcOptions": {
+        "ssl-target-name-override": "orderer.qq.com",
+        "hostnameOverride": "orderer.qq.com"
+      }
+    }
+  },
+  "peers": {
+    "peer0.jd.com": {
+      "url": "grpc://localhost:7051",
+      "grpcOptions": {
+        "ssl-target-name-override": "peer0.jd.com",
+        "hostnameOverride": "peer0.jd.com"
+      }
+    }
+  }
+}

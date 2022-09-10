@@ -1,7 +1,11 @@
 import { http } from '@/service'
 
 export const service = {
-	getAPIList: () => {
-		return http.get('/api/apiList')
+	getAllAPIList: () => {
+		return http.get('/fabric/api/allList')
+	},
+	// TODO: 参数
+	getMyAPIList: () => {
+		return http.get('/fabric/api/myList')
 	}
 }
