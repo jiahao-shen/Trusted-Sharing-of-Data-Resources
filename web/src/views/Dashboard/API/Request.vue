@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { Search, RefreshLeft } from '@element-plus/icons-vue'
 import { CopyText } from '@/components/CopyText'
-import { service } from '@/service/dashboard/api/request'
+import { service } from '@/service/dashboard/api'
 
 const route = useRoute()
 const router = useRouter()
@@ -126,8 +126,8 @@ const computeFilter = () => {
 
 const showDetails = () => {}
 
-const requestAPI = (apiID: any) => {
-	router.push({ name: '申请表单', query: { apiID: apiID } })
+const requestAPI = (api: any) => {
+	router.push({ name: '申请表单', query: { orgName: api.orgName, apiName: api.apiName, apiID: api.apiID }})
 }
 </script>
 
@@ -208,7 +208,7 @@ const requestAPI = (apiID: any) => {
 					<template #default="scope">
 						<div class="w-full h-full flex items-center operate">
 							<el-button type="primary" text>详情</el-button>
-							<el-button type="primary" text @click="requestAPI(scope.row.apiID)">申请</el-button>
+							<el-button type="primary" text @click="requestAPI(scope.row)">申请</el-button>
 						</div>
 					</template>
 				</el-table-column>

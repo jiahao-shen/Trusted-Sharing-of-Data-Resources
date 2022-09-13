@@ -5,7 +5,7 @@ import { ElNotification, ElMessageBox } from 'element-plus'
 import { validators } from '@/utils/validators'
 import { Plus, Delete } from '@element-plus/icons-vue'
 import type { FormInstance, FormRules, Action } from 'element-plus'
-import { service } from '@/service/dashboard/api/register'
+import { service } from '@/service/dashboard/api'
 
 const router = useRouter()
 

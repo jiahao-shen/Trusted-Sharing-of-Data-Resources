@@ -21,23 +21,23 @@ import org.apache.logging.log4j.LogManager;
 public class FabricGateway {
     private static final Logger logger = LogManager.getLogger(FabricGateway.class);
 
-//    private final String networkConfigPath = "src/main/resources/connections.json";
-//    private final String channelName = "medicinechannel";
-//    private final String contractName = "chaincode";
-//    private final String mspID = "BHospitalMSP";
-//    private final String userName = "Admin";
-//    private final String cryptoPath = "src/main/resources/crypto-config/";
-//    private final String certFile = cryptoPath + "peerOrganizations/BHospital.trustchain.com/users/Admin@BHospital.trustchain.com/msp/signcerts/Admin@BHospital.trustchain.com-cert.pem";
-//    private final String keyFile = cryptoPath + "peerOrganizations/BHospital.trustchain.com/users/Admin@BHospital.trustchain.com/msp/keystore/75214e9125760153e6c131983549207b7d26a2f17cc96ceeb50329abc402f777_sk";
-
+    private final String networkConfigPath = "src/main/resources/connections.json";
+    private final String channelName = "medicinechannel";
+    private final String contractName = "trustchain";
+    private final String mspID = "BHospitalMSP";
     private final String userName = "Admin";
-    private final String mspID = "JDMSP";
-    private final String channelName = "appchannel";
-    private final String contractName = "fabric-realty";
-    private final String networkConfigPath = "src/main/resources/test.json";
-    private final String cryptoPath = "/home/node9/Code/Trusted-Sharing-of-Data-Resources/fabric-realty/network/crypto-config/";
-    private final String certFile = cryptoPath + "peerOrganizations/jd.com/users/Admin@jd.com/msp/signcerts/Admin@jd.com-cert.pem";
-    private final String keyFile = cryptoPath + "peerOrganizations/jd.com/users/Admin@jd.com/msp/keystore/bc434b71d556d5dbfd926e84a34ff9f445010ca2ec430a07e444a8b7e0e0ff62_sk";
+    private final String cryptoPath = "src/main/resources/crypto-config/";
+    private final String certFile = cryptoPath + "peerOrganizations/BHospital.trustchain.com/users/Admin@BHospital.trustchain.com/msp/signcerts/Admin@BHospital.trustchain.com-cert.pem";
+    private final String keyFile = cryptoPath + "peerOrganizations/BHospital.trustchain.com/users/Admin@BHospital.trustchain.com/msp/keystore/75214e9125760153e6c131983549207b7d26a2f17cc96ceeb50329abc402f777_sk";
+
+//    private final String userName = "Admin";
+//    private final String mspID = "JDMSP";
+//    private final String channelName = "appchannel";
+//    private final String contractName = "fabric-realty";
+//    private final String networkConfigPath = "src/main/resources/test.json";
+//    private final String cryptoPath = "/home/node9/Code/Trusted-Sharing-of-Data-Resources/fabric-realty/network/crypto-config/";
+//    private final String certFile = cryptoPath + "peerOrganizations/jd.com/users/Admin@jd.com/msp/signcerts/Admin@jd.com-cert.pem";
+//    private final String keyFile = cryptoPath + "peerOrganizations/jd.com/users/Admin@jd.com/msp/keystore/bc434b71d556d5dbfd926e84a34ff9f445010ca2ec430a07e444a8b7e0e0ff62_sk";
 
     private X509Certificate certificate;
     private PrivateKey privateKey;
@@ -64,7 +64,7 @@ public class FabricGateway {
             return new String(contract.evaluateTransaction(functionName, args), StandardCharsets.UTF_8);
         } catch (Exception e) {
             e.printStackTrace();
-            return "";
+            return null;
         }
     }
 

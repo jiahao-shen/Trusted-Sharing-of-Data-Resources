@@ -1,5 +1,4 @@
 import { http } from '@/service'
-import { Axios } from 'axios';
 
 export const service = {
 	registerAPI: (form: any) => {
@@ -37,7 +36,33 @@ export const service = {
 			responseType: form.responseType,
 		})
 	},
+  callAPI: (form: any) => {
+    return http.post('/fabric/api/call', {
+      apiID: form.apiID,
+      apiHeader: (() => {
+				if (form.headerType === 'form') {
+					return form.headerList.length ? JSON.stringify(form.headerList) : ''
+				} else if (form.headerType === 'json') {
+					return form.headerText
+				}
+			})(),
+      apiRequest: (() => {
+				if (form.requestType === 'form') {
+					return form.requestList.length ? JSON.stringify(form.requestList) : ''
+				} else if (form.requestType === 'json') {
+					return form.requestText
+				}
+			})(),
+    })
+  },
 	getRegisterList: () => {
-		return http.get('/api/registerList')
+		return http.get('/fabric/api/registerList')
 	},
+  getAllAPIList: () => {
+		return http.get('/fabric/api/allList')
+	},
+	// TODO: 参数
+	getMyAPIList: () => {
+		return http.get('/fabric/api/myList')
+	}
 }

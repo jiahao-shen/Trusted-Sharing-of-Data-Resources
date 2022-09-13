@@ -21,5 +21,8 @@ public class User {
 
     @TableField("image_url")
     private String imageURL;
+
+    @TableField("fabric_id")
+    private String fabricID;
 }
 
