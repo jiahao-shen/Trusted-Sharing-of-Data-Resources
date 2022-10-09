@@ -2,7 +2,7 @@ import axios from 'axios'
 import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios'
 
 const http: AxiosInstance = axios.create({
-	baseURL: '/server',
+	// baseURL: '/servers',
 	timeout: 10000,
 })
 

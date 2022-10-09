@@ -12,44 +12,49 @@ const router = createRouter({
 		{
 			path: '/about',
 			name: '关于',
-			component: () => import('../views/AboutView.vue'),
+			component: () => import('@/views/AboutView.vue'),
 		},
 		{
 			path: '/login',
 			name: '登录',
-			component: () => import('../views/Login/Login.vue'),
+			component: () => import('@/views/Login/Login.vue'),
+		},
+		{
+			path: '/register',
+			name: '注册',
+			component: () => import('@/views/Register/Register.vue'),
 		},
 		{
 			path: '/dashboard',
 			name: '控制台',
-			component: () => import('../views/Dashboard/Dashboard.vue'),
+			component: () => import('@/views/Dashboard/Dashboard.vue'),
 			children: [
 				{
 					path: 'api',
 					name: 'API管理',
-					component: () => import('../views/Dashboard/API/API.vue'),
+					component: () => import('@/views/Dashboard/API/API.vue'),
 					children: [
 						{
 							path: 'register',
 							name: 'API注册',
-							component: () => import('../views/Dashboard/API/Register.vue'),
+							component: () => import('@/views/Dashboard/API/Register.vue'),
 							children: [
 								{
 									path: 'form',
 									name: '注册表单',
-									component: () => import('../views/Dashboard/API/components/RegisterForm.vue'),
+									component: () => import('@/views/Dashboard/API/components/RegisterForm.vue'),
 								},
 							],
 						},
 						{
 							path: 'request',
 							name: 'API申请',
-							component: () => import('../views/Dashboard/API/Request.vue'),
+							component: () => import('@/views/Dashboard/API/Request.vue'),
 							children: [
 								{
 									path: 'form',
 									name: '申请表单',
-									component: () => import('../views/Dashboard/API/components/RequestForm.vue'),
+									component: () => import('@/views/Dashboard/API/components/RequestForm.vue'),
 								},
 							],
 						},
@@ -63,21 +68,21 @@ const router = createRouter({
 			children: [
 				{
 					path: '403',
-					component: () => import('../views/Error/Error.vue'),
+					component: () => import('@/views/Error/Error.vue'),
 					props: {
 						type: '403',
 					},
 				},
 				{
 					path: '404',
-					component: () => import('../views/Error/Error.vue'),
+					component: () => import('@/views/Error/Error.vue'),
 					props: {
 						type: '404',
 					},
 				},
 				{
 					path: '500',
-					component: () => import('../views/Error/Error.vue'),
+					component: () => import('@/views/Error/Error.vue'),
 					props: {
 						type: '500',
 					},
