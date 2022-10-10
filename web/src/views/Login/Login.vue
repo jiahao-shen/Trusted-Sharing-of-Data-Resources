@@ -24,11 +24,7 @@ const rules = reactive<FormRules>({
 })
 
 const login = async (formEl: FormInstance | undefined) => {
-	if (!formEl) {
-		return
-	}
-
-	await formEl.validate((valid, fields) => {
+	await formEl?.validate((valid, fields) => {
 		if (valid) {
 			service
 				.login(form)

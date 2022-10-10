@@ -32,10 +32,12 @@ const logout = () => {
 	service
 		.logout()
 		.then((res: any) => {
-			appStore.setUser(null)
-			router.push('/login')
+			
 		})
 		.catch((err: any) => {})
+
+	appStore.setUser(null)
+	router.push('/login')
 }
 </script>
 

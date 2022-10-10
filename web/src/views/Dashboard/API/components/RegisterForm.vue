@@ -78,10 +78,7 @@ const responseRules = reactive<FormRules>({
 })
 
 const submit = async (formEl: FormInstance | undefined) => {
-	if (!formEl) {
-		return
-	}
-	await formEl.validate((valid, fields) => {
+	await formEl?.validate((valid, fields) => {
 		if (valid) {
 			service
 				.registerAPI(form)
@@ -106,10 +103,7 @@ const submit = async (formEl: FormInstance | undefined) => {
 }
 
 const reset = (formEl: FormInstance | undefined) => {
-	if (!formEl) {
-		return
-	}
-	formEl.resetFields()
+	formEl?.resetFields()
 	form.headerList = Array()
 	form.requestList = Array()
 	form.responseList = Array()
