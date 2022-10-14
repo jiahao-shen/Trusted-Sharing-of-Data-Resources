@@ -52,13 +52,14 @@ const rules = reactive<FormRules>({
 	password1: [validators.required('密码'), validators.lengthRange(6, 20, '密码'), validators.notEmpty('密码')],
 	password2: [
 		validators.required(''),
-		{ 
+		{
 			validator: (rule: any, value: string, callback: any) => {
 				if (form.password1 !== form.password2) {
 					callback('两次输入的密码不一致')
 				}
-			} 
-		}],
+			},
+		},
+	],
 })
 
 const submit = async (formEl: FormInstance | undefined) => {
@@ -81,7 +82,7 @@ const handleClose = (done: () => void) => {
 	<div class="w-full p-20px">
 		<el-card class="w-full">
 			<template #header>
-				<span class="text-2xl">用户管理</span>
+				<h2 class="text-2xl">用户管理</h2>
 			</template>
 
 			<el-table :data="showList" highlight-current-row border>
@@ -96,8 +97,12 @@ const handleClose = (done: () => void) => {
 				<el-table-column label="操作">
 					<template #default scope>
 						<div class="w-full h-full flex items-center operate">
-							<el-button type="success" icon="Edit" circle size="default" />
-							<el-button type="danger" icon="Delete" circle size="default" />
+							<el-tooltip content="编辑">
+								<el-button type="success" icon="Edit" circle size="default" />
+							</el-tooltip>
+							<el-tooltip content="删除">
+								<el-button type="danger" icon="Delete" circle size="default" />
+							</el-tooltip>
 						</div>
 					</template>
 				</el-table-column>
@@ -132,7 +137,7 @@ const handleClose = (done: () => void) => {
 			<el-row :gutter="60">
 				<el-col>
 					<el-form-item label="密码" prop="password1">
-						<el-input placeholder="请输入密码" v-model="form.password1" show-password/>
+						<el-input placeholder="请输入密码" v-model="form.password1" show-password />
 					</el-form-item>
 				</el-col>
 			</el-row>
@@ -140,11 +145,11 @@ const handleClose = (done: () => void) => {
 			<el-row :gutter="60">
 				<el-col>
 					<el-form-item label="确认密码" prop="password2">
-						<el-input placeholder="请确认密码" v-model="form.password2" show-password/>
+						<el-input placeholder="请确认密码" v-model="form.password2" show-password />
 					</el-form-item>
 				</el-col>
 			</el-row>
-			
+
 			<el-row :gutter="60">
 				<el-col>
 					<el-form-item label="用户权限" prop="permissions">
@@ -167,7 +172,7 @@ const handleClose = (done: () => void) => {
 				<el-col :span="6">
 					<el-button class="w-full" type="primary" @click="formRef?.resetFields()">重置</el-button>
 				</el-col>
-				
+
 				<el-col :span="6">
 					<el-button class="w-full" type="danger" @click="addUserDialogVisible = false">返回</el-button>
 				</el-col>
@@ -175,4 +180,10 @@ const handleClose = (done: () => void) => {
 		</el-form>
 	</el-dialog>
 </template>
-<style scoped></style>
+<style lang="less" scoped>
+#form {
+	:deep(.el-form-item__label) {
+		font-size: 1rem;
+	}
+}
+</style>

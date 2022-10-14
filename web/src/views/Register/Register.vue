@@ -102,7 +102,7 @@ const reset = (formEl: FormInstance | undefined) => {
 	<div class="flex w-full h-full justify-center items-center">
 		<el-card class="w-800px">
 			<template #header>
-				<span class="text-2xl">机构注册</span>
+				<h2 class="text-2xl">机构注册</h2>
 			</template>
 			<el-form class="w-full" ref="formRef" :model="form" :rules="rules" label-position="top" id="form">
 				<el-row :gutter="60">

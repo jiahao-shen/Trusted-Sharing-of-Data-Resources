@@ -129,7 +129,7 @@ const deleteResponseItem = (index: number) => {
 	<div class="w-full p-20px">
 		<el-card class="w-full">
 			<template #header>
-				<span class="text-2xl">API申请</span>
+				<h2 class="text-2xl">API申请</h2>
 			</template>
 			<el-form ref="formRef" :model="form" :rules="rules" label-position="top"  id="form">
 				<el-row :gutter="60">

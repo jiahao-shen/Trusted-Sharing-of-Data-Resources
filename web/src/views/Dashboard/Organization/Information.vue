@@ -21,7 +21,7 @@ const organization = {
 	<div class="w-full p-20px">
 		<el-card class="w-full">
 			<template #header>
-				<span class="text-2xl">机构详情</span>
+				<h2 class="text-2xl">机构详情</h2>
 			</template>
 
 			<div class="w-full flex justify-center items-center">

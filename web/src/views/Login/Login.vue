@@ -61,7 +61,7 @@ const login = async (formEl: FormInstance | undefined) => {
 		<div class="flex w-[40%] h-full justify-center items-center">
 			<el-card class="w-[80%] max-w-500px">
 				<div class="text-center m-20px">
-					<span class="text-2xl">登 录</span>
+					<h2 class="text-2xl">登 录</h2>
 				</div>
 				<el-form class="p-10px" label-position="top" :model="form" :rules="rules" ref="formRef">
 					<el-form-item label="用户名" class="my-10px" prop="username">

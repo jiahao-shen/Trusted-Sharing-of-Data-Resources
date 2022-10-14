@@ -63,7 +63,7 @@ const logout = () => {
 						</template>
 						<el-menu-item index="/dashboard/organization/information">机构详情</el-menu-item>
 						<el-menu-item index="/dashboard/organization/user">用户管理</el-menu-item>
-						<el-menu-item index="control-approval-process">审批流程</el-menu-item>
+						<el-menu-item index="/dashboard/organization/approval">审批流程</el-menu-item>
 						<!-- <el-menu-item index="control-key-management">秘钥管理</el-menu-item> -->
 						<!-- <el-menu-item index="control-release-deployment">发布部署</el-menu-item> -->
 					</el-sub-menu>
