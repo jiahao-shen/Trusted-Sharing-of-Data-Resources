@@ -145,7 +145,7 @@ const logout = () => {
 			</div>
 
 			<div class="w-full h-30px flex justify-center items-center">
-				<h3>Copyright ©2022-北京航空航天大学</h3>
+				<h3 class="text-gray-500">Copyright ©2022-北京航空航天大学</h3>
 			</div>
 		</div>
 	</div>

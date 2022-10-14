@@ -82,7 +82,6 @@ const onFileChange: UploadProps['onChange'] = (uploadFile, uploadFiles) => {
 }
 
 const submit = async (formEl: FormInstance | undefined) => {
-	console.log(form)
 	await formEl?.validate((valid, fields) => {
 		if (valid) {
 			// TODO:
@@ -266,13 +265,13 @@ const reset = (formEl: FormInstance | undefined) => {
 
 				<el-row :gutter="60">
 					<el-col :span="6" :offset="3">
-						<el-button type="success" @click="submit(formRef)" class="w-full">注册</el-button>
+						<el-button class="w-full" type="success" @click="submit(formRef)">注册</el-button>
 					</el-col>
 					<el-col :span="6">
-						<el-button type="primary" @click="reset(formRef)" class="w-full">重置</el-button>
+						<el-button class="w-full" type="primary" @click="reset(formRef)">重置</el-button>
 					</el-col>
 					<el-col :span="6">
-						<el-button class="w-full" @click="router.push('/login')">返回</el-button>
+						<el-button class="w-full" type="danger" @click="router.push('/login')">返回</el-button>
 					</el-col>
 				</el-row>
 			</el-form>

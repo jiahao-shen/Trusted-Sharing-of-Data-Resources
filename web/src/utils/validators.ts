@@ -58,7 +58,8 @@ export const validators = {
 	},
 	email: () => {
 		return {
-			pattern: /^[0-9a-zA-Z_.-]+[@][0-9a-zA-Z_.-]+([.][a-zA-Z]+){1,2}$/,
+			required: true,
+			type: 'email',
 			message: '邮箱格式错误',
 			trigger: 'blur'
 		}
@@ -69,5 +70,5 @@ export const validators = {
 			message: '电话格式错误',
 			trigger: 'blur'
 		}
-	}
+	},
 }

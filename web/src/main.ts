@@ -12,6 +12,7 @@ import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import zhCn from 'element-plus/es/locale/lang/zh-cn'
 import JsonViewer from 'vue-json-viewer'
 
+
 const app = createApp(App)
 
 const pinia = createPinia()
