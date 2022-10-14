@@ -63,7 +63,7 @@ const login = async (formEl: FormInstance | undefined) => {
 				<div class="text-center m-20px">
 					<span class="text-2xl">登 录</span>
 				</div>
-				<el-form class="p-10px" label-position="top" size="large" :model="form" :rules="rules" ref="formRef">
+				<el-form class="p-10px" label-position="top" :model="form" :rules="rules" ref="formRef">
 					<el-form-item label="用户名" class="my-10px" prop="username">
 						<el-input placeholder="请输入用户名" v-model="form.username" clearable />
 					</el-form-item>

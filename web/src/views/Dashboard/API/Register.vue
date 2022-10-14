@@ -39,7 +39,7 @@ const indexMethod = (index: number) => {
 				<span class="text-2xl">API注册</span>
 			</template>
 
-			<h2 class="text-xl">当前注册</h2>
+			<!-- <h2 class="text-xl">当前注册</h2> -->
 			<el-table :data="showList" highlight-current-row border>
 				<el-table-column label="No." type="index" :index="indexMethod" width="100" />
 				<el-table-column label="名称" prop="name" />
@@ -81,7 +81,7 @@ const indexMethod = (index: number) => {
 				/>
 			</div>
 
-			<el-button class="w-full mt-20px" plain @click="router.push('/dashboard/api/register/form')" size="large">
+			<el-button class="w-full mt-20px" plain @click="router.push('/dashboard/api/register/form')">
 				<el-icon><Plus /></el-icon>
 				&nbsp新增API
 			</el-button>

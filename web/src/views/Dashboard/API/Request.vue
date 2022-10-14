@@ -140,7 +140,7 @@ const requestAPI = (api: any) => {
 
 			<div class="flex">
 				<span class="inline-flex items-center">机构类别:</span>
-				<el-radio-group class="mx-20px" v-model="orgClass" size="large" @change="orgClassChange">
+				<el-radio-group class="mx-20px" v-model="orgClass" @change="orgClassChange">
 					<el-radio-button label="全部" />
 					<el-radio-button v-for="item in classList" :label="item" />
 				</el-radio-group>
@@ -149,9 +149,9 @@ const requestAPI = (api: any) => {
 			<div class="flex mt-20px">
 				<span class="inline-flex items-center">机构名称:</span>
 				<div class="w-400px mx-20px inline-flex items-center">
-					<el-input size="large" v-model="orgName" placeholder="搜索" clearable>
+					<el-input v-model="orgName" placeholder="搜索" clearable>
 						<template #append>
-							<el-button :icon="Search" @click="searchByOrgName" />
+							<el-button icon="Search" @click="searchByOrgName" />
 						</template>
 					</el-input>
 				</div>
@@ -161,9 +161,9 @@ const requestAPI = (api: any) => {
 				<el-col class="flex" :span="8">
 					<span class="inline-flex items-center">API名称:</span>
 					<div class="w-400px mx-20px">
-						<el-input size="large" v-model="apiName" placeholder="搜索" clearable>
+						<el-input v-model="apiName" placeholder="搜索" clearable>
 							<template #append>
-								<el-button :icon="Search" @click="searchByAPIID" />
+								<el-button icon="Search" @click="searchByAPIID" />
 							</template>
 						</el-input>
 					</div>
@@ -171,7 +171,7 @@ const requestAPI = (api: any) => {
 
 				<el-col class="flex" :span="6">
 					<span class="inline-flex items-center">API功能:</span>
-					<el-select class="mx-20px" size="large" v-model="apiFunction" @change="apiFunctionChange">
+					<el-select class="mx-20px" v-model="apiFunction" @change="apiFunctionChange">
 						<el-option label="全部" value="全部" />
 						<el-option v-for="item in functionList" :label="item" :value="item" />
 					</el-select>
@@ -179,7 +179,7 @@ const requestAPI = (api: any) => {
 
 				<el-col class="flex" :span="6">
 					<span class="inline-flex items-center">API状态:</span>
-					<el-select class="mx-20px" size="large" v-model="apiStatus" @change="apiStatusChange">
+					<el-select class="mx-20px" v-model="apiStatus" @change="apiStatusChange">
 						<el-option label="全部" value="全部" />
 						<el-option v-for="item in statusList" :label="item" :value="item" />
 					</el-select>
@@ -187,7 +187,7 @@ const requestAPI = (api: any) => {
 
 				<el-col :span="3">
 					<span class="inline-flex items-center">全部重置:</span>
-					<el-button class="mx-20px" :icon="RefreshLeft" @click="resetFilter" />
+					<el-button class="mx-20px" icon="RefreshLeft" @click="resetFilter" />
 				</el-col>
 			</el-row>
 

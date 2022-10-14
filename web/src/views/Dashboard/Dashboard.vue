@@ -17,9 +17,9 @@ const collapse = computed(() => appStore.getCollapse)
 const showTitle = ref(!appStore.getCollapse)
 
 const toggleCollapse = () => {
-	appStore.setCollapse(!unref(collapse))
+	appStore.setCollapse(!collapse.value)
 
-	if (!unref(collapse)) {
+	if (!collapse.value) {
 		setTimeout(() => {
 			showTitle.value = true
 		}, 400)
@@ -56,15 +56,16 @@ const logout = () => {
 
 			<div class="border-r-1 border-[var(--el-border-color)] h-[calc(100%-60px)]">
 				<el-menu class="flex-grow" :collapse="collapse" router>
-					<el-sub-menu index="control">
+					<el-sub-menu index="/dashboard/organization">
 						<template #title>
 							<el-icon><Setting /></el-icon>
 							<span class="text-base">机构相关</span>
 						</template>
-						<el-menu-item index="control-personnel-management">人员管理</el-menu-item>
+						<el-menu-item index="/dashboard/organization/information">机构详情</el-menu-item>
+						<el-menu-item index="/dashboard/organization/user">用户管理</el-menu-item>
 						<el-menu-item index="control-approval-process">审批流程</el-menu-item>
-						<el-menu-item index="control-key-management">秘钥管理</el-menu-item>
-						<el-menu-item index="control-release-deployment">发布部署</el-menu-item>
+						<!-- <el-menu-item index="control-key-management">秘钥管理</el-menu-item> -->
+						<!-- <el-menu-item index="control-release-deployment">发布部署</el-menu-item> -->
 					</el-sub-menu>
 					<el-sub-menu index="/dashboard/api">
 						<template #title>
@@ -128,7 +129,7 @@ const logout = () => {
 						@click="toggle"
 					/>
 
-					<el-button class="mx-5px my-auto" size="large" icon="Search" round>搜索</el-button>
+					<el-button class="mx-5px my-auto" icon="Search" round>搜索</el-button>
 					<el-avatar size="default" :src="appStore.getUser.imageURL" style="margin: auto 5px" />
 					<el-menu mode="horizontal" :ellipsis="false">
 						<el-sub-menu index="user">

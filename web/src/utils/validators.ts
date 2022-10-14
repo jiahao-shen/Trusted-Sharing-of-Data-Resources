@@ -62,5 +62,12 @@ export const validators = {
 			message: '邮箱格式错误',
 			trigger: 'blur'
 		}
+	},
+	telephone: () => {
+		return {
+			pattern: /^\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}$/,
+			message: '电话格式错误',
+			trigger: 'blur'
+		}
 	}
 }

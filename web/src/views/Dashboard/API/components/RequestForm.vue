@@ -5,7 +5,6 @@ import { ElNotification, ElMessageBox } from 'element-plus'
 import { validators } from '@/utils/validators'
 import { useRoute, useRouter } from 'vue-router'
 import { service } from '@/service/dashboard/api'
-import { Plus, Delete } from '@element-plus/icons-vue'
 import type { FormInstance, FormRules, Action } from 'element-plus'
 
 const route = useRoute()
@@ -132,7 +131,7 @@ const deleteResponseItem = (index: number) => {
 			<template #header>
 				<span class="text-2xl">API申请</span>
 			</template>
-			<el-form ref="formRef" :model="form" :rules="rules" label-position="top" size="large" id="form">
+			<el-form ref="formRef" :model="form" :rules="rules" label-position="top"  id="form">
 				<el-row :gutter="60">
 					<el-col :span="6">
 						<el-form-item label="API名称" required>
@@ -221,14 +220,14 @@ const deleteResponseItem = (index: number) => {
 											<el-button
 												@click="deleteHeaderItem(scope.$index)"
 												type="danger"
-												:icon="Delete"
+												icon="Delete"
 												circle
 												size="default"
 											/>
 										</template>
 									</el-table-column>
 								</el-table>
-								<el-button class="w-full mt-20px" @click="addHeaderItem" :icon="Plus" />
+								<el-button class="w-full mt-20px" @click="addHeaderItem" icon="Plus" />
 							</div>
 
 							<div class="w-full mt-10px" v-else-if="form.headerType === 'json'">
@@ -278,14 +277,14 @@ const deleteResponseItem = (index: number) => {
 											<el-button
 												@click="deleteRequestItem(scope.$index)"
 												type="danger"
-												:icon="Delete"
+												icon="Delete"
 												circle
 												size="default"
 											/>
 										</template>
 									</el-table-column>
 								</el-table>
-								<el-button class="w-full mt-20px" @click="addRequestItem" :icon="Plus" />
+								<el-button class="w-full mt-20px" @click="addRequestItem" icon="Plus" />
 							</div>
 
 							<div class="w-full mt-10px" v-else-if="form.requestType === 'json'">
@@ -336,14 +335,14 @@ const deleteResponseItem = (index: number) => {
 											<el-button
 												@click="deleteResponseItem(scope.$index)"
 												type="danger"
-												:icon="Delete"
+												icon="Delete"
 												circle
 												size="default"
 											/>
 										</template>
 									</el-table-column>
 								</el-table>
-								<el-button class="w-full mt-20px" @click="addResponseItem" :icon="Plus" />
+								<el-button class="w-full mt-20px" @click="addResponseItem" icon="Plus" />
 							</div>
 
 							<div class="w-full mt-10px" v-else-if="form.responseType === 'json'">
@@ -378,7 +377,7 @@ const deleteResponseItem = (index: number) => {
 <style lang="less" scoped>
 #form {
 	:deep(.el-form-item__label) {
-		font-size: 1em;
+		font-size: 1rem;
 	}
 }
 </style>

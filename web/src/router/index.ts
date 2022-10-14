@@ -60,6 +60,23 @@ const router = createRouter({
 						},
 					],
 				},
+				{
+					path: 'organization',
+					name: '机构相关',
+					component: () => import('@/views/Dashboard/Organization/Organization.vue'),
+					children: [
+						{
+							path: 'information',
+							name: '机构详情',
+							component: () => import('@/views/Dashboard/Organization/Information.vue'),
+						},
+						{
+							path: 'user',
+							name: '用户管理',
+							component: () => import('@/views/Dashboard/Organization/User.vue')
+						},
+					],
+				},
 			],
 		},
 		{

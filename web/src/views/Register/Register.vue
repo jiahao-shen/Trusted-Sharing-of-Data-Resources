@@ -16,6 +16,7 @@ const form = reactive({
 	logo: [],
 	name: '',
 	type: '',
+	telephone: '',
 	email: '',
 	city: [],
 	address: '',
@@ -26,12 +27,10 @@ const form = reactive({
 	file: [],
 })
 
-console.log(regionData)
-console.log(CodeToText)
-
 const rules = reactive<FormRules>({
 	name: [validators.required('机构名称'), validators.notEmpty('机构名称')],
 	type: [validators.required('机构类型')],
+	telephone: [validators.required('机构电话'), validators.notEmpty('机构电话'), validators.telephone()],
 	email: [validators.required('机构邮箱'), validators.notEmpty('机构邮箱'), validators.email()],
 	city: [validators.required('所在城市')],
 	address: [validators.required('详细地址'), validators.notEmpty('详细地址')],
@@ -106,7 +105,7 @@ const reset = (formEl: FormInstance | undefined) => {
 			<template #header>
 				<span class="text-2xl">机构注册</span>
 			</template>
-			<el-form class="w-full" ref="formRef" :model="form" :rules="rules" label-position="top" size="large" id="form">
+			<el-form class="w-full" ref="formRef" :model="form" :rules="rules" label-position="top" id="form">
 				<el-row :gutter="60">
 					<el-col :offset="6" :span="12">
 						<el-form-item>
@@ -154,7 +153,17 @@ const reset = (formEl: FormInstance | undefined) => {
 				</el-row>
 
 				<el-row :gutter="60">
-					<el-col :span="16">
+					<el-col :span="8">
+						<el-form-item label="机构电话" prop="telephone">
+							<el-input placeholder="请输入机构电话" v-model="form.telephone">
+								<template #prefix>
+									<el-icon><Phone /></el-icon>
+								</template>
+							</el-input>
+						</el-form-item>
+					</el-col>
+
+					<el-col :span="8">
 						<el-form-item label="机构邮箱" prop="email">
 							<el-input placeholder="请输入机构邮箱" v-model="form.email">
 								<template #prefix>
@@ -209,7 +218,7 @@ const reset = (formEl: FormInstance | undefined) => {
 
 					<el-col :span="6">
 						<el-form-item class="w-full" label="提供节点">
-							<el-radio-group class="w-full" v-model="form.provideNode" size="default">
+							<el-radio-group class="w-full" v-model="form.provideNode">
 								<el-radio-button label="no">否</el-radio-button>
 								<el-radio-button label="yes">是</el-radio-button>
 							</el-radio-group>
@@ -278,7 +287,7 @@ const reset = (formEl: FormInstance | undefined) => {
 <style lang="less" scoped>
 #form {
 	:deep(.el-form-item__label) {
-		font-size: 1em;
+		font-size: 1rem;
 	}
 	:deep(.el-form-item__content) {
 		display: flex;

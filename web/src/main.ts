@@ -19,7 +19,8 @@ pinia.use(piniaPersist)
 app.use(pinia)
 app.use(router)
 app.use(ElementPlus, {
-	locale: zhCn
+	locale: zhCn,
+	size: 'large'
 })
 app.use(JsonViewer)
 
