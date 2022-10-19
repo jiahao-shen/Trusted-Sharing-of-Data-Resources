@@ -1,0 +1,57 @@
+package com.trustchain.sdkjava.model;
+
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@TableName("register_organization")
+public class RegisterOrganization {
+    @TableId(value = "id", type = IdType.ASSIGN_UUID)
+    private String id;  // 机构ID
+
+    @TableField("name")
+    private String name;    // 机构名称
+
+    @TableField("logo_url")
+    private String logoURL; // 机构Logo
+
+    @TableField("type")
+    private String type;    // 机构类型
+
+    @TableField("telephone")
+    private String telephone;   // 机构电话
+
+    @TableField("email")
+    private String email;   // 机构邮箱
+
+    @TableField("city")
+    private String city;    // 机构城市
+
+    @TableField("address")
+    private String address; // 机构地址
+
+    @TableField("introduction")
+    private String introduction;    // 机构介绍
+
+    @TableField("superior")
+    private String superior; // 上级机构
+
+    @TableField("provide_node")
+    private boolean provideNode;    // 是否提供节点
+
+    @TableField("num_nodes")
+    private int numNodes;   // 节点数量
+
+    @TableField("file")
+    private String file;    // 机构文件
+
+    @TableField("time")
+    private String time;    // 注册时间
+}

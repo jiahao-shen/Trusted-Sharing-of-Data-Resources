@@ -11,7 +11,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName("User")
+@TableName("user")
 public class User {
     @TableId(value="username", type= IdType.INPUT)
     private String username;
