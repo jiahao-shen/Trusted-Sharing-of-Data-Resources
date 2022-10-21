@@ -14,7 +14,7 @@
     "@iconify/vue": "^3.2.1",
     "@types/crypto-js": "^4.1.1",
     "@types/uuid": "^8.3.4",
-    "axios": "^0.27.2",
+    "axios": "^1.1.2",
     "crypto-js": "^4.1.1",
     "css": "^3.0.0",
     "element-china-area-data": "^5.0.2",
@@ -41,7 +41,7 @@
     "vite": "^3.0.4",
     "vite-plugin-purge-icons": "^0.9.0",
     "vite-plugin-windicss": "^1.8.7",
-    "vue-tsc": "^1.0.3",
+    "vue-tsc": "^1.0.8",
     "windicss": "^3.5.6"
   }
 }

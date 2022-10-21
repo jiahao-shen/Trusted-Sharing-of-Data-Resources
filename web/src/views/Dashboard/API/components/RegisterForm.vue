@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router'
 import { ElNotification, ElMessageBox } from 'element-plus'
 import { validators } from '@/utils/validators'
 import type { FormInstance, FormRules, Action } from 'element-plus'
-import { service } from '@/service/dashboard/api'
+import { service } from '@/service/api'
 
 const router = useRouter()
 

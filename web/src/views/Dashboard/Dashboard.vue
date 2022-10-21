@@ -4,7 +4,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useFullscreen } from '@vueuse/core'
 import { Icon } from '@iconify/vue'
 import { useAppStore } from '@/store/app'
-import { service } from '@/service/login'
+import { userService } from '@/service/user'
 
 const route = useRoute()
 const router = useRouter()
@@ -29,11 +29,9 @@ const toggleCollapse = () => {
 }
 
 const logout = () => {
-	service
-		.logout()
-		.then((res: any) => {
-			
-		})
+	userService
+		.userLogout()
+		.then((res: any) => {})
 		.catch((err: any) => {})
 
 	appStore.setUser(null)
@@ -63,7 +61,7 @@ const logout = () => {
 						</template>
 						<el-menu-item index="/dashboard/organization/information">机构详情</el-menu-item>
 						<el-menu-item index="/dashboard/organization/user">用户管理</el-menu-item>
-						<el-menu-item index="/dashboard/organization/approval">审批流程</el-menu-item>
+						<el-menu-item index="/dashboard/organization/approval">注册审批</el-menu-item>
 						<!-- <el-menu-item index="control-key-management">秘钥管理</el-menu-item> -->
 						<!-- <el-menu-item index="control-release-deployment">发布部署</el-menu-item> -->
 					</el-sub-menu>

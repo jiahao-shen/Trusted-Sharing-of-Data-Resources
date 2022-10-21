@@ -77,7 +77,7 @@ const router = createRouter({
 						},
 						{
 							path: 'approval',
-							name: '审批流程',
+							name: '注册审批',
 							component: () => import('@/views/Dashboard/Organization/Approval.vue')
 						}
 					],

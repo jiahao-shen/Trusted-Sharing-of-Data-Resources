@@ -4,7 +4,7 @@ import { ref, reactive } from 'vue'
 import { ElNotification, ElMessageBox } from 'element-plus'
 import { validators } from '@/utils/validators'
 import { useRoute, useRouter } from 'vue-router'
-import { service } from '@/service/dashboard/api'
+import { service } from '@/service/api'
 import type { FormInstance, FormRules, Action } from 'element-plus'
 
 const route = useRoute()

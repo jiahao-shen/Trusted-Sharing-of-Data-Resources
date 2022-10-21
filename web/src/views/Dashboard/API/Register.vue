@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { CopyText } from '@/components/CopyText'
 import { useRouter, useRoute } from 'vue-router'
-import { service } from '@/service/dashboard/api'
+import { service } from '@/service/api'
 
 const route = useRoute()
 const router = useRouter()

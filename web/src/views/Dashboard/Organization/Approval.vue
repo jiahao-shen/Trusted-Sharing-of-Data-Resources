@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import moment from 'moment'
-import { ref, reactive } from 'vue'
+import { ElNotification } from 'element-plus'
+import { ref, reactive, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { CopyText } from '@/components/CopyText'
+import { organizationService } from '@/service/organization'
+import { RegisterStatus, OrganizationType } from '@/utils/enums'
 
 const route = useRoute()
 const router = useRouter()
@@ -12,33 +16,24 @@ let currentPage = 1
 let approvalList: any[]
 let showList = ref(Array())
 
-const init = () => {
-	approvalList = [
-		{
-			serial: '252221765281',
-			organization: '机构一',
-			status: '待审批',
-			createdTime: moment().format('YYYY-MM-DD HH:mm:ss'),
-		},
-		{
-			serial: '217652825221',
-			organization: '机构二',
-			status: '审批通过',
-			createdTime: moment().format('YYYY-MM-DD HH:mm:ss'),
-		},
-		{
-			serial: '215282722165',
-			organization: '机构三',
-			status: '审批未通过',
-			createdTime: moment().format('YYYY-MM-DD HH:mm:ss'),
-		},
-	]
-
-	total.value = approvalList.length
-	showList.value = approvalList.slice((currentPage - 1) * pageSize, currentPage * pageSize)
-}
-
-init()
+onMounted(() => {
+	console.log(OrganizationType.EDUCATION)
+	organizationService
+		.organizationRegsiterRequestList()
+		.then((res: any) => {
+			console.log(res)
+			approvalList = res.data
+			total.value = approvalList.length
+			showList.value = approvalList.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+		})
+		.catch((err: any) => {
+			ElNotification({
+				title: '未知错误',
+				message: err.response.data,
+				type: 'error',
+			})
+		})
+})
 
 const handleCurrentChange = (value: number) => {
 	currentPage = value
@@ -49,19 +44,38 @@ const indexMethod = (index: number) => {
 	return (currentPage - 1) * pageSize + index + 1
 }
 
-const selectedOrganization = ref('')
-
+const selectedIndex = ref()
 const allowDialogVisible = ref(false)
-const allow = (index: number) => {
+const allowConfirm = (index: number) => {
 	allowDialogVisible.value = true
-	selectedOrganization.value = approvalList[index].organization
+	selectedIndex.value = index
+}
+const allow = () => {
+	organizationService
+		.organizationRegisterRequsetReply(showList.value[selectedIndex.value].serialNumber, RegisterStatus[RegisterStatus.ALLOW])
+		.then((res: any) => {
+			console.log(res.data)
+		})
+		.catch((err: any) => {
+			console.error(err)
+		})
 }
 
 const rejectReason = ref('')
 const rejectDialogVisible = ref(false)
-const reject = (index: number) => {
+const rejectConfirm = (index: number) => {
 	rejectDialogVisible.value = true
-	selectedOrganization.value = approvalList[index].organization
+	selectedIndex.value = index
+}
+const reject = () => {
+	organizationService
+		.organizationRegisterRequsetReply(showList.value[selectedIndex.value].serialNumber, RegisterStatus.REJECT, rejectReason.value)
+		.then((res: any) => {
+			console.log(res.data)
+		})
+		.catch((err: any) => {
+			console.error(err)
+		})
 }
 </script>
 
@@ -73,34 +87,60 @@ const reject = (index: number) => {
 			</template>
 
 			<el-table :data="showList" highlight-current-row border>
-				<el-table-column label="No." type="index" :index="indexMethod" width="100" />
-				<el-table-column label="申请号" prop="serial" />
-				<el-table-column label="机构名称" prop="organization" />
-				<el-table-column label="状态" prop="status">
+				<el-table-column label="No." type="index" :index="indexMethod" width="60" />
+				<el-table-column label="申请号">
 					<template #default="scope">
-						<span class="text-[var(--el-color-warning)]" v-if="scope.row.status === '待审批'">{{
-							scope.row.status
-						}}</span>
-						<span class="text-[var(--el-color-success)]" v-else-if="scope.row.status === '审批通过'">{{
-							scope.row.status
-						}}</span>
-						<span class="text-[var(--el-color-danger)]" v-else-if="scope.row.status === '审批未通过'">{{
-							scope.row.status
-						}}</span>
+						<CopyText :text="scope.row.serialNumber" />
 					</template>
 				</el-table-column>
-				<el-table-column label="申请时间" prop="createdTime" />
+				<el-table-column label="机构名称" prop="name" />
+				<el-table-column label="机构类型">
+					<template #default="scope">
+						{{ OrganizationType[scope.row.type] }}
+					</template>
+				</el-table-column>
+				<el-table-column label="状态">
+					<template #default="scope">
+						<span
+							class="text-[var(--el-color-warning)]"
+							v-if="(RegisterStatus[scope.row.status] as RegisterStatus) === RegisterStatus.PROCESSED"
+						>
+							{{ RegisterStatus[scope.row.status] }}</span
+						>
+						<span
+							class="text-[var(--el-color-success)]"
+							v-else-if="(RegisterStatus[scope.row.status] as RegisterStatus) === RegisterStatus.ALLOW"
+							>{{ RegisterStatus[scope.row.status] }}</span
+						>
+						<span
+							class="text-[var(--el-color-danger)]"
+							v-else-if="(RegisterStatus[scope.row.status] as RegisterStatus) === RegisterStatus.REJECT"
+							>{{ RegisterStatus[scope.row.status] }}</span
+						>
+					</template>
+				</el-table-column>
+				<el-table-column label="申请时间">
+					<template #default="scope">
+						{{ moment(scope.row.applyTime).format('YYYY-MM-DD HH:mm:ss') }}
+					</template>
+				</el-table-column>
 				<el-table-column label="操作">
 					<template #default="scope">
 						<div class="w-full h-full flex items-center operate">
 							<el-tooltip content="详情">
 								<el-button type="primary" icon="More" circle size="default" />
 							</el-tooltip>
-							<el-tooltip content="允许" v-if="scope.row.status === '待审批'">
-								<el-button type="success" icon="Check" circle size="default" @click="allow(scope.$index)" />
+							<el-tooltip
+								content="允许"
+								v-if="(RegisterStatus[scope.row.status] as RegisterStatus) === RegisterStatus.PROCESSED"
+							>
+								<el-button type="success" icon="Check" circle size="default" @click="allowConfirm(scope.$index)" />
 							</el-tooltip>
-							<el-tooltip content="驳回" v-if="scope.row.status === '待审批'">
-								<el-button type="danger" icon="Close" circle size="default" @click="reject(scope.$index)" />
+							<el-tooltip
+								content="驳回"
+								v-if="(RegisterStatus[scope.row.status] as RegisterStatus) === RegisterStatus.PROCESSED"
+							>
+								<el-button type="danger" icon="Close" circle size="default" @click="rejectConfirm(scope.$index)" />
 							</el-tooltip>
 						</div>
 					</template>
@@ -118,15 +158,15 @@ const reject = (index: number) => {
 		</el-card>
 
 		<el-dialog v-model="allowDialogVisible" title="提示" width="20%">
-			<h2 class="text-base">允许 {{ selectedOrganization }} 的注册申请?</h2>
+			<h2 class="text-base">允许 {{ showList[selectedIndex].name }} 的注册申请?</h2>
 			<template #footer>
 				<el-button @click="allowDialogVisible = false">取消</el-button>
-				<el-button type="primary" @click="allowDialogVisible = false">确认</el-button>
+				<el-button type="primary" @click="allow">确认</el-button>
 			</template>
 		</el-dialog>
 
 		<el-dialog v-model="rejectDialogVisible" title="提示" width="20%">
-			<h2 class="text-base">驳回 {{ selectedOrganization }}的注册申请?</h2>
+			<h2 class="text-base">驳回 {{ showList[selectedIndex].name }}的注册申请?</h2>
 			<el-input
 				class="mt-20px"
 				:rows="5"
@@ -138,7 +178,7 @@ const reject = (index: number) => {
 			/>
 			<template #footer>
 				<el-button @click="rejectDialogVisible = false">取消</el-button>
-				<el-button type="primary" @click="rejectDialogVisible = false">确认</el-button>
+				<el-button type="primary" @click="reject">确认</el-button>
 			</template>
 		</el-dialog>
 	</div>

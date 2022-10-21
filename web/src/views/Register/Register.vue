@@ -1,22 +1,25 @@
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue'
 import { Icon } from '@iconify/vue'
-import { service } from '@/service/register'
+import { ref, reactive, onMounted } from 'vue'
 import { validators } from '@/utils/validators'
+import { OrganizationType } from '@/utils/enums'
 import { CopyText } from '@/components/CopyText'
 import { useRoute, useRouter } from 'vue-router'
 import { regionData } from 'element-china-area-data'
 import { ElMessage, ElNotification } from 'element-plus'
-import { OrganizationType } from '@/utils/enums'
+import { organizationService } from '@/service/organization'
 import type { FormInstance, FormRules, UploadProps, UploadInstance } from 'element-plus'
 
 const route = useRoute()
 const router = useRouter()
 
+const fuck: keyof typeof OrganizationType = OrganizationType[OrganizationType.EDUCATION]
+console.log(fuck)
+
 const organizationList = ref()
 onMounted(() => {
-	service
-		.getOrganizationList()
+	organizationService
+		.organizationList()
 		.then((res: any) => {
 			organizationList.value = res.data
 			console.log(organizationList)
@@ -47,21 +50,42 @@ const form = reactive({
 })
 
 const rules = reactive<FormRules>({
-	// name: [validators.required('机构名称'), validators.notEmpty('机构名称')],
-	// type: [validators.required('机构类型')],
-	// telephone: [validators.required('机构电话'), validators.notEmpty('机构电话'), validators.telephone()],
-	// email: [validators.required('机构邮箱'), validators.notEmpty('机构邮箱'), validators.email()],
-	// city: [validators.required('所在城市')],
-	// address: [validators.required('详细地址'), validators.notEmpty('详细地址')],
-	// superior: [validators.required('上级机构')]
+	name: [
+		validators.required('机构名称'),
+		validators.notEmpty('机构名称'),
+		{
+			validator: (rule: any, value: any, callback: any) => {
+				organizationService
+					.organizationExist(form.name)
+					.then((res: any) => {
+						console.log(res.data)
+						if (res.data) {
+							callback('该机构名已存在')
+						} else {
+							callback()
+						}
+					})
+					.catch((err: any) => {
+						console.log(err)
+					})
+			},
+			trigger: 'blur',
+		},
+	],
+	type: [validators.required('机构类型')],
+	telephone: [validators.required('机构电话'), validators.notEmpty('机构电话'), validators.telephone()],
+	email: [validators.required('机构邮箱'), validators.notEmpty('机构邮箱'), validators.email()],
+	city: [validators.required('所在城市')],
+	address: [validators.required('详细地址'), validators.notEmpty('详细地址')],
+	superior: [validators.required('上级机构')],
 })
 
 const submit = async (formEl: FormInstance | undefined) => {
 	await formEl?.validate((valid, fields) => {
 		if (valid) {
 			console.log(form)
-			service
-				.registerOrganization(form)
+			organizationService
+				.organizationRegisterRequest(form)
 				.then((res: any) => {
 					responseSerialNumber.value = res.data.toString()
 					responseDialogVisible.value = true

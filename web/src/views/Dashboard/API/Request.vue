@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { Search, RefreshLeft } from '@element-plus/icons-vue'
 import { CopyText } from '@/components/CopyText'
-import { service } from '@/service/dashboard/api'
+import { service } from '@/service/api'
 
 const route = useRoute()
 const router = useRouter()

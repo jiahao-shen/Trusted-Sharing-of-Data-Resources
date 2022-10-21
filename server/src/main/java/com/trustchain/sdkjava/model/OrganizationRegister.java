@@ -1,12 +1,11 @@
 package com.trustchain.sdkjava.model;
 
 import com.baomidou.mybatisplus.annotation.*;
-import com.fasterxml.jackson.annotation.JsonValue;
-import com.fasterxml.jackson.databind.SerializationFeature;
+import com.trustchain.sdkjava.enums.OrganizationType;
+import com.trustchain.sdkjava.enums.RegisterStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 
 import java.util.Date;
 

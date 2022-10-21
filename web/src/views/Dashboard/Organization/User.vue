@@ -1,12 +1,16 @@
 <script setup lang="ts">
 import moment from 'moment'
-import { ref, reactive } from 'vue'
+import { useAppStore } from '@/store/app'
+import { userService } from '@/service/user'
+import { ElNotification } from 'element-plus'
+import { ref, reactive, onMounted } from 'vue'
 import { validators } from '@/utils/validators'
 import { useRoute, useRouter } from 'vue-router'
 import type { FormInstance, FormRules, Action } from 'element-plus'
 
 const route = useRoute()
 const router = useRouter()
+const appStore = useAppStore()
 
 const pageSize = 10
 const total = ref(0)
@@ -15,21 +19,23 @@ let userList: any[]
 let showList = ref(Array())
 const addUserDialogVisible = ref(false)
 
-const init = () => {
-	userList = [
-		{
-			username: 'admin',
-			password: 'admin',
-			permissions: ['权限A', '权限B'],
-			createdTime: moment().format('YYYY-MM-DD HH:mm:ss'),
-		},
-	]
-
-	total.value = userList.length
-	showList.value = userList.slice((currentPage - 1) * pageSize, currentPage * pageSize)
-}
-
-init()
+onMounted(() => {
+	userService
+		.userList()
+		.then((res: any) => {
+			console.log(res.data)
+			userList = res.data
+			total.value = userList.length
+			showList.value = userList.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+		})
+		.catch((err: any) => {
+			ElNotification({
+				title: '未知错误',
+				message: err.response.data,
+				type: 'error',
+			})
+		})
+})
 
 const handleCurrentChange = (value: number) => {
 	currentPage = value
@@ -42,13 +48,37 @@ const indexMethod = (index: number) => {
 
 const formRef = ref<FormInstance>()
 const form = reactive({
-	username: '',
+	id: '',
 	password1: '',
 	password2: '',
 	permissions: Array(),
 })
 const rules = reactive<FormRules>({
-	username: [validators.required('用户名'), validators.notEmpty('用户名')],
+	id: [
+		validators.required('账号'),
+		validators.notEmpty('账号'),
+		{
+			validator: (rule: any, value: any, callback: any) => {
+				userService
+					.userExist(form.id)
+					.then((res: any) => {
+						if (res.data) {
+							callback('该账号已存在')
+						} else {
+							callback()
+						}
+					})
+					.catch((err: any) => {
+						ElNotification({
+							title: '网络异常',
+							message: err.response.data,
+							type: 'error',
+						})
+					})
+			},
+			trigger: 'blur',
+		},
+	],
 	password1: [validators.required('密码'), validators.lengthRange(6, 20, '密码'), validators.notEmpty('密码')],
 	password2: [
 		validators.required(''),
@@ -56,8 +86,11 @@ const rules = reactive<FormRules>({
 			validator: (rule: any, value: string, callback: any) => {
 				if (form.password1 !== form.password2) {
 					callback('两次输入的密码不一致')
+				} else {
+					callback()
 				}
 			},
+			trigger: 'trigger',
 		},
 	],
 })
@@ -65,9 +98,44 @@ const rules = reactive<FormRules>({
 const submit = async (formEl: FormInstance | undefined) => {
 	await formEl?.validate((valid, fields) => {
 		if (valid) {
-			// TODO:
+			console.log('valid')
+			userService
+				.userRegister(form)
+				.then((res: any) => {
+					if (res.data) {
+						ElNotification({
+							title: '注册成功',
+							type: 'success',
+						})
+						addUserDialogVisible.value = false
+						userService
+							.userList()
+							.then((res: any) => {
+								console.log(res.data)
+								userList = res.data
+								total.value = userList.length
+								showList.value = userList.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+							})
+							.catch((err: any) => {
+								console.error(err)
+							})
+					} else {
+						ElNotification({
+							title: '注册失败',
+							type: 'error',
+						})
+					}
+				})
+				.catch((err: any) => {
+					ElNotification({
+						title: '网络异常',
+						message: err.response.data,
+						type: 'error',
+					})
+				})
 		} else {
 			// TODO:
+			console.log('fuck')
 		}
 	})
 }
@@ -76,7 +144,6 @@ const handleClose = (done: () => void) => {
 	formRef.value?.resetFields()
 	done()
 }
-
 </script>
 <template>
 	<div class="w-full p-20px">
@@ -87,15 +154,20 @@ const handleClose = (done: () => void) => {
 
 			<el-table :data="showList" highlight-current-row border>
 				<el-table-column label="No." type="index" :index="indexMethod" width="100" />
+				<el-table-column label="账号" prop="id" />
 				<el-table-column label="用户名" prop="username" />
 				<el-table-column label="权限" prop="permissions">
 					<template #default="scope">
 						<el-tag class="mx-5px" v-for="item in scope.row.permission">{{ item }}</el-tag>
 					</template>
 				</el-table-column>
-				<el-table-column label="创建时间" prop="createdTime" />
+				<el-table-column label="创建时间">
+					<template #default="scope">
+						{{ moment(scope.row.createdTime).format('YYYY-MM-DD HH:mm:ss') }}
+					</template>
+				</el-table-column>
 				<el-table-column label="操作">
-					<template #default scope>
+					<template #default="scope">
 						<div class="w-full h-full flex items-center operate">
 							<el-tooltip content="编辑">
 								<el-button type="success" icon="Edit" circle size="default" />
@@ -128,8 +200,8 @@ const handleClose = (done: () => void) => {
 		<el-form ref="formRef" :model="form" :rules="rules" label-position="top" id="form">
 			<el-row :gutter="60">
 				<el-col>
-					<el-form-item label="用户名" prop="username">
-						<el-input placeholder="请输入用户名" v-model="form.username" />
+					<el-form-item label="账号" prop="id">
+						<el-input placeholder="请输入账号" v-model="form.id" />
 					</el-form-item>
 				</el-col>
 			</el-row>
