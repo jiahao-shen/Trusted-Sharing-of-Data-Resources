@@ -1,16 +1,35 @@
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import { Icon } from '@iconify/vue'
-import { ElMessage } from 'element-plus'
+import { service } from '@/service/register'
 import { validators } from '@/utils/validators'
+import { CopyText } from '@/components/CopyText'
 import { useRoute, useRouter } from 'vue-router'
-import { regionData, CodeToText } from 'element-china-area-data'
+import { regionData } from 'element-china-area-data'
+import { ElMessage, ElNotification } from 'element-plus'
+import { OrganizationType } from '@/utils/enums'
 import type { FormInstance, FormRules, UploadProps, UploadInstance } from 'element-plus'
 
 const route = useRoute()
 const router = useRouter()
 
-const active = ref(0)
+const organizationList = ref()
+onMounted(() => {
+	service
+		.getOrganizationList()
+		.then((res: any) => {
+			organizationList.value = res.data
+			console.log(organizationList)
+		})
+		.catch((err: any) => {
+			ElNotification({
+				title: '网络异常',
+				message: err.response.data,
+				type: 'error',
+			})
+		})
+})
+
 const formRef = ref<FormInstance>()
 const form = reactive({
 	logo: [],
@@ -21,20 +40,50 @@ const form = reactive({
 	city: [],
 	address: '',
 	introduction: '',
-	superior: '',
-	provideNode: 'no',
-	numNodes: 0,
+	superior: null,
+	provideNode: false,
+	numNodes: 1,
 	file: [],
 })
 
 const rules = reactive<FormRules>({
-	name: [validators.required('机构名称'), validators.notEmpty('机构名称')],
-	type: [validators.required('机构类型')],
-	telephone: [validators.required('机构电话'), validators.notEmpty('机构电话'), validators.telephone()],
-	email: [validators.required('机构邮箱'), validators.notEmpty('机构邮箱'), validators.email()],
-	city: [validators.required('所在城市')],
-	address: [validators.required('详细地址'), validators.notEmpty('详细地址')],
+	// name: [validators.required('机构名称'), validators.notEmpty('机构名称')],
+	// type: [validators.required('机构类型')],
+	// telephone: [validators.required('机构电话'), validators.notEmpty('机构电话'), validators.telephone()],
+	// email: [validators.required('机构邮箱'), validators.notEmpty('机构邮箱'), validators.email()],
+	// city: [validators.required('所在城市')],
+	// address: [validators.required('详细地址'), validators.notEmpty('详细地址')],
+	// superior: [validators.required('上级机构')]
 })
+
+const submit = async (formEl: FormInstance | undefined) => {
+	await formEl?.validate((valid, fields) => {
+		if (valid) {
+			console.log(form)
+			service
+				.registerOrganization(form)
+				.then((res: any) => {
+					responseSerialNumber.value = res.data.toString()
+					responseDialogVisible.value = true
+				})
+				.catch((err: any) => {
+					ElNotification({
+						title: '注册失败',
+						message: err.response.data,
+						type: 'error',
+					})
+				})
+		} else {
+			// TODO:
+		}
+	})
+}
+
+const reset = (formEl: FormInstance | undefined) => {
+	formEl?.resetFields()
+	logoRef.value?.clearFiles()
+	fileRef.value?.clearFiles()
+}
 
 const logoSizeLimit = 2
 const logoAcceptFormat = ['image/jpg', 'image/jpeg', 'image/png']
@@ -81,20 +130,12 @@ const onFileChange: UploadProps['onChange'] = (uploadFile, uploadFiles) => {
 	console.log('onFileChange')
 }
 
-const submit = async (formEl: FormInstance | undefined) => {
-	await formEl?.validate((valid, fields) => {
-		if (valid) {
-			// TODO:
-		} else {
-			// TODO:
-		}
-	})
-}
+const responseDialogVisible = ref(false)
+const responseSerialNumber = ref('')
 
-const reset = (formEl: FormInstance | undefined) => {
-	formEl?.resetFields()
-	logoRef.value?.clearFiles()
-	fileRef.value?.clearFiles()
+const handleClose = (done: () => void) => {
+	router.push('/login')
+	done()
 }
 </script>
 
@@ -142,10 +183,11 @@ const reset = (formEl: FormInstance | undefined) => {
 					<el-col :span="8">
 						<el-form-item label="机构类型" prop="type">
 							<el-select placeholder="选择" v-model="form.type">
-								<el-option label="医疗" value="medical" />
-								<el-option label="教育" value="education" />
-								<el-option label="金融" value="financial" />
-								<el-option label="政府" value="government" />
+								<el-option
+									v-for="item in Object.keys(OrganizationType)"
+									:value="item"
+									:label="OrganizationType[item]"
+								/>
 							</el-select>
 						</el-form-item>
 					</el-col>
@@ -204,13 +246,9 @@ const reset = (formEl: FormInstance | undefined) => {
 
 				<el-row :gutter="60">
 					<el-col :span="10">
-						<el-form-item class="w-full" label="上级机构" >
+						<el-form-item class="w-full" label="上级机构" prop="superior">
 							<el-select class="w-full" placeholder="选择" v-model="form.superior">
-								<el-option label="无" value="" />
-								<el-option label="机构1" value="Org1" />
-								<el-option label="机构2" value="Org2" />
-								<el-option label="机构3" value="Org3" />
-								<el-option label="机构4" value="Org4" />
+								<el-option v-for="item in organizationList" :label="item.name" :value="item.id" />
 							</el-select>
 						</el-form-item>
 					</el-col>
@@ -218,21 +256,21 @@ const reset = (formEl: FormInstance | undefined) => {
 					<el-col :span="6">
 						<el-form-item class="w-full" label="提供节点">
 							<el-radio-group class="w-full" v-model="form.provideNode">
-								<el-radio-button label="no">否</el-radio-button>
-								<el-radio-button label="yes">是</el-radio-button>
+								<el-radio-button :label="false">否</el-radio-button>
+								<el-radio-button :label="true">是</el-radio-button>
 							</el-radio-group>
 						</el-form-item>
 					</el-col>
 
-					<el-col :span="6" v-if="form.provideNode === 'yes'">
+					<el-col :span="6" v-if="form.provideNode === true">
 						<el-form-item label="节点数量">
 							<el-select placeholder="选择" v-model="form.numNodes">
-								<el-option label="1" value="1" />
-								<el-option label="2" value="2" />
-								<el-option label="3" value="3" />
-								<el-option label="4" value="4" />
-								<el-option label="5" value="5" />
-								<el-option label="6" value="6" />
+								<el-option label="1" :value="1" />
+								<el-option label="2" :value="2" />
+								<el-option label="3" :value="3" />
+								<el-option label="4" :value="4" />
+								<el-option label="5" :value="5" />
+								<el-option label="6" :value="6" />
 							</el-select>
 						</el-form-item>
 					</el-col>
@@ -280,6 +318,14 @@ const reset = (formEl: FormInstance | undefined) => {
 
 	<el-dialog v-model="previewDialogVisible">
 		<el-image class="w-full" :src="logoPreviewURL" />
+	</el-dialog>
+
+	<el-dialog v-model="responseDialogVisible" title="提示" width="20%" :before-close="handleClose" center>
+		<el-result icon="success" title="注册申请成功" sub-title="您的注册号如下:" />
+		<CopyText :text="responseSerialNumber" />
+		<template #footer>
+			<el-button type="primary" @click="router.push('/login')">确认</el-button>
+		</template>
 	</el-dialog>
 </template>
 

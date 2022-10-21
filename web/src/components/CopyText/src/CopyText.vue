@@ -19,7 +19,7 @@ const copyText = async () => {
 </script>
 
 <template>
-	<div class="cursor-pointer" @click="copyText">
+	<div class="flex justify-center items-center cursor-pointer" @click="copyText">
 		<span>{{ text }}</span>
 		<el-icon><CopyDocument /></el-icon>
 	</div>

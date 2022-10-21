@@ -1,29 +1,31 @@
 package com.trustchain.sdkjava.model;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
+import com.fasterxml.jackson.annotation.JsonValue;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
+
+import java.util.Date;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @TableName("register_organization")
 public class RegisterOrganization {
-    @TableId(value = "id", type = IdType.ASSIGN_UUID)
-    private String id;  // 机构ID
+    @TableId(value = "serial_number", type = IdType.ASSIGN_ID)
+    private Long serialNumber;  // 注册流水号
 
     @TableField("name")
     private String name;    // 机构名称
 
-    @TableField("logo_url")
-    private String logoURL; // 机构Logo
+    @TableField("logo")
+    private String logo; // 机构Logo
 
     @TableField("type")
-    private String type;    // 机构类型
+    private OrganizationType type;    // 机构类型
 
     @TableField("telephone")
     private String telephone;   // 机构电话
@@ -41,7 +43,7 @@ public class RegisterOrganization {
     private String introduction;    // 机构介绍
 
     @TableField("superior")
-    private String superior; // 上级机构
+    private Long superior; // 上级机构
 
     @TableField("provide_node")
     private boolean provideNode;    // 是否提供节点
@@ -52,6 +54,15 @@ public class RegisterOrganization {
     @TableField("file")
     private String file;    // 机构文件
 
-    @TableField("time")
-    private String time;    // 注册时间
+    @TableField("status")
+    private RegisterStatus status;  // 申请状态
+
+    @TableField(value = "apply_time")
+    private Date applyTime;    // 申请时间
+
+    @TableField(value = "reply_time")
+    private Date replyTime;   // 批复时间
+
+    @TableField(value = "reply_message")
+    private String replyMessage;    // 批复内容
 }

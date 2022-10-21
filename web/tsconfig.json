@@ -13,7 +13,10 @@
 			"@/*": ["./src/*"]
 		},
 		"types": [
-			"vite/client"]
+			"vite/client"
+		],
+		// "isolatedModules": false,
+		"suppressImplicitAnyIndexErrors": true
 	},
 
 	"references": [

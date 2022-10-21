@@ -2,19 +2,21 @@ package com.trustchain.sdkjava;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.trustchain.sdkjava.fabric.FabricGateway;
+import com.trustchain.sdkjava.mapper.FuckMapper;
+import com.trustchain.sdkjava.mapper.OrganizationMapper;
+import com.trustchain.sdkjava.mapper.RegisterOrganizationMapper;
 import com.trustchain.sdkjava.mapper.UserMapper;
-import com.trustchain.sdkjava.model.User;
+import com.trustchain.sdkjava.model.*;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.UUID;
 
 @SpringBootTest
@@ -23,6 +25,12 @@ class SdkJavaApplicationTests {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private FuckMapper fuckMapper;
+
+    @Autowired
+    private RegisterOrganizationMapper registerOrganizationMapper;
 
     @Test
     void testMySQL() {
@@ -102,4 +110,23 @@ class SdkJavaApplicationTests {
         System.out.println(UUID.randomUUID());
     }
 
+    @Autowired
+    private OrganizationMapper organizationMapper;
+
+    @Test
+    void testRegisterOrganization() {
+        Organization org = new Organization();
+        org.setName("数据资源可信共享运营平台");
+        org.setType(OrganizationType.EDUCATION);
+        org.setTelephone("13915558435");
+        org.setEmail("1843781563@qq.com");
+        org.setCity("北京市,市辖区,海淀区");
+        org.setAddress("学院路37号");
+        org.setProvideNode(true);
+        org.setNumNodes(4);
+        org.setCreatedTime(new Date());
+
+        organizationMapper.insert(org);
+    }
 }
+

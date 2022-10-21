@@ -4,7 +4,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://192.168.100.78:3306/trustchain?characterEncoding=UTF-8&allowMultiQueries=true
     username: root
-    password: Beihang2022
+    password: Beihang2022!
 
 logging:
   config: classpath:log4j2.xml

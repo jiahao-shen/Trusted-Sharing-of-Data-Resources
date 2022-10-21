@@ -1,6 +1,6 @@
-package com.trustchain.sdkjava.controller;
+package com.trustchain.sdkjava.controller.login;
 
-import lombok.Data;
+import com.alibaba.fastjson.JSONObject;
 import com.trustchain.sdkjava.model.User;
 import com.trustchain.sdkjava.mapper.UserMapper;
 import org.apache.logging.log4j.Logger;
@@ -23,13 +23,13 @@ public class LoginController {
 
     private static final Logger logger = LogManager.getLogger(LoginController.class);
 
-    @PostMapping("/user/login")
-    public ResponseEntity<Object> login(@RequestBody LoginRequest request, HttpSession session) {
+    @PostMapping("/login")
+    public ResponseEntity<Object> login(@RequestBody JSONObject request, HttpSession session) {
         logger.info(request);
 
-        User user = userMapper.selectById(request.getUsername());
+        User user = userMapper.selectById(request.getString("username"));
 
-        if (user != null && user.getPassword().equals(request.getPassword())) {
+        if (user != null && user.getPassword().equals(request.getString("password"))) {
             session.setAttribute("user", user);
             return ResponseEntity.status(HttpStatus.OK).body(user);
         } else {
@@ -37,15 +37,9 @@ public class LoginController {
         }
     }
 
-    @GetMapping("/user/logout")
+    @GetMapping("/logout")
     public ResponseEntity<Object> logout(HttpSession session) {
         session.setAttribute("user", null);
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
-}
-
-@Data
-class LoginRequest {
-    private String username;
-    private String password;
 }

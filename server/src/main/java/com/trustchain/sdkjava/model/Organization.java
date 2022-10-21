@@ -9,23 +9,24 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @TableName("organization")
 public class Organization {
-    @TableId(value = "id", type = IdType.INPUT)
-    private String id;  // 机构ID
+    @TableId(value = "id", type = IdType.ASSIGN_ID)
+    private Long id;  // 机构ID
 
     @TableField("name")
     private String name;    // 机构名称
 
-    @TableField("logo_url")
-    private String logoURL; // 机构Logo
+    @TableField("logo")
+    private String logo; // 机构Logo
 
     @TableField("type")
-    private String type;    // 机构类型
+    private OrganizationType type;    // 机构类型
 
     @TableField("telephone")
     private String telephone;   // 机构电话
@@ -54,9 +55,12 @@ public class Organization {
     @TableField("file")
     private String file;    // 机构文件
 
-    @TableField("api_list")
-    private ArrayList<String> apiList; // API列表
+    @TableField("created_time")
+    private Date CreatedTime;   // 创建时间
 
-    @TableField("user_list")
-    private ArrayList<String> userList;   // 用户列表
+//    @TableField("api_list")
+//    private ArrayList<String> apiList; // API列表
+//
+//    @TableField("user_list")
+//    private ArrayList<String> userList;   // 用户列表
 }
