@@ -1,6 +1,8 @@
 package com.trustchain.sdkjava.model;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.trustchain.sdkjava.enums.OrganizationType;
 import com.trustchain.sdkjava.enums.RegisterStatus;
 import lombok.AllArgsConstructor;
@@ -13,8 +15,9 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @TableName("register_organization")
-public class RegisterOrganization {
+public class OrganizationRegister {
     @TableId(value = "serial_number", type = IdType.ASSIGN_ID)
+    @JsonSerialize(using= ToStringSerializer.class)
     private Long serialNumber;  // 注册流水号
 
     @TableField("name")
@@ -42,6 +45,7 @@ public class RegisterOrganization {
     private String introduction;    // 机构介绍
 
     @TableField("superior")
+    @JsonSerialize(using= ToStringSerializer.class)
     private Long superior; // 上级机构
 
     @TableField("provide_node")

@@ -5,7 +5,7 @@ import { ref, reactive, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { CopyText } from '@/components/CopyText'
 import { organizationService } from '@/service/organization'
-import { RegisterStatus, OrganizationType } from '@/utils/enums'
+import { RegisterStatus, RegisterStatusDict, OrganizationType } from '@/utils/enums'
 
 const route = useRoute()
 const router = useRouter()
@@ -17,7 +17,10 @@ let approvalList: any[]
 let showList = ref(Array())
 
 onMounted(() => {
-	console.log(OrganizationType.EDUCATION)
+	loadOrganizationRegisterRequestList()
+})
+
+const loadOrganizationRegisterRequestList = () => {
 	organizationService
 		.organizationRegsiterRequestList()
 		.then((res: any) => {
@@ -33,7 +36,20 @@ onMounted(() => {
 				type: 'error',
 			})
 		})
-})
+}
+
+const registerStatusToText = (item: string) => {
+	switch (RegisterStatus[item]) {
+		case RegisterStatus.PROCESSED:
+			return 'text-[var(--el-color-warning)]'
+		case RegisterStatus.ALLOW:
+			return 'text-[var(--el-color-success)]'
+		case RegisterStatus.REJECT:
+			return 'text-[var(--el-color-danger)]'
+		default:
+			break
+	}
+}
 
 const handleCurrentChange = (value: number) => {
 	currentPage = value
@@ -52,12 +68,22 @@ const allowConfirm = (index: number) => {
 }
 const allow = () => {
 	organizationService
-		.organizationRegisterRequsetReply(showList.value[selectedIndex.value].serialNumber, RegisterStatus[RegisterStatus.ALLOW])
+		.organizationRegisterRequsetReply(
+			showList.value[selectedIndex.value].serialNumber,
+			RegisterStatusDict[RegisterStatus.ALLOW]
+		)
 		.then((res: any) => {
-			console.log(res.data)
+			if (res.data) {
+				allowDialogVisible.value = false
+				loadOrganizationRegisterRequestList()
+			}
 		})
 		.catch((err: any) => {
-			console.error(err)
+			ElNotification({
+				title: '未知错误',
+				message: err.response.data,
+				type: 'error',
+			})
 		})
 }
 
@@ -69,12 +95,23 @@ const rejectConfirm = (index: number) => {
 }
 const reject = () => {
 	organizationService
-		.organizationRegisterRequsetReply(showList.value[selectedIndex.value].serialNumber, RegisterStatus.REJECT, rejectReason.value)
+		.organizationRegisterRequsetReply(
+			showList.value[selectedIndex.value].serialNumber,
+			RegisterStatusDict[RegisterStatus.REJECT],
+			rejectReason.value
+		)
 		.then((res: any) => {
-			console.log(res.data)
+			if (res.data) {
+				rejectDialogVisible.value = false
+				loadOrganizationRegisterRequestList()
+			}
 		})
 		.catch((err: any) => {
-			console.error(err)
+			ElNotification({
+				title: '未知错误',
+				message: err.response.data,
+				type: 'error',
+			})
 		})
 }
 </script>
@@ -101,22 +138,9 @@ const reject = () => {
 				</el-table-column>
 				<el-table-column label="状态">
 					<template #default="scope">
-						<span
-							class="text-[var(--el-color-warning)]"
-							v-if="(RegisterStatus[scope.row.status] as RegisterStatus) === RegisterStatus.PROCESSED"
-						>
-							{{ RegisterStatus[scope.row.status] }}</span
-						>
-						<span
-							class="text-[var(--el-color-success)]"
-							v-else-if="(RegisterStatus[scope.row.status] as RegisterStatus) === RegisterStatus.ALLOW"
-							>{{ RegisterStatus[scope.row.status] }}</span
-						>
-						<span
-							class="text-[var(--el-color-danger)]"
-							v-else-if="(RegisterStatus[scope.row.status] as RegisterStatus) === RegisterStatus.REJECT"
-							>{{ RegisterStatus[scope.row.status] }}</span
-						>
+						<span :class="registerStatusToText(scope.row.status)">
+							{{ RegisterStatus[scope.row.status] }}
+						</span>
 					</template>
 				</el-table-column>
 				<el-table-column label="申请时间">

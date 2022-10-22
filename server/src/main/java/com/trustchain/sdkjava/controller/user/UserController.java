@@ -1,6 +1,7 @@
-package com.trustchain.sdkjava.controller.dashboard.api.user;
+package com.trustchain.sdkjava.controller.user;
 
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.trustchain.sdkjava.mapper.UserMapper;
 import com.trustchain.sdkjava.model.User;
 import org.apache.logging.log4j.LogManager;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
+import java.util.Date;
+import java.util.List;
 
 @RestController
 public class UserController {
@@ -23,7 +26,7 @@ public class UserController {
     private static final Logger logger = LogManager.getLogger(UserController.class);
 
     @PostMapping("/user/login")
-    public ResponseEntity<Object> login(@RequestBody JSONObject request, HttpSession session) {
+    public ResponseEntity<Object> userLogin(@RequestBody JSONObject request, HttpSession session) {
         logger.info(request);
 
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
@@ -38,8 +41,53 @@ public class UserController {
     }
 
     @GetMapping("/user/logout")
-    public ResponseEntity<Object> logout(HttpSession session) {
+    public ResponseEntity<Object> userLogout(HttpSession session) {
         session.setAttribute("user", null);
         return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
+
+    @PostMapping("/user/register")
+    public ResponseEntity<Object> userRegister(@RequestBody JSONObject request, HttpSession session) {
+        User user = new User();
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
+        user.setId(request.getString("id"));
+        user.setUsername(request.getString("id"));
+        user.setPassword(encoder.encode(request.getString("password")));
+        user.setOrganization(Long.parseLong(request.getString("organization")));
+        user.setCreatedTime(new Date());
+
+        int count = userMapper.insert(user);
+        if (count != 0) {
+            return ResponseEntity.status(HttpStatus.OK).body(true);
+        } else {
+            return ResponseEntity.status(HttpStatus.OK).body(false);
+        }
+    }
+
+    @GetMapping("/user/list")
+    public ResponseEntity<Object> userList(HttpSession session) {
+        User user = (User) session.getAttribute("user");
+
+        if (user != null) {
+            QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+            queryWrapper.select("id", "username", "created_time").eq("organization", user.getOrganization());
+            List<User> userList = userMapper.selectList(queryWrapper);
+            return ResponseEntity.status(HttpStatus.OK).body(userList);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("请重新登陆");
+        }
+    }
+
+    @PostMapping("/user/exist")
+    public ResponseEntity<Object> userExist(@RequestBody JSONObject request, HttpSession session) {
+        logger.info(request);
+
+        User user = userMapper.selectById(request.getString("id"));
+        if (user != null) {
+            return ResponseEntity.status(HttpStatus.OK).body(true);
+        } else {
+            return ResponseEntity.status(HttpStatus.OK).body(false);
+        }
     }
 }

@@ -1,21 +1,21 @@
 package com.trustchain.sdkjava;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.trustchain.sdkjava.enums.OrganizationType;
 import com.trustchain.sdkjava.fabric.FabricGateway;
 import com.trustchain.sdkjava.mapper.FuckMapper;
 import com.trustchain.sdkjava.mapper.OrganizationMapper;
-import com.trustchain.sdkjava.mapper.RegisterOrganizationMapper;
+import com.trustchain.sdkjava.mapper.OrganizationRegisterMapper;
 import com.trustchain.sdkjava.mapper.UserMapper;
 import com.trustchain.sdkjava.model.*;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.UUID;
 
@@ -30,7 +30,7 @@ class SdkJavaApplicationTests {
     private FuckMapper fuckMapper;
 
     @Autowired
-    private RegisterOrganizationMapper registerOrganizationMapper;
+    private OrganizationRegisterMapper registerOrganizationMapper;
 
     @Test
     void testMySQL() {
@@ -39,8 +39,8 @@ class SdkJavaApplicationTests {
 
     @Test
     void testAddUser() {
-        userMapper.insert(new User("test", DigestUtils.sha256Hex("test"), "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png", "e993ed9a-9119-45e6-8561-005e218e2005"));
-        userMapper.insert(new User("admin", DigestUtils.sha256Hex("admin"), "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png", "e7dc5bfe-14f6-49e5-8023-bb5000c26bda"));
+//        userMapper.insert(new User("test", DigestUtils.sha256Hex("test"), "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png", "e993ed9a-9119-45e6-8561-005e218e2005"));
+//        userMapper.insert(new User("admin", DigestUtils.sha256Hex("admin"), "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png", "e7dc5bfe-14f6-49e5-8023-bb5000c26bda"));
     }
 
     @Test
@@ -127,6 +127,14 @@ class SdkJavaApplicationTests {
         org.setCreatedTime(new Date());
 
         organizationMapper.insert(org);
+    }
+
+    @Test
+    void testBcrypto() {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        String pwd = encoder.encode("258667");
+        System.out.println(pwd);
+        System.out.println(encoder.matches("258667", pwd));
     }
 }
 

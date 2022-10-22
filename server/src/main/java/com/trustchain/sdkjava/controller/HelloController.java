@@ -1,12 +1,8 @@
 package com.trustchain.sdkjava.controller;
 
-import java.util.ArrayList;
-import java.util.Map;
-
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.trustchain.sdkjava.mapper.RegisterOrganizationMapper;
-import com.trustchain.sdkjava.model.RegisterOrganization;
+import com.trustchain.sdkjava.mapper.OrganizationRegisterMapper;
+import com.trustchain.sdkjava.model.OrganizationRegister;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HelloController {
     @Autowired
-    private RegisterOrganizationMapper registerOrganizationMapper;
+    private OrganizationRegisterMapper organizationRegisterMapper;
 
     @GetMapping("/hello")
     public String hello() {
@@ -37,7 +33,7 @@ public class HelloController {
 
     @GetMapping("/fuck")
     public ResponseEntity<Object> fuck() {
-        RegisterOrganization ro = registerOrganizationMapper.selectById("1583321439534010370");
+        OrganizationRegister ro = organizationRegisterMapper.selectById("1583321439534010370");
 
         return ResponseEntity.status(HttpStatus.OK).body(ro);
     }

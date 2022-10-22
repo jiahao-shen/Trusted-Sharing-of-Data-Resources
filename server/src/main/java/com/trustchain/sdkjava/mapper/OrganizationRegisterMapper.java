@@ -1,7 +1,7 @@
 package com.trustchain.sdkjava.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.trustchain.sdkjava.model.RegisterOrganization;
+import com.trustchain.sdkjava.model.OrganizationRegister;
 
-public interface RegisterOrganizationMapper extends BaseMapper<RegisterOrganization> {
+public interface OrganizationRegisterMapper extends BaseMapper<OrganizationRegister> {
 }

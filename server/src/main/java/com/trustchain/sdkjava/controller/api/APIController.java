@@ -1,4 +1,4 @@
-package com.trustchain.sdkjava.controller.dashboard.api;
+package com.trustchain.sdkjava.controller.api;
 
 import com.trustchain.sdkjava.fabric.FabricGateway;
 import lombok.Data;

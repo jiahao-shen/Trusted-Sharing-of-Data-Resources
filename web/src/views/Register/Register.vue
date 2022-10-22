@@ -2,9 +2,9 @@
 import { Icon } from '@iconify/vue'
 import { ref, reactive, onMounted } from 'vue'
 import { validators } from '@/utils/validators'
-import { OrganizationType } from '@/utils/enums'
 import { CopyText } from '@/components/CopyText'
 import { useRoute, useRouter } from 'vue-router'
+import { OrganizationTypeDict } from '@/utils/enums'
 import { regionData } from 'element-china-area-data'
 import { ElMessage, ElNotification } from 'element-plus'
 import { organizationService } from '@/service/organization'
@@ -12,9 +12,6 @@ import type { FormInstance, FormRules, UploadProps, UploadInstance } from 'eleme
 
 const route = useRoute()
 const router = useRouter()
-
-const fuck: keyof typeof OrganizationType = OrganizationType[OrganizationType.EDUCATION]
-console.log(fuck)
 
 const organizationList = ref()
 onMounted(() => {
@@ -208,9 +205,9 @@ const handleClose = (done: () => void) => {
 						<el-form-item label="机构类型" prop="type">
 							<el-select placeholder="选择" v-model="form.type">
 								<el-option
-									v-for="item in Object.keys(OrganizationType)"
-									:value="item"
-									:label="OrganizationType[item]"
+									v-for="(value, label) in OrganizationTypeDict"
+									:value="value"
+									:label="label"
 								/>
 							</el-select>
 						</el-form-item>

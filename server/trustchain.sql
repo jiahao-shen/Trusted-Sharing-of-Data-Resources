@@ -57,21 +57,15 @@ CREATE TABLE `organization`
     primary key (`id`)
 ) DEFAULT CHARSET = utf8mb4;
 
---
--- Table structure for table `User`
---
-
 DROP TABLE IF EXISTS `user`;
-/*!40101 SET @saved_cs_client = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `user`
 (
-    `username`  varchar(32)  NOT NULL,
-    `password`  varchar(128) NOT NULL,
-    `image_url` varchar(1024) DEFAULT NULL,
-    `fabric_id` varchar(64)  NOT NULL,
-    PRIMARY KEY (`username`)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4;
+    `id`           varchar(32)  not null,
+    `username`     varchar(32)  not null,
+    `password`     varchar(128) not null,
+    `organization` bigint       not null,
+    `created_time` datetime     not null,
+    PRIMARY KEY (`id`)
+) DEFAULT CHARSET = utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

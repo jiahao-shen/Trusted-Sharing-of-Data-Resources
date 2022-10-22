@@ -1,6 +1,7 @@
 package com.trustchain.sdkjava.model;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.trustchain.sdkjava.enums.OrganizationType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

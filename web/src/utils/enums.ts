@@ -65,14 +65,25 @@ export enum HttpStatusCode {
 }
 
 export enum OrganizationType {
-	MEDICAL = 1,
-	EDUCATION = 2,
-	FINANCIAL = 3,
-	GOVERNMENT = 4,
+	MEDICAL = '医疗',
+	EDUCATION = '教育',
+	FINANCIAL = '金融',
+	GOVERNMENT = '政府',
 }
+
+const OrganizationTypeDict = {}
+Object.keys(OrganizationType).forEach((item) => {
+	OrganizationTypeDict[OrganizationType[item]] = item
+})
+export { OrganizationTypeDict }
 
 export enum RegisterStatus {
 	PROCESSED = '待处理',
 	ALLOW = '通过',
 	REJECT = '驳回',
 }
+const RegisterStatusDict = {}
+Object.keys(RegisterStatus).forEach((item) => {
+	RegisterStatusDict[RegisterStatus[item]] = item
+})
+export { RegisterStatusDict }

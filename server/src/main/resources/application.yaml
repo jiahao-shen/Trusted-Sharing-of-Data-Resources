@@ -8,3 +8,9 @@ spring:
 
 logging:
   config: classpath:log4j2.xml
+
+
+server:
+  servlet:
+    session:
+      timeout: 3600s

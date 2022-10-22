@@ -1,4 +1,4 @@
-package com.trustchain.sdkjava.model;
+package com.trustchain.sdkjava.enums;
 
 import lombok.Getter;
 import lombok.AllArgsConstructor;

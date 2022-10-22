@@ -40,7 +40,6 @@ export const organizationService = {
 		return http.get('/organization/register/request/list')
 	},
 	organizationRegisterRequsetReply: (serialNumber: string, reply: string, reason?: string) => {
-		console.log(reply)
 		return http.post('/organization/register/request/reply', {
 			serialNumber: serialNumber,
 			reply: reply,

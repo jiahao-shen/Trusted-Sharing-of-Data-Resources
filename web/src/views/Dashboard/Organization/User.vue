@@ -20,6 +20,10 @@ let showList = ref(Array())
 const addUserDialogVisible = ref(false)
 
 onMounted(() => {
+	loadUserList()
+})
+
+const loadUserList = () => {
 	userService
 		.userList()
 		.then((res: any) => {
@@ -35,7 +39,7 @@ onMounted(() => {
 				type: 'error',
 			})
 		})
-})
+}
 
 const handleCurrentChange = (value: number) => {
 	currentPage = value
@@ -108,17 +112,7 @@ const submit = async (formEl: FormInstance | undefined) => {
 							type: 'success',
 						})
 						addUserDialogVisible.value = false
-						userService
-							.userList()
-							.then((res: any) => {
-								console.log(res.data)
-								userList = res.data
-								total.value = userList.length
-								showList.value = userList.slice((currentPage - 1) * pageSize, currentPage * pageSize)
-							})
-							.catch((err: any) => {
-								console.error(err)
-							})
+						loadUserList()
 					} else {
 						ElNotification({
 							title: '注册失败',
