@@ -19,6 +19,7 @@
     "css": "^3.0.0",
     "element-china-area-data": "^5.0.2",
     "element-plus": "^2.2.13",
+    "enum-values": "^1.2.1",
     "less": "^4.1.3",
     "less-loader": "^11.0.0",
     "moment": "^2.29.4",

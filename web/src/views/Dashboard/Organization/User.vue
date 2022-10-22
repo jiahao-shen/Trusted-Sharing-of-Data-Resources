@@ -33,11 +33,6 @@ const loadUserList = () => {
 			showList.value = userList.slice((currentPage - 1) * pageSize, currentPage * pageSize)
 		})
 		.catch((err: any) => {
-			ElNotification({
-				title: '未知错误',
-				message: err.response.data,
-				type: 'error',
-			})
 		})
 }
 
@@ -108,14 +103,14 @@ const submit = async (formEl: FormInstance | undefined) => {
 				.then((res: any) => {
 					if (res.data) {
 						ElNotification({
-							title: '注册成功',
+							title: '新增用户成功',
 							type: 'success',
 						})
 						addUserDialogVisible.value = false
 						loadUserList()
 					} else {
 						ElNotification({
-							title: '注册失败',
+							title: '新增用户失败',
 							type: 'error',
 						})
 					}

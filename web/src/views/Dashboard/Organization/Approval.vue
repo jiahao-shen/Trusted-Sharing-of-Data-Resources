@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import moment from 'moment'
+import { EnumValues } from 'enum-values'
 import { ElNotification } from 'element-plus'
 import { ref, reactive, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { CopyText } from '@/components/CopyText'
 import { organizationService } from '@/service/organization'
-import { RegisterStatus, RegisterStatusDict, OrganizationType } from '@/utils/enums'
+import { RegisterStatus, OrganizationType } from '@/utils/enums'
 
 const route = useRoute()
 const router = useRouter()
@@ -30,11 +31,6 @@ const loadOrganizationRegisterRequestList = () => {
 			showList.value = approvalList.slice((currentPage - 1) * pageSize, currentPage * pageSize)
 		})
 		.catch((err: any) => {
-			ElNotification({
-				title: '未知错误',
-				message: err.response.data,
-				type: 'error',
-			})
 		})
 }
 
@@ -70,7 +66,7 @@ const allow = () => {
 	organizationService
 		.organizationRegisterRequsetReply(
 			showList.value[selectedIndex.value].serialNumber,
-			RegisterStatusDict[RegisterStatus.ALLOW]
+			EnumValues.getNameFromValue(RegisterStatus, RegisterStatus.ALLOW)
 		)
 		.then((res: any) => {
 			if (res.data) {
@@ -79,11 +75,6 @@ const allow = () => {
 			}
 		})
 		.catch((err: any) => {
-			ElNotification({
-				title: '未知错误',
-				message: err.response.data,
-				type: 'error',
-			})
 		})
 }
 
@@ -97,7 +88,7 @@ const reject = () => {
 	organizationService
 		.organizationRegisterRequsetReply(
 			showList.value[selectedIndex.value].serialNumber,
-			RegisterStatusDict[RegisterStatus.REJECT],
+			EnumValues.getNameFromValue(RegisterStatus, RegisterStatus.REJECT),
 			rejectReason.value
 		)
 		.then((res: any) => {
@@ -107,11 +98,6 @@ const reject = () => {
 			}
 		})
 		.catch((err: any) => {
-			ElNotification({
-				title: '未知错误',
-				message: err.response.data,
-				type: 'error',
-			})
 		})
 }
 </script>
@@ -155,7 +141,7 @@ const reject = () => {
 								<el-button type="primary" icon="More" circle size="default" />
 							</el-tooltip>
 							<el-tooltip
-								content="允许"
+								content="通过"
 								v-if="(RegisterStatus[scope.row.status] as RegisterStatus) === RegisterStatus.PROCESSED"
 							>
 								<el-button type="success" icon="Check" circle size="default" @click="allowConfirm(scope.$index)" />

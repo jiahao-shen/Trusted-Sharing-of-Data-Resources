@@ -1,3 +1,4 @@
+// TODO: 在未来需要删除
 export enum HttpStatusCode {
 	Continue = 100,
 	SwitchingProtocols = 101,
@@ -71,19 +72,8 @@ export enum OrganizationType {
 	GOVERNMENT = '政府',
 }
 
-const OrganizationTypeDict = {}
-Object.keys(OrganizationType).forEach((item) => {
-	OrganizationTypeDict[OrganizationType[item]] = item
-})
-export { OrganizationTypeDict }
-
 export enum RegisterStatus {
 	PROCESSED = '待处理',
 	ALLOW = '通过',
 	REJECT = '驳回',
 }
-const RegisterStatusDict = {}
-Object.keys(RegisterStatus).forEach((item) => {
-	RegisterStatusDict[RegisterStatus[item]] = item
-})
-export { RegisterStatusDict }

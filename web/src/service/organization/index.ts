@@ -1,6 +1,5 @@
 import { http } from '@/service'
 import { useAppStore } from '@/store/app'
-import type { RegisterStatus } from '@/utils/enums'
 import { CodeToText } from 'element-china-area-data'
 
 const appStore = useAppStore()
@@ -39,7 +38,7 @@ export const organizationService = {
 	organizationRegsiterRequestList: () => {
 		return http.get('/organization/register/request/list')
 	},
-	organizationRegisterRequsetReply: (serialNumber: string, reply: string, reason?: string) => {
+	organizationRegisterRequsetReply: (serialNumber: string, reply: string | null, reason?: string) => {
 		return http.post('/organization/register/request/reply', {
 			serialNumber: serialNumber,
 			reply: reply,

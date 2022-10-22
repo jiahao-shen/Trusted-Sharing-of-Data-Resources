@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { Icon } from '@iconify/vue'
+import { EnumValues } from 'enum-values'
 import { ref, reactive, onMounted } from 'vue'
 import { validators } from '@/utils/validators'
 import { CopyText } from '@/components/CopyText'
 import { useRoute, useRouter } from 'vue-router'
-import { OrganizationTypeDict } from '@/utils/enums'
+import { OrganizationType } from '@/utils/enums'
 import { regionData } from 'element-china-area-data'
 import { ElMessage, ElNotification } from 'element-plus'
 import { organizationService } from '@/service/organization'
@@ -78,9 +79,9 @@ const rules = reactive<FormRules>({
 })
 
 const submit = async (formEl: FormInstance | undefined) => {
+	console.log(form)
 	await formEl?.validate((valid, fields) => {
 		if (valid) {
-			console.log(form)
 			organizationService
 				.organizationRegisterRequest(form)
 				.then((res: any) => {
@@ -205,9 +206,9 @@ const handleClose = (done: () => void) => {
 						<el-form-item label="机构类型" prop="type">
 							<el-select placeholder="选择" v-model="form.type">
 								<el-option
-									v-for="(value, label) in OrganizationTypeDict"
-									:value="value"
-									:label="label"
+									v-for="item in OrganizationType"
+									:value="EnumValues.getNameFromValue(OrganizationType, item)"
+									:label="item"
 								/>
 							</el-select>
 						</el-form-item>
