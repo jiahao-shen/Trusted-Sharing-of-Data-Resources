@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { unref, ref, watch, computed } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import { useFullscreen } from '@vueuse/core'
 import { Icon } from '@iconify/vue'
 import { useAppStore } from '@/store/app'
+import { useFullscreen } from '@vueuse/core'
 import { userService } from '@/service/user'
+import { UserLogo } from '@/components/UserLogo'
+import { useRoute, useRouter } from 'vue-router'
+import { unref, ref, watch, computed } from 'vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -128,7 +129,7 @@ const logout = () => {
 					/>
 
 					<el-button class="mx-5px my-auto" icon="Search" round>搜索</el-button>
-					<el-avatar size="default" :src="appStore.getUser.imageURL" style="margin: auto 5px" />
+					<UserLogo class='ml-10px' :src="appStore.getUser.image"></UserLogo>
 					<el-menu mode="horizontal" :ellipsis="false">
 						<el-sub-menu index="user">
 							<template #title>{{ appStore.getUser.username }}</template>

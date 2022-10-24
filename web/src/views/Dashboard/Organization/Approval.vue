@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import moment from 'moment'
 import { EnumValues } from 'enum-values'
-import { ElNotification } from 'element-plus'
 import { ref, reactive, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { CopyText } from '@/components/CopyText'
 import { organizationService } from '@/service/organization'
+import { ApplyStatusText } from '@/components/ApplyStatusText'
 import { RegisterStatus, OrganizationType } from '@/utils/enums'
 
 const route = useRoute()
@@ -32,19 +32,6 @@ const loadOrganizationRegisterRequestList = () => {
 		})
 		.catch((err: any) => {
 		})
-}
-
-const registerStatusToText = (item: string) => {
-	switch (RegisterStatus[item]) {
-		case RegisterStatus.PROCESSED:
-			return 'text-[var(--el-color-warning)]'
-		case RegisterStatus.ALLOW:
-			return 'text-[var(--el-color-success)]'
-		case RegisterStatus.REJECT:
-			return 'text-[var(--el-color-danger)]'
-		default:
-			break
-	}
 }
 
 const handleCurrentChange = (value: number) => {
@@ -124,9 +111,7 @@ const reject = () => {
 				</el-table-column>
 				<el-table-column label="状态">
 					<template #default="scope">
-						<span :class="registerStatusToText(scope.row.status)">
-							{{ RegisterStatus[scope.row.status] }}
-						</span>
+						<ApplyStatusText :status="scope.row.status" />
 					</template>
 				</el-table-column>
 				<el-table-column label="申请时间">

@@ -17,8 +17,12 @@ import java.util.Date;
 @TableName("register_organization")
 public class OrganizationRegister {
     @TableId(value = "serial_number", type = IdType.ASSIGN_ID)
-    @JsonSerialize(using= ToStringSerializer.class)
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long serialNumber;  // 注册流水号
+
+    @TableField("id")
+    @JsonSerialize(using = ToStringSerializer.class)
+    private Long id; // 申请成功的机构ID
 
     @TableField("name")
     private String name;    // 机构名称
@@ -45,7 +49,7 @@ public class OrganizationRegister {
     private String introduction;    // 机构介绍
 
     @TableField("superior")
-    @JsonSerialize(using= ToStringSerializer.class)
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long superior; // 上级机构
 
     @TableField("provide_node")

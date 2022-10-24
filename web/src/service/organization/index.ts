@@ -45,4 +45,14 @@ export const organizationService = {
 			reason: reason,
 		})
 	},
+	organizationInformation: () => {
+		return http.post('/organization/information', {
+			id: appStore.getUser.organization,
+		})
+	},
+	searchRegisterProgress: (serialNumbers: string[]) => {
+		return http.post('/organization/register/request/progress', {
+			serialNumbers: serialNumbers,
+		})
+	},
 }

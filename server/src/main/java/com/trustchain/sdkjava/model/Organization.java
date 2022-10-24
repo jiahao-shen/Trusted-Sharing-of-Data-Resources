@@ -47,7 +47,7 @@ public class Organization {
     private String introduction;    // 机构介绍
 
     @TableField("superior")
-    private String superior; // 上级机构
+    private Long superior; // 上级机构
 
     @TableField("provide_node")
     private boolean provideNode;    // 是否提供节点

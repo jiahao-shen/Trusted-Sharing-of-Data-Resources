@@ -18,6 +18,7 @@
 CREATE TABLE `register_organization`
 (
     `serial_number` bigint       not null,
+    `id`            bigint,
     `name`          varchar(32)  not null,
     `logo`          varchar(1024),
     `type`          int          not null,

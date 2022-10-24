@@ -20,7 +20,7 @@ http.interceptors.request.use((config: AxiosRequestConfig) => {
 
 http.interceptors.response.use(
 	(res: AxiosResponse<any>) => {
-		return res
+		return res;
 	},
 	(err: AxiosError) => {
 		switch (err.response?.status) {
@@ -35,7 +35,7 @@ http.interceptors.response.use(
 				})
 				break
 			case HttpStatusCode.InternalServerError:	// 500: 服务器内部错误
-				return err
+				return Promise.reject(err)
 			default:
 				ElNotification({
 					title: '未知错误',

@@ -2,14 +2,14 @@ export const validators = {
 	required: (message?: string) => {
 		return {
 			required: true,
-			message: (message || '') + '必填',
+			message: (message ?? '') + '必填',
 			trigger: 'blur',
 		}
 	},
 	notEmpty: (message?: string) => {
 		return {
 			pattern: /\s*\S+?/,
-			message: (message || '') + '不能为空字符串',
+			message: (message ?? '') + '不能为空字符串',
 			trigger: 'blur',
 		}
 	},
@@ -18,19 +18,19 @@ export const validators = {
 			return {
 				min: min,
 				max: max,
-				message: (message || '') + `长度要在${min}~${max}之间`,
+				message: (message ?? '') + `长度要在${min}~${max}之间`,
 				trigger: 'blur',
 			}
 		} else if (!min && max) {
 			return {
 				max: max,
-				message: (message || '') + `长度不能超过${max}`,
+				message: (message ?? '') + `长度不能超过${max}`,
 				trigger: 'blur',
 			}
 		} else if (min && !max) {
 			return {
 				min: min,
-				message: (message || '') + `长度不能少于${min}`,
+				message: (message ?? '') + `长度不能少于${min}`,
 				trigger: 'blur',
 			}
 		} else {

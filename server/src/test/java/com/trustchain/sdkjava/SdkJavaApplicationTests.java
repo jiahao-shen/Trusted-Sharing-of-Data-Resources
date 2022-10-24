@@ -3,20 +3,25 @@ package com.trustchain.sdkjava;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.trustchain.sdkjava.enums.OrganizationType;
 import com.trustchain.sdkjava.fabric.FabricGateway;
-import com.trustchain.sdkjava.mapper.FuckMapper;
 import com.trustchain.sdkjava.mapper.OrganizationMapper;
 import com.trustchain.sdkjava.mapper.OrganizationRegisterMapper;
 import com.trustchain.sdkjava.mapper.UserMapper;
 import com.trustchain.sdkjava.model.*;
+import com.trustchain.sdkjava.util.Generator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
+import org.passay.CharacterRule;
+import org.passay.EnglishCharacterData;
+import org.passay.PasswordGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @SpringBootTest
@@ -25,9 +30,6 @@ class SdkJavaApplicationTests {
 
     @Autowired
     private UserMapper userMapper;
-
-    @Autowired
-    private FuckMapper fuckMapper;
 
     @Autowired
     private OrganizationRegisterMapper registerOrganizationMapper;
@@ -135,6 +137,12 @@ class SdkJavaApplicationTests {
         String pwd = encoder.encode("258667");
         System.out.println(pwd);
         System.out.println(encoder.matches("258667", pwd));
+    }
+
+    @Test
+    void testPassay() {
+        System.out.println(Generator.userID(8));
+        System.out.println(Generator.password(12));
     }
 }
 

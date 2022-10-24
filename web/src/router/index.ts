@@ -23,6 +23,18 @@ const router = createRouter({
 			path: '/register',
 			name: '注册',
 			component: () => import('@/views/Register/Register.vue'),
+			children: [
+				{
+					path: 'organization',
+					name: '机构注册',
+					component: () => import('@/views/Register/components/RegisterForm.vue'),
+				},
+				{
+					path: 'progress',
+					name: '注册状态查询',
+					component: () => import('@/views/Register/components/ProgressSearch.vue'),
+				},
+			],
 		},
 		{
 			path: '/dashboard',
@@ -73,13 +85,13 @@ const router = createRouter({
 						{
 							path: 'user',
 							name: '用户管理',
-							component: () => import('@/views/Dashboard/Organization/User.vue')
+							component: () => import('@/views/Dashboard/Organization/User.vue'),
 						},
 						{
 							path: 'approval',
 							name: '注册审批',
-							component: () => import('@/views/Dashboard/Organization/Approval.vue')
-						}
+							component: () => import('@/views/Dashboard/Organization/Approval.vue'),
+						},
 					],
 				},
 			],
@@ -121,7 +133,7 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
 	const appStore = useAppStore()
 
-	if (appStore.getUser === null && to.path !== '/login' && to.path !== '/register') {
+	if (appStore.getUser === null && to.path !== '/login' && !to.path.startsWith('/register')) {
 		next('/login')
 	} else {
 		next()
