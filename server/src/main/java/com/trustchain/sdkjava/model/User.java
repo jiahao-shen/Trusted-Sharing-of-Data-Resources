@@ -1,14 +1,15 @@
 package com.trustchain.sdkjava.model;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+import com.alibaba.fastjson.annotation.JSONField;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.alibaba.fastjson.serializer.ToStringSerializer;
+
 
 import java.util.Date;
 
@@ -27,7 +28,7 @@ public class User {
     private String password;
 
     @TableField("organization")
-    @JsonSerialize(using= ToStringSerializer.class)
+    @JSONField(serializeUsing = ToStringSerializer.class)
     private Long organization;
 
     @TableField("created_time")

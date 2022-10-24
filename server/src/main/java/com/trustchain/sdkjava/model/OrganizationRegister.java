@@ -1,8 +1,8 @@
 package com.trustchain.sdkjava.model;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson.serializer.ToStringSerializer;
 import com.baomidou.mybatisplus.annotation.*;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.trustchain.sdkjava.enums.OrganizationType;
 import com.trustchain.sdkjava.enums.RegisterStatus;
 import lombok.AllArgsConstructor;
@@ -17,11 +17,11 @@ import java.util.Date;
 @TableName("register_organization")
 public class OrganizationRegister {
     @TableId(value = "serial_number", type = IdType.ASSIGN_ID)
-    @JsonSerialize(using = ToStringSerializer.class)
+    @JSONField(serializeUsing = ToStringSerializer.class)
     private Long serialNumber;  // 注册流水号
 
     @TableField("id")
-    @JsonSerialize(using = ToStringSerializer.class)
+    @JSONField(serializeUsing = ToStringSerializer.class)
     private Long id; // 申请成功的机构ID
 
     @TableField("name")
@@ -49,7 +49,7 @@ public class OrganizationRegister {
     private String introduction;    // 机构介绍
 
     @TableField("superior")
-    @JsonSerialize(using = ToStringSerializer.class)
+    @JSONField(serializeUsing = ToStringSerializer.class)
     private Long superior; // 上级机构
 
     @TableField("provide_node")
@@ -65,11 +65,14 @@ public class OrganizationRegister {
     private RegisterStatus status;  // 申请状态
 
     @TableField(value = "apply_time")
+    @JSONField(format = "YYYY-MM-DD HH:mm:ss")
     private Date applyTime;    // 申请时间
 
     @TableField(value = "reply_time")
+    @JSONField(format = "YYYY-MM-DD HH:mm:ss")
     private Date replyTime;   // 批复时间
 
     @TableField(value = "reply_message")
+    @JSONField(format = "YYYY-MM-DD HH:mm:ss")
     private String replyMessage;    // 批复内容
 }

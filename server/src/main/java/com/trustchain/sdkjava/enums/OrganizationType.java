@@ -2,7 +2,6 @@ package com.trustchain.sdkjava.enums;
 
 import lombok.Getter;
 import lombok.AllArgsConstructor;
-import com.fasterxml.jackson.annotation.JsonValue;
 import com.baomidou.mybatisplus.annotation.EnumValue;
 
 
@@ -15,7 +14,6 @@ public enum OrganizationType {
     GOVERNMENT(4, "政府");
 
     @EnumValue
-//    @JsonValue
     private final int code;
     private final String desp;
 }

@@ -37,7 +37,8 @@ const searchRegisterProgress = () => {
 	organizationService
 		.searchRegisterProgress(tmp)
 		.then((res: any) => {
-			registerList = Array(res.data.registerList)
+			console.log(res.data)
+			registerList = res.data
 			total.value = registerList.length
 			showList.value = registerList.slice((currentPage - 1) * pageSize, currentPage * pageSize)
 		})

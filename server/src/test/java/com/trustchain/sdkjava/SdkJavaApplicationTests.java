@@ -1,5 +1,8 @@
 package com.trustchain.sdkjava;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.trustchain.sdkjava.enums.OrganizationType;
 import com.trustchain.sdkjava.fabric.FabricGateway;
@@ -8,20 +11,17 @@ import com.trustchain.sdkjava.mapper.OrganizationRegisterMapper;
 import com.trustchain.sdkjava.mapper.UserMapper;
 import com.trustchain.sdkjava.model.*;
 import com.trustchain.sdkjava.util.Generator;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
-import org.passay.CharacterRule;
-import org.passay.EnglishCharacterData;
-import org.passay.PasswordGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
 @SpringBootTest
@@ -143,6 +143,42 @@ class SdkJavaApplicationTests {
     void testPassay() {
         System.out.println(Generator.userID(8));
         System.out.println(Generator.password(12));
+    }
+
+    enum Gender {
+        BOY, GIRL, UNKNOW
+    }
+
+    @Data
+    @AllArgsConstructor
+    class Fuck {
+        private Integer id;
+        private Gender gender;
+    }
+
+    @Test
+    void testFastJson() {
+        Fuck you = new Fuck(1, Gender.BOY);
+        String jsonString = JSON.toJSONString(you);
+        System.out.println(jsonString);    // {"gender":"BOY","id":1}
+
+        Organization fuck = new Organization();
+
+        fuck.setType(OrganizationType.EDUCATION);
+        System.out.println(fuck);
+        System.out.println(JSONObject.toJSONString(fuck, SerializerFeature.WriteEnumUsingToString));
+        System.out.println(JSONObject.toJSONString(fuck, SerializerFeature.WriteEnumUsingName));
+        System.out.println(JSON.toJSON(fuck).toString());
+        System.out.println(JSONObject.toJSONString(OrganizationType.EDUCATION));
+//        Organization fuck = new Organization();
+//
+//        fuck.setType(OrganizationType.EDUCATION);
+//        System.out.println(fuck);
+//        System.out.println(OrganizationType.EDUCATION.name());
+//        System.out.println(JSONObject.toJSONString(fuck, SerializerFeature.WriteEnumUsingToString));
+//        System.out.println(JSONObject.toJSONString(fuck, SerializerFeature.WriteEnumUsingName));
+//        System.out.println(JSON.toJSON(fuck).toString());
+//        System.out.println(JSONObject.toJSONString(OrganizationType.EDUCATION));
     }
 }
 

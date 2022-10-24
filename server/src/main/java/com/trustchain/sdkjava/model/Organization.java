@@ -1,11 +1,11 @@
 package com.trustchain.sdkjava.model;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson.serializer.ToStringSerializer;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.trustchain.sdkjava.enums.OrganizationType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,7 +19,7 @@ import java.util.Date;
 @TableName("organization")
 public class Organization {
     @TableId(value = "id", type = IdType.ASSIGN_ID)
-    @JsonSerialize(using = ToStringSerializer.class)
+    @JSONField(serializeUsing = ToStringSerializer.class)
     private Long id;  // 机构ID
 
     @TableField("name")
@@ -59,11 +59,6 @@ public class Organization {
     private String file;    // 机构文件
 
     @TableField("created_time")
+    @JSONField(format = "YYYY-MM-DD HH:mm:ss")
     private Date CreatedTime;   // 创建时间
-
-//    @TableField("api_list")
-//    private ArrayList<String> apiList; // API列表
-//
-//    @TableField("user_list")
-//    private ArrayList<String> userList;   // 用户列表
 }

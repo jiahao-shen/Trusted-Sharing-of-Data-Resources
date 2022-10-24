@@ -2,7 +2,6 @@ package com.trustchain.sdkjava.enums;
 
 import lombok.Getter;
 import lombok.AllArgsConstructor;
-//import com.fasterxml.jackson.annotation.JsonValue;
 import com.baomidou.mybatisplus.annotation.EnumValue;
 
 @Getter
@@ -13,7 +12,6 @@ public enum RegisterStatus {
     REJECT(3, "驳回");
 
     @EnumValue
-//    @JsonValue
     private final int code;
     private final String descp;
 }

@@ -46,6 +46,7 @@ export const organizationService = {
 		})
 	},
 	organizationInformation: () => {
+		console.log('fuck', appStore.getUser.organization)
 		return http.post('/organization/information', {
 			id: appStore.getUser.organization,
 		})

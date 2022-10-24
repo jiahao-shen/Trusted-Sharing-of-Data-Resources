@@ -1,5 +1,6 @@
 package com.trustchain.sdkjava.controller.organization;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.trustchain.sdkjava.mapper.OrganizationMapper;
@@ -62,7 +63,7 @@ public class OrganizationController {
         int count = organizationRegisterMapper.insert(organizationRegister);
 
         if (count != 0) {
-            return ResponseEntity.status(HttpStatus.OK).body(organizationRegister.getSerialNumber());
+            return ResponseEntity.status(HttpStatus.OK).body(organizationRegister.getSerialNumber().toString());
         } else {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("未知错误");
         }
@@ -86,19 +87,12 @@ public class OrganizationController {
     @PostMapping("/organization/register/request/progress")
     public ResponseEntity<Object> organizationRegisterRequestProgress(@RequestBody JSONObject request, HttpSession session) {
         try {
-//            Long serialNumber = Long.parseLong(request.getString("serialNumber"));
-//
-//            OrganizationRegister organizationRegister = organizationRegisterMapper.selectById(serialNumber);
-//            if (organizationRegister == null) {
-//                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("申请号不存在");
-//            }
-//
-//            JSONObject response = new JSONObject();
-//            response.put("registerList", organizationRegister);
             logger.info(request);
-            ArrayList<String> serialNumbers = request.getObject("serialNumbers", ArrayList.class);
-//            ArrayList<Long> tmp =
-            return ResponseEntity.status(HttpStatus.OK).body("Good");
+            ArrayList<Long> serialNumbers = request.getObject("serialNumbers", ArrayList.class);
+
+            List<OrganizationRegister> organizationRegisterList = organizationRegisterMapper.selectBatchIds(serialNumbers);
+
+            return ResponseEntity.status(HttpStatus.OK).body(organizationRegisterList);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e);
         }
@@ -140,21 +134,6 @@ public class OrganizationController {
         }
 
         organizationRegister.setId(organization.getId());   // 机构注册绑定机构ID
-
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-
-        User root = new User();
-        root.setId(Generator.userID(8));
-        root.setUsername("管理员");
-        root.setPassword(encoder.encode(Generator.password(12)));
-        root.setOrganization(organization.getId());
-        root.setCreatedTime(new Date());
-
-        count = userMapper.insert(root);
-
-        if (count == 0) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("管理员创建失败");
-        }
 
         count = organizationRegisterMapper.updateById(organizationRegister);
         if (count == 0) {
