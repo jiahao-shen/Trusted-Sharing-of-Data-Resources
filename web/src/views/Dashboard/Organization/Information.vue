@@ -8,7 +8,8 @@ import { organizationService } from '@/service/organization'
 
 const route = useRoute()
 const appStore = useAppStore()
-let organization = ref()
+
+const organization = ref()
 
 onMounted(() => {
 	loadOrganizationInformation()
@@ -59,6 +60,7 @@ const loadOrganizationInformation = () => {
 					<el-button icon="Edit" type="primary">编辑</el-button>
 				</div>
 			</div>
+			<el-empty v-else description="空" />
 		</el-card>
 	</div>
 </template>

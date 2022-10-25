@@ -5,8 +5,10 @@ const props = defineProps<{
 	src?: string | null,
 	size?: number | string | null
 }>()
+
 </script>
 
+
 <template>
-	<el-avatar :size="size" :src="src || DEFAULT_USER_LOGO" />
+	<el-avatar :size="size" :src="src || DEFAULT_USER_LOGO"/>
 </template>

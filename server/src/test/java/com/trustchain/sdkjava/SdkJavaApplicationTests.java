@@ -18,8 +18,11 @@ import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.io.File;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.UUID;
@@ -164,9 +167,14 @@ class SdkJavaApplicationTests {
 
         Organization fuck = new Organization();
 
-        fuck.setCreatedTime(new Date());
+//        fuck.setCreatedTime(new Date());
+//        fuck.setSuperior(null);
+        Long id = fuck.getSuperior();
 
-        System.out.println(JSONObject.toJSONString(fuck));
+        JSONObject obj = JSONObject.parseObject(JSONObject.toJSONString(fuck));
+        obj.put("good", id);
+
+        System.out.println(obj);
 
 //        fuck.setType(OrganizationType.EDUCATION);
 //        System.out.println(fuck);
@@ -183,6 +191,19 @@ class SdkJavaApplicationTests {
 //        System.out.println(JSONObject.toJSONString(fuck, SerializerFeature.WriteEnumUsingName));
 //        System.out.println(JSON.toJSON(fuck).toString());
 //        System.out.println(JSONObject.toJSONString(OrganizationType.EDUCATION));
+    }
+
+    @Test
+    void testSaveFile() throws Exception {
+        Resource res = new ClassPathResource("static");
+
+        File dir = new File(res.getFile().getPath() + "/123456");
+        if (dir.mkdir()) {
+            System.out.println("Godd");
+        }
+
+        Long fuck = Long.parseLong("1234353452525");
+        System.out.println("8432098/" + fuck + "/389283012");
     }
 }
 

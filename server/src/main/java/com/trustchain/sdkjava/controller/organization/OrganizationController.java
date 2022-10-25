@@ -1,6 +1,5 @@
 package com.trustchain.sdkjava.controller.organization;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.trustchain.sdkjava.mapper.OrganizationMapper;
@@ -11,19 +10,23 @@ import com.trustchain.sdkjava.enums.OrganizationType;
 import com.trustchain.sdkjava.model.OrganizationRegister;
 import com.trustchain.sdkjava.enums.RegisterStatus;
 import com.trustchain.sdkjava.model.User;
-import com.trustchain.sdkjava.util.Generator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.parameters.P;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -41,12 +44,11 @@ public class OrganizationController {
     private static final Logger logger = LogManager.getLogger(OrganizationController.class);
 
     @PostMapping("/organization/register/request")
-    public ResponseEntity<Object> organizationRegisterRequest(@RequestBody JSONObject request, HttpSession session) {
-        logger.info(request);
+    public ResponseEntity<Object> organizationRegisterRequest(@RequestPart("logo") MultipartFile logo, @RequestPart("info") JSONObject request, @RequestPart("file") MultipartFile file, HttpSession session) {
 
+        // 新注册申请
         OrganizationRegister organizationRegister = new OrganizationRegister();
         organizationRegister.setName(request.getString("name"));
-        organizationRegister.setLogo(request.getString("logo"));
         organizationRegister.setType(OrganizationType.valueOf(request.getString("type")));
         organizationRegister.setTelephone(request.getString("telephone"));
         organizationRegister.setEmail(request.getString("email"));
@@ -56,14 +58,32 @@ public class OrganizationController {
         organizationRegister.setSuperior(Long.parseLong(request.getString("superior")));
         organizationRegister.setProvideNode(request.getBoolean("provideNode"));
         organizationRegister.setNumNodes(request.getInteger("numNodes"));
-        organizationRegister.setFile(request.getString("file"));
         organizationRegister.setStatus(RegisterStatus.PROCESSED);
         organizationRegister.setApplyTime(new Date());
 
         int count = organizationRegisterMapper.insert(organizationRegister);
 
         if (count != 0) {
-            return ResponseEntity.status(HttpStatus.OK).body(organizationRegister.getSerialNumber().toString());
+            try {
+                String serialNumber = organizationRegister.getSerialNumber().toString();
+                Resource resource = new ClassPathResource("static");
+                String directory = resource.getFile().getPath() + "/" + serialNumber;
+                Files.createDirectory(Paths.get(directory)); // 按申请号创建文件夹
+
+                // 写入Logo和File
+                logo.transferTo(new File(directory + "/logo.jpg"));
+                file.transferTo(new File(directory + "/file.zip"));
+
+                // 更新数据库中的Logo和File
+                organizationRegister.setLogo("http://localhost:5173/server/" + serialNumber + "/logo.jpg");
+                organizationRegister.setFile("http://localhost:5173/server/" + serialNumber + "/file.zip");
+
+                organizationRegisterMapper.updateById(organizationRegister);
+
+                return ResponseEntity.status(HttpStatus.OK).body(serialNumber);
+            } catch (Exception e) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e);
+            }
         } else {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("未知错误");
         }
@@ -115,7 +135,6 @@ public class OrganizationController {
         // 创建机构
         Organization organization = new Organization();
         organization.setName(organizationRegister.getName());
-        organization.setLogo(organizationRegister.getLogo());
         organization.setType(organizationRegister.getType());
         organization.setTelephone(organizationRegister.getTelephone());
         organization.setEmail(organizationRegister.getEmail());
@@ -125,20 +144,33 @@ public class OrganizationController {
         organization.setSuperior(organizationRegister.getSuperior());
         organization.setProvideNode(organizationRegister.isProvideNode());
         organization.setNumNodes(organizationRegister.getNumNodes());
-        organization.setFile(organizationRegister.getFile());
         organization.setCreatedTime(new Date());
 
         int count = organizationMapper.insert(organization);
+
         if (count == 0) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("机构创建失败");
         }
 
-        organizationRegister.setId(organization.getId());   // 机构注册绑定机构ID
+        Long orgID = organization.getId();
+        organizationRegister.setId(orgID);   // 机构注册绑定机构ID
+        organizationRegisterMapper.updateById(organizationRegister);
 
-        count = organizationRegisterMapper.updateById(organizationRegister);
-        if (count == 0) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("更新失败");
+        try {
+            String serialNumber = organizationRegister.getSerialNumber().toString();
+            Resource resource = new ClassPathResource("static");
+            String oldDirectory = resource.getFile().getPath() + "/" + serialNumber;
+            String newDirectory = resource.getFile().getPath() + "/" + orgID;
+            // 移动Logo和File至新目录
+            new File(oldDirectory).renameTo(new File(newDirectory));
+        } catch (Exception e) {
+            logger.warn("移动文件失败");
         }
+
+        // 更新机构
+        organization.setLogo("http://localhost:5173/server/" + orgID + "/logo.jpg");
+        organization.setFile("http://localhost:5173/server/" + orgID + "/file.zip");
+        organizationMapper.updateById(organization);
 
         return ResponseEntity.status(HttpStatus.OK).body(true);
     }
@@ -178,7 +210,11 @@ public class OrganizationController {
 
         Organization superior = organizationMapper.selectById(organization.getSuperior());
 
-        response.put("superior", superior.getName());
+        if (superior != null) {
+            response.put("superior", superior.getName());
+        } else {
+            response.put("superior", "");
+        }
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

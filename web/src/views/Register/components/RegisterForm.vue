@@ -79,7 +79,6 @@ const rules = reactive<FormRules>({
 })
 
 const submit = async (formEl: FormInstance | undefined) => {
-	console.log(form)
 	await formEl?.validate((valid, fields) => {
 		if (valid) {
 			organizationService
@@ -344,7 +343,9 @@ const handleClose = (done: () => void) => {
 
 	<el-dialog v-model="responseDialogVisible" title="提示" width="20%" :before-close="handleClose" center>
 		<el-result icon="success" title="注册申请成功" sub-title="您的注册号如下:" />
-		<CopyText :text="responseSerialNumber" />
+		<div class="w-full flex justify-center items-center">
+			<CopyText :text="responseSerialNumber" />
+		</div>
 		<template #footer>
 			<el-button type="primary" @click="router.push('/login')">确认</el-button>
 		</template>

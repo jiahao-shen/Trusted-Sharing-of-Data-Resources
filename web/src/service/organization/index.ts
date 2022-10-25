@@ -1,3 +1,4 @@
+import axios from 'axios'
 import { http } from '@/service'
 import { useAppStore } from '@/store/app'
 import { CodeToText } from 'element-china-area-data'
@@ -6,9 +7,9 @@ const appStore = useAppStore()
 
 export const organizationService = {
 	organizationRegisterRequest: (form: any) => {
-		return http.post('/organization/register/request', {
+		let info = {
 			name: form.name,
-			logo: '', // TODO:
+			logo: '',
 			type: form.type,
 			telephone: form.telephone,
 			email: form.email,
@@ -24,7 +25,17 @@ export const organizationService = {
 			superior: form.superior,
 			provideNode: form.provideNode,
 			numNodes: form.provideNode ? form.numNodes : 0,
-			file: '', // TODO:
+			file: '',
+		}
+		const formData = new FormData()
+		formData.append('logo', form.logo[0].raw, form.logo[0].name)
+		formData.append('info', JSON.stringify(info))
+		formData.append('file', form.file[0].raw, form.file[0].name)
+
+		return http.post('/organization/register/request', formData, {
+			headers: {
+				'Content-Type': 'multipart/form-data',
+			},
 		})
 	},
 	organizationSelectList: () => {
