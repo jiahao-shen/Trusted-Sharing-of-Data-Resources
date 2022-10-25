@@ -75,7 +75,7 @@ public class OrganizationController {
 
         if (user != null) {
             QueryWrapper<OrganizationRegister> queryWrapper = new QueryWrapper<>();
-            queryWrapper.eq("superior", user.getOrganization());
+            queryWrapper.eq("superior", user.getOrganization()).orderByDesc("apply_time");
             List<OrganizationRegister> organizationRegisterList = organizationRegisterMapper.selectList(queryWrapper);
 
             return ResponseEntity.status(HttpStatus.OK).body(organizationRegisterList);
@@ -159,8 +159,8 @@ public class OrganizationController {
         }
     }
 
-    @GetMapping("/organization/list")
-    public ResponseEntity<Object> organizationList() {
+    @GetMapping("/organization/selectList")
+    public ResponseEntity<Object> organizationSelectList() {
         QueryWrapper<Organization> queryWrapper = new QueryWrapper<>();
         queryWrapper.select("id", "name");
         List<Organization> organizationList = organizationMapper.selectList(queryWrapper);
@@ -174,6 +174,12 @@ public class OrganizationController {
 
         Organization organization = organizationMapper.selectById(request.getLong("id"));
 
-        return ResponseEntity.status(HttpStatus.OK).body(organization);
+        JSONObject response = JSONObject.parseObject(JSONObject.toJSONString(organization));
+
+        Organization superior = organizationMapper.selectById(organization.getSuperior());
+
+        response.put("superior", superior.getName());
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

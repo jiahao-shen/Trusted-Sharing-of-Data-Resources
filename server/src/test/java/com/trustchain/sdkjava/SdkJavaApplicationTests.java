@@ -158,18 +158,22 @@ class SdkJavaApplicationTests {
 
     @Test
     void testFastJson() {
-        Fuck you = new Fuck(1, Gender.BOY);
-        String jsonString = JSON.toJSONString(you);
-        System.out.println(jsonString);    // {"gender":"BOY","id":1}
+//        Fuck you = new Fuck(1, Gender.BOY);
+//        String jsonString = JSON.toJSONString(you);
+//        System.out.println(jsonString);    // {"gender":"BOY","id":1}
 
         Organization fuck = new Organization();
 
-        fuck.setType(OrganizationType.EDUCATION);
-        System.out.println(fuck);
-        System.out.println(JSONObject.toJSONString(fuck, SerializerFeature.WriteEnumUsingToString));
-        System.out.println(JSONObject.toJSONString(fuck, SerializerFeature.WriteEnumUsingName));
-        System.out.println(JSON.toJSON(fuck).toString());
-        System.out.println(JSONObject.toJSONString(OrganizationType.EDUCATION));
+        fuck.setCreatedTime(new Date());
+
+        System.out.println(JSONObject.toJSONString(fuck));
+
+//        fuck.setType(OrganizationType.EDUCATION);
+//        System.out.println(fuck);
+//        System.out.println(JSONObject.toJSONString(fuck, SerializerFeature.WriteEnumUsingToString));
+//        System.out.println(JSONObject.toJSONString(fuck, SerializerFeature.WriteEnumUsingName));
+//        System.out.println(JSON.toJSON(fuck).toString());
+//        System.out.println(JSONObject.toJSONString(OrganizationType.EDUCATION));
 //        Organization fuck = new Organization();
 //
 //        fuck.setType(OrganizationType.EDUCATION);

@@ -1,12 +1,10 @@
 <script setup lang="ts">
-import moment from 'moment'
 import { useAppStore } from '@/store/app'
 import { userService } from '@/service/user'
 import { ElNotification } from 'element-plus'
 import { ref, reactive, onMounted } from 'vue'
-import { validators } from '@/utils/validators'
 import { useRoute, useRouter } from 'vue-router'
-import type { FormInstance, FormRules, Action } from 'element-plus'
+import { UserRegisterDialog } from '@/components/UserRegisterDialog'
 
 const route = useRoute()
 const router = useRouter()
@@ -17,7 +15,20 @@ const total = ref(0)
 let currentPage = 1
 let userList: any[]
 let showList = ref(Array())
-const addUserDialogVisible = ref(false)
+
+const userRegisterDialogVisible = ref(false)
+const openUserRegisterDialog = (item: any) => {
+	userRegisterDialogVisible.value = true
+}
+
+const closeUserRegisterDialog = () => {
+	userRegisterDialogVisible.value = false
+}
+
+const userRegisterSuccess = () => {
+	userRegisterDialogVisible.value = false
+	loadUserList()
+}
 
 onMounted(() => {
 	loadUserList()
@@ -32,8 +43,7 @@ const loadUserList = () => {
 			total.value = userList.length
 			showList.value = userList.slice((currentPage - 1) * pageSize, currentPage * pageSize)
 		})
-		.catch((err: any) => {
-		})
+		.catch((err: any) => {})
 }
 
 const handleCurrentChange = (value: number) => {
@@ -43,95 +53,6 @@ const handleCurrentChange = (value: number) => {
 
 const indexMethod = (index: number) => {
 	return (currentPage - 1) * pageSize + index + 1
-}
-
-const formRef = ref<FormInstance>()
-const form = reactive({
-	id: '',
-	password1: '',
-	password2: '',
-	permissions: Array(),
-})
-const rules = reactive<FormRules>({
-	id: [
-		validators.required('账号'),
-		validators.notEmpty('账号'),
-		{
-			validator: (rule: any, value: any, callback: any) => {
-				userService
-					.userExist(form.id)
-					.then((res: any) => {
-						if (res.data) {
-							callback('该账号已存在')
-						} else {
-							callback()
-						}
-					})
-					.catch((err: any) => {
-						ElNotification({
-							title: '网络异常',
-							message: err.response.data,
-							type: 'error',
-						})
-					})
-			},
-			trigger: 'blur',
-		},
-	],
-	password1: [validators.required('密码'), validators.lengthRange(6, 20, '密码'), validators.notEmpty('密码')],
-	password2: [
-		validators.required(''),
-		{
-			validator: (rule: any, value: string, callback: any) => {
-				if (form.password1 !== form.password2) {
-					callback('两次输入的密码不一致')
-				} else {
-					callback()
-				}
-			},
-			trigger: 'trigger',
-		},
-	],
-})
-
-const submit = async (formEl: FormInstance | undefined) => {
-	await formEl?.validate((valid, fields) => {
-		if (valid) {
-			console.log('valid')
-			userService
-				.userRegister(form)
-				.then((res: any) => {
-					if (res.data) {
-						ElNotification({
-							title: '新增用户成功',
-							type: 'success',
-						})
-						addUserDialogVisible.value = false
-						loadUserList()
-					} else {
-						ElNotification({
-							title: '新增用户失败',
-							type: 'error',
-						})
-					}
-				})
-				.catch((err: any) => {
-					ElNotification({
-						title: '网络异常',
-						message: err.response.data,
-						type: 'error',
-					})
-				})
-		} else {
-			// TODO:
-			console.log('fuck')
-		}
-	})
-}
-
-const handleClose = (done: () => void) => {
-	formRef.value?.resetFields()
-	done()
 }
 </script>
 <template>
@@ -150,11 +71,7 @@ const handleClose = (done: () => void) => {
 						<el-tag class="mx-5px" v-for="item in scope.row.permission">{{ item }}</el-tag>
 					</template>
 				</el-table-column>
-				<el-table-column label="创建时间">
-					<template #default="scope">
-						{{ moment(scope.row.createdTime).format('YYYY-MM-DD HH:mm:ss') }}
-					</template>
-				</el-table-column>
+				<el-table-column label="创建时间" prop="createdTime" />
 				<el-table-column label="操作">
 					<template #default="scope">
 						<div class="w-full h-full flex items-center operate">
@@ -178,68 +95,20 @@ const handleClose = (done: () => void) => {
 				/>
 			</div>
 
-			<el-button class="w-full mt-20px" plain @click="addUserDialogVisible = true">
+			<el-button class="w-full mt-20px" plain @click="openUserRegisterDialog">
 				<el-icon><Plus /></el-icon>
 				&nbsp新增用户
 			</el-button>
 		</el-card>
 	</div>
 
-	<el-dialog v-model="addUserDialogVisible" title="新增用户" :before-close="handleClose" width="40%">
-		<el-form ref="formRef" :model="form" :rules="rules" label-position="top" id="form">
-			<el-row :gutter="60">
-				<el-col>
-					<el-form-item label="账号" prop="id">
-						<el-input placeholder="请输入账号" v-model="form.id" />
-					</el-form-item>
-				</el-col>
-			</el-row>
-
-			<el-row :gutter="60">
-				<el-col>
-					<el-form-item label="密码" prop="password1">
-						<el-input placeholder="请输入密码" v-model="form.password1" show-password />
-					</el-form-item>
-				</el-col>
-			</el-row>
-
-			<el-row :gutter="60">
-				<el-col>
-					<el-form-item label="确认密码" prop="password2">
-						<el-input placeholder="请确认密码" v-model="form.password2" show-password />
-					</el-form-item>
-				</el-col>
-			</el-row>
-
-			<el-row :gutter="60">
-				<el-col>
-					<el-form-item label="用户权限" prop="permissions">
-						<el-checkbox-group v-model="form.permissions" size="large">
-							<el-checkbox label="权限一" />
-							<el-checkbox label="权限二" />
-							<el-checkbox label="权限三" />
-							<el-checkbox label="权限四" />
-							<el-checkbox label="权限五" />
-						</el-checkbox-group>
-					</el-form-item>
-				</el-col>
-			</el-row>
-
-			<el-row :gutter="60">
-				<el-col :span="6" :offset="3">
-					<el-button class="w-full" type="success" @click="submit(formRef)">确认</el-button>
-				</el-col>
-
-				<el-col :span="6">
-					<el-button class="w-full" type="primary" @click="formRef?.resetFields()">重置</el-button>
-				</el-col>
-
-				<el-col :span="6">
-					<el-button class="w-full" type="danger" @click="addUserDialogVisible = false">返回</el-button>
-				</el-col>
-			</el-row>
-		</el-form>
-	</el-dialog>
+	<UserRegisterDialog
+		title="注册新账户"
+		:visible="userRegisterDialogVisible"
+		:organization="appStore.getUser.organization"
+		@close="closeUserRegisterDialog"
+		@success="userRegisterSuccess"
+	/>
 </template>
 <style lang="less" scoped>
 #form {

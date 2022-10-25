@@ -25,6 +25,7 @@ public class User {
     private String username;
 
     @TableField("password")
+    @JSONField(serialize = false)
     private String password;
 
     @TableField("organization")
@@ -32,6 +33,7 @@ public class User {
     private Long organization;
 
     @TableField("created_time")
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date createdTime;
 }
 

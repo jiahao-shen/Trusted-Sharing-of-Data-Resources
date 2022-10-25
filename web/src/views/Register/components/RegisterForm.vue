@@ -17,7 +17,7 @@ const router = useRouter()
 const organizationList = ref()
 onMounted(() => {
 	organizationService
-		.organizationList()
+		.organizationSelectList()
 		.then((res: any) => {
 			organizationList.value = res.data
 			console.log(organizationList)
@@ -257,7 +257,7 @@ const handleClose = (done: () => void) => {
 							<el-input
 								:rows="5"
 								type="textarea"
-								maxlength="200"
+								maxlength="500"
 								show-word-limit
 								placeholder="请用文字说明API具体功能"
 								v-model="form.introduction"

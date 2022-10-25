@@ -19,7 +19,7 @@ const loadOrganizationInformation = () => {
 		.organizationInformation()
 		.then((res: any) => {
 			organization.value = res.data
-			console.log(organization)
+			console.log(organization.value)
 		})
 		.catch((err: any) => {})
 }
@@ -35,10 +35,13 @@ const loadOrganizationInformation = () => {
 				<div class="w-full flex justify-center items-center">
 					<OrgLogo :size="150" :src="organization.logo" />
 				</div>
-				<el-descriptions class="mt-20px" id="descriptions">
+				<el-descriptions class="mt-20px" id="descriptions" :column="4">
 					<el-descriptions-item label="机构名称">{{ organization.name }}</el-descriptions-item>
 					<el-descriptions-item label="机构类型">
 						<el-tag>{{ OrganizationType[organization.type] }}</el-tag>
+					</el-descriptions-item>
+					<el-descriptions-item label="机构电话">
+						{{ organization.telephone }}
 					</el-descriptions-item>
 					<el-descriptions-item label="机构邮箱">
 						<el-link :href="'mailto:' + organization.email">{{ organization.email }}</el-link>
@@ -46,6 +49,9 @@ const loadOrganizationInformation = () => {
 					<el-descriptions-item label="所在城市">{{ organization.city }}</el-descriptions-item>
 					<el-descriptions-item label="详细地址">{{ organization.address }}</el-descriptions-item>
 					<el-descriptions-item label="上级机构">{{ organization.superior }}</el-descriptions-item>
+					<el-descriptions-item label="创建时间">
+						{{ organization.createdTime }}
+					</el-descriptions-item>
 					<el-descriptions-item label="机构介绍">{{ organization.introduction }}</el-descriptions-item>
 				</el-descriptions>
 

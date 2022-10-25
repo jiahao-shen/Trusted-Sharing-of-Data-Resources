@@ -38,6 +38,7 @@ const logout = () => {
 	appStore.setUser(null)
 	router.push('/login')
 }
+
 </script>
 
 <template>

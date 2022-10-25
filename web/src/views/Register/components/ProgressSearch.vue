@@ -1,11 +1,15 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import moment from 'moment'
 import { ElNotification } from 'element-plus'
-import { OrganizationType } from '@/utils/enums'
 import { CopyText } from '@/components/CopyText'
+import { useRoute, useRouter } from 'vue-router'
 import { organizationService } from '@/service/organization'
 import { ApplyStatusText } from '@/components/ApplyStatusText'
+import { OrganizationType, RegisterStatus } from '@/utils/enums'
+import { UserRegisterDialog } from '@/components/UserRegisterDialog'
+
+const route = useRoute()
+const router = useRouter()
 
 const search = ref('')
 const pageSize = 10
@@ -25,12 +29,12 @@ const indexMethod = (index: number) => {
 const searchRegisterProgress = () => {
 	let tmp = search.value.split(',')
 	for (let item of tmp) {
-		if (item.trim() === '' || !(/^[0-9]+$/.test(item))) {
+		if (item.trim() === '' || !/^[0-9]+$/.test(item)) {
 			ElNotification({
 				title: '申请号格式错误',
 				type: 'error',
 			})
-			break;
+			break
 		}
 	}
 
@@ -50,11 +54,27 @@ const searchRegisterProgress = () => {
 			})
 		})
 }
+
+const selectedOrganization = ref('')
+const userRegisterDialogVisible = ref(false)
+const openRegisterAdminDialog = (item: any) => {
+	selectedOrganization.value = item.id
+	userRegisterDialogVisible.value = true
+}
+
+const closeRegisterAdminDialog = () => {
+	userRegisterDialogVisible.value = false
+}
+
+const registerAdminSuccess = () => {
+	userRegisterDialogVisible.value = false
+}
 </script>
 
 <template>
 	<div class="w-full h-full flex flex-col items-center justify-center">
-		<div class="w-600px">
+		<h2 class="text-4xl">注册进度查询</h2>
+		<div class="w-600px mt-40px">
 			<el-input size="large" placeholder="请输入申请号" v-model="search">
 				<template #append>
 					<el-button icon="Search" @click="searchRegisterProgress"></el-button>
@@ -70,26 +90,35 @@ const searchRegisterProgress = () => {
 					</template>
 				</el-table-column>
 				<el-table-column label="机构名称" prop="name" />
-				<el-table-column label="机构类型">
+				<el-table-column label="机构类型" width="100">
 					<template #default="scope">
 						{{ OrganizationType[scope.row.type] }}
 					</template>
 				</el-table-column>
-				<el-table-column label="状态">
+				<el-table-column label="状态" width="100">
 					<template #default="scope">
 						<ApplyStatusText :status="scope.row.status" />
 					</template>
 				</el-table-column>
-				<el-table-column label="申请时间">
-					<template #default="scope">
-						{{ moment(scope.row.applyTime).format('YYYY-MM-DD HH:mm:ss') }}
-					</template>
-				</el-table-column>
-				<el-table-column label="操作">
+				<el-table-column label="申请时间" prop="applyTime" />
+				<el-table-column label="操作" width="150">
 					<template #default="scope">
 						<div class="w-full h-full flex items-center operate">
 							<el-tooltip content="详情">
-								<el-button type="primary" icon="More" circle size="default" />
+								<el-button type="info" icon="More" circle size="default" />
+							</el-tooltip>
+
+							<el-tooltip
+								content="创建管理员"
+								v-if="(RegisterStatus[scope.row.status] as RegisterStatus) === RegisterStatus.ALLOW"
+							>
+								<el-button
+									type="success"
+									icon="Plus"
+									circle
+									size="default"
+									@click="openRegisterAdminDialog(scope.row)"
+								/>
 							</el-tooltip>
 						</div>
 					</template>
@@ -105,6 +134,16 @@ const searchRegisterProgress = () => {
 				@current-change="handleCurrentChange"
 			/>
 		</div>
+
+		<el-button class="w-200px mt-40px" type="primary" @click="router.push('/login')">返回</el-button>
+
+		<UserRegisterDialog
+			title="注册管理员用户"
+			:visible="userRegisterDialogVisible"
+			:organization="selectedOrganization"
+			@close="closeRegisterAdminDialog"
+			@success="registerAdminSuccess"
+		/>
 	</div>
 </template>
 

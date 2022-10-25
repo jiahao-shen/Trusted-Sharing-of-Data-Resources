@@ -114,11 +114,7 @@ const reject = () => {
 						<ApplyStatusText :status="scope.row.status" />
 					</template>
 				</el-table-column>
-				<el-table-column label="申请时间">
-					<template #default="scope">
-						{{ moment(scope.row.applyTime).format('YYYY-MM-DD HH:mm:ss') }}
-					</template>
-				</el-table-column>
+				<el-table-column label="申请时间" prop="applyTime" />
 				<el-table-column label="操作">
 					<template #default="scope">
 						<div class="w-full h-full flex items-center operate">

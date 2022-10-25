@@ -2,11 +2,11 @@
 import { DEFAULT_ORG_LOGO } from '@/utils/consts'
 
 const props = defineProps<{
-	src: string
-	size?: number | string
+	src?: string | null,
+	size?: number | string | null
 }>()
 </script>
 
 <template>
-	<el-avatar :size="size" :src="src ?? DEFAULT_ORG_LOGO" />
+	<el-avatar :size="size" :src="src || DEFAULT_ORG_LOGO" />
 </template>

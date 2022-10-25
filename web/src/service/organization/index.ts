@@ -27,8 +27,8 @@ export const organizationService = {
 			file: '', // TODO:
 		})
 	},
-	organizationList: () => {
-		return http.get('/organization/list')
+	organizationSelectList: () => {
+		return http.get('/organization/selectList')
 	},
 	organizationExist: (name: string) => {
 		return http.post('/organization/exist', {
@@ -46,7 +46,6 @@ export const organizationService = {
 		})
 	},
 	organizationInformation: () => {
-		console.log('fuck', appStore.getUser.organization)
 		return http.post('/organization/information', {
 			id: appStore.getUser.organization,
 		})

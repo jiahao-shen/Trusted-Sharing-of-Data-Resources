@@ -1,17 +1,19 @@
 package com.trustchain.sdkjava.model;
 
+import lombok.Data;
+
+import java.util.Date;
+
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 import com.alibaba.fastjson.annotation.JSONField;
-import com.alibaba.fastjson.serializer.ToStringSerializer;
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.trustchain.sdkjava.enums.OrganizationType;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.alibaba.fastjson.serializer.ToStringSerializer;
 
-import java.util.Date;
 
 @Data
 @NoArgsConstructor
@@ -59,6 +61,6 @@ public class Organization {
     private String file;    // 机构文件
 
     @TableField("created_time")
-    @JSONField(format = "YYYY-MM-DD HH:mm:ss")
-    private Date CreatedTime;   // 创建时间
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
+    private Date createdTime;   // 创建时间
 }

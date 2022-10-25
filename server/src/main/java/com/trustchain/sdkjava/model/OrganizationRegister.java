@@ -1,15 +1,17 @@
 package com.trustchain.sdkjava.model;
 
-import com.alibaba.fastjson.annotation.JSONField;
-import com.alibaba.fastjson.serializer.ToStringSerializer;
-import com.baomidou.mybatisplus.annotation.*;
-import com.trustchain.sdkjava.enums.OrganizationType;
-import com.trustchain.sdkjava.enums.RegisterStatus;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.Date;
+
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import com.baomidou.mybatisplus.annotation.*;
+import com.alibaba.fastjson.annotation.JSONField;
+import com.trustchain.sdkjava.enums.RegisterStatus;
+import com.trustchain.sdkjava.enums.OrganizationType;
+import com.alibaba.fastjson.serializer.ToStringSerializer;
+
 
 @Data
 @NoArgsConstructor
@@ -65,14 +67,13 @@ public class OrganizationRegister {
     private RegisterStatus status;  // 申请状态
 
     @TableField(value = "apply_time")
-    @JSONField(format = "YYYY-MM-DD HH:mm:ss")
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date applyTime;    // 申请时间
 
     @TableField(value = "reply_time")
-    @JSONField(format = "YYYY-MM-DD HH:mm:ss")
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date replyTime;   // 批复时间
 
     @TableField(value = "reply_message")
-    @JSONField(format = "YYYY-MM-DD HH:mm:ss")
     private String replyMessage;    // 批复内容
 }

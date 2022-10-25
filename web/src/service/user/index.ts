@@ -21,11 +21,11 @@ export const userService = {
 			id: id,
 		})
 	},
-	userRegister: (form: any) => {
+	userRegister: (form: any, organization: string) => {
 		return http.post('/user/register', {
 			id: form.id,
 			password: form.password1,
-			organization: appStore.getUser.organization,
+			organization: organization,
 		})
 	},
 }
