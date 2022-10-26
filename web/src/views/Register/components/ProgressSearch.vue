@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { EnumValues } from 'enum-values'
 import { ElNotification } from 'element-plus'
 import { CopyText } from '@/components/CopyText'
 import { useRoute, useRouter } from 'vue-router'
 import { organizationService } from '@/service/organization'
 import { ApplyStatusText } from '@/components/ApplyStatusText'
-import { OrganizationType, RegisterStatus } from '@/utils/enums'
 import { UserRegisterDialog } from '@/components/UserRegisterDialog'
+import { OrganizationType, RegisterStatus, UserType } from '@/utils/enums'
 
 const route = useRoute()
 const router = useRouter()
@@ -39,7 +40,7 @@ const searchRegisterProgress = () => {
 	}
 
 	organizationService
-		.searchRegisterProgress(tmp)
+		.organizationRegisterApplyProgress(tmp)
 		.then((res: any) => {
 			console.log(res.data)
 			registerList = res.data
@@ -103,7 +104,7 @@ const registerAdminSuccess = () => {
 				<el-table-column label="申请时间" prop="applyTime" />
 				<el-table-column label="操作" width="150">
 					<template #default="scope">
-						<div class="w-full h-full flex items-center operate">
+						<div class="w-full h-full flex items-center">
 							<el-tooltip content="详情">
 								<el-button type="info" icon="More" circle size="default" />
 							</el-tooltip>
@@ -141,6 +142,7 @@ const registerAdminSuccess = () => {
 			title="注册管理员用户"
 			:visible="userRegisterDialogVisible"
 			:organization="selectedOrganization"
+			:type="EnumValues.getNameFromValue(UserType, UserType.ADMIN)"
 			@close="closeRegisterAdminDialog"
 			@success="registerAdminSuccess"
 		/>

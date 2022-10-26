@@ -2,7 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useAppStore } from '@/store/app'
-import { OrgLogo } from '@/components/OrgLogo'
+import { OrganizationLogo } from '@/components/OrganizationLogo'
 import { OrganizationType } from '@/utils/enums'
 import { organizationService } from '@/service/organization'
 
@@ -19,8 +19,8 @@ const loadOrganizationInformation = () => {
 	organizationService
 		.organizationInformation()
 		.then((res: any) => {
+			console.log(res.data)
 			organization.value = res.data
-			console.log(organization.value)
 		})
 		.catch((err: any) => {})
 }
@@ -29,12 +29,12 @@ const loadOrganizationInformation = () => {
 	<div class="w-full p-20px">
 		<el-card class="w-full">
 			<template #header>
-				<h2 class="text-2xl">机构详情</h2>
+				<h2 class="text-2xl">{{ route.name }}</h2>
 			</template>
 
 			<div v-if="organization">
 				<div class="w-full flex justify-center items-center">
-					<OrgLogo :size="150" :src="organization.logo" />
+					<OrganizationLogo :size="150" :src="organization.logo" />
 				</div>
 				<el-descriptions class="mt-20px" id="descriptions" :column="4">
 					<el-descriptions-item label="机构名称">{{ organization.name }}</el-descriptions-item>

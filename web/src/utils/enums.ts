@@ -1,3 +1,29 @@
+export enum InternetProtocol {
+	HTTP = 'http',
+	HTTPS = 'https',
+}
+
+export enum HttpMethod {
+	GET = 'GET',
+	POST = 'POST',
+	PUT = 'PUT',
+	DELETE = 'DELETE',
+	TRACE = 'TRACE',
+	CONNECT = 'CONNECT',
+	HEAD = 'HEAD',
+	OPTIONS = 'OPTIONS',
+}
+
+export enum BodyType {
+	FORM = 'FORM',
+	JSON = 'JSON',
+}
+
+export enum UserType {
+	ADMIN = '管理员',
+	NORMAL = '普通用户',
+}
+
 // TODO: 在未来需要删除
 export enum HttpStatusCode {
 	Continue = 100,

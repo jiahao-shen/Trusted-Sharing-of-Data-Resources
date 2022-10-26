@@ -2,6 +2,7 @@ package com.trustchain.sdkjava.controller.user;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.trustchain.sdkjava.enums.UserType;
 import com.trustchain.sdkjava.mapper.UserMapper;
 import com.trustchain.sdkjava.model.User;
 import org.apache.logging.log4j.LogManager;
@@ -25,36 +26,47 @@ public class UserController {
     private UserMapper userMapper;
     private static final Logger logger = LogManager.getLogger(UserController.class);
 
+    /**
+     * 用户登录
+     */
     @PostMapping("/user/login")
     public ResponseEntity<Object> userLogin(@RequestBody JSONObject request, HttpSession session) {
         logger.info(request);
 
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        User user = userMapper.selectById(request.getString("id"));
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("username", request.get("username"));
+        User user = userMapper.selectOne(queryWrapper);
 
         if (user != null && encoder.matches(request.getString("password"), user.getPassword())) {
             session.setAttribute("user", user);
             return ResponseEntity.status(HttpStatus.OK).body(user);
         } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("用户名或密码错误");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("用户名或密码错误");
         }
     }
 
+    /**
+     * 用户退出登录
+     */
     @GetMapping("/user/logout")
     public ResponseEntity<Object> userLogout(HttpSession session) {
         session.setAttribute("user", null);
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 
+    /**
+     * 用户注册
+     */
     @PostMapping("/user/register")
     public ResponseEntity<Object> userRegister(@RequestBody JSONObject request, HttpSession session) {
-        User user = new User();
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
-        user.setId(request.getString("id"));
-        user.setUsername(request.getString("id"));
+        User user = new User();
+        user.setUsername(request.getString("username"));
         user.setPassword(encoder.encode(request.getString("password")));
         user.setOrganization(Long.parseLong(request.getString("organization")));
+        user.setType(UserType.valueOf(request.getString("type")));
         user.setCreatedTime(new Date());
 
         int count = userMapper.insert(user);
@@ -65,25 +77,33 @@ public class UserController {
         }
     }
 
+    /**
+     * 获取指定机构下的用户列表
+     */
     @GetMapping("/user/list")
     public ResponseEntity<Object> userList(HttpSession session) {
-        User user = (User) session.getAttribute("user");
+        User login = (User) session.getAttribute("user");
 
-        if (user != null) {
-            QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-            queryWrapper.select("id", "username", "created_time").eq("organization", user.getOrganization());
-            List<User> userList = userMapper.selectList(queryWrapper);
-            return ResponseEntity.status(HttpStatus.OK).body(userList);
-        } else {
+        if (login == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("请重新登陆");
         }
+
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.select("id", "username", "type", "created_time").eq("organization", login.getOrganization());
+        List<User> userList = userMapper.selectList(queryWrapper);
+        return ResponseEntity.status(HttpStatus.OK).body(userList);
     }
 
+    /**
+     * 判断用户是否存在
+     */
     @PostMapping("/user/exist")
     public ResponseEntity<Object> userExist(@RequestBody JSONObject request, HttpSession session) {
         logger.info(request);
 
-        User user = userMapper.selectById(request.getString("id"));
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("username", request.getString("username"));
+        User user = userMapper.selectOne(queryWrapper);
         if (user != null) {
             return ResponseEntity.status(HttpStatus.OK).body(true);
         } else {

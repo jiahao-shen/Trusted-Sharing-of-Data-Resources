@@ -16,7 +16,7 @@ import com.alibaba.fastjson.serializer.ToStringSerializer;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName("register_organization")
+@TableName("organization_register")
 public class OrganizationRegister {
     @TableId(value = "serial_number", type = IdType.ASSIGN_ID)
     @JSONField(serializeUsing = ToStringSerializer.class)

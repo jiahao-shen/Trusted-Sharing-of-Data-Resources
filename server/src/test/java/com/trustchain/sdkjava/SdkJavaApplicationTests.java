@@ -4,7 +4,9 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.trustchain.sdkjava.enums.HttpMethod;
 import com.trustchain.sdkjava.enums.OrganizationType;
+import com.trustchain.sdkjava.enums.RegisterStatus;
 import com.trustchain.sdkjava.fabric.FabricGateway;
 import com.trustchain.sdkjava.mapper.OrganizationMapper;
 import com.trustchain.sdkjava.mapper.OrganizationRegisterMapper;
@@ -204,6 +206,32 @@ class SdkJavaApplicationTests {
 
         Long fuck = Long.parseLong("1234353452525");
         System.out.println("8432098/" + fuck + "/389283012");
+    }
+
+    @Test
+    void testAddAmin() {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
+        User admin = new User();
+        admin.setUsername("admin");
+        admin.setPassword(encoder.encode("258667"));
+        admin.setOrganization(Long.parseLong("1583391160430190593"));
+        admin.setCreatedTime(new Date());
+
+        userMapper.insert(admin);
+    }
+
+    @Test
+    void testAPI() {
+        APIRegister apiRegister = new APIRegister();
+        apiRegister.setName("随便");
+        apiRegister.setUrl("https://www.baidu.com");
+        apiRegister.setMethod(HttpMethod.GET);
+        apiRegister.setVersion("1.0.0");
+        apiRegister.setStatus(RegisterStatus.PROCESSED);
+        apiRegister.setApplyTime(new Date());
+
+        System.out.println(JSONObject.toJSONString(apiRegister));
     }
 }
 

@@ -6,7 +6,7 @@ import { CodeToText } from 'element-china-area-data'
 const appStore = useAppStore()
 
 export const organizationService = {
-	organizationRegisterRequest: (form: any) => {
+	organizationRegisterApply: (form: any) => {
 		let info = {
 			name: form.name,
 			logo: '',
@@ -32,10 +32,25 @@ export const organizationService = {
 		formData.append('info', JSON.stringify(info))
 		formData.append('file', form.file[0].raw, form.file[0].name)
 
-		return http.post('/organization/register/request', formData, {
+		return http.post('/organization/register/apply', formData, {
 			headers: {
 				'Content-Type': 'multipart/form-data',
 			},
+		})
+	},
+	organizationRegsiterApplyList: () => {
+		return http.get('/organization/register/apply/list')
+	},
+	organizationRegisterReply: (serialNumber: string, reply: string | null, reason?: string) => {
+		return http.post('/organization/register/reply', {
+			serialNumber: serialNumber,
+			reply: reply,
+			reason: reason,
+		})
+	},
+	organizationRegisterApplyProgress: (serialNumbers: string[]) => {
+		return http.post('/organization/register/apply/progress', {
+			serialNumbers: serialNumbers,
 		})
 	},
 	organizationSelectList: () => {
@@ -46,24 +61,13 @@ export const organizationService = {
 			name: name,
 		})
 	},
-	organizationRegsiterRequestList: () => {
-		return http.get('/organization/register/request/list')
-	},
-	organizationRegisterRequsetReply: (serialNumber: string, reply: string | null, reason?: string) => {
-		return http.post('/organization/register/request/reply', {
-			serialNumber: serialNumber,
-			reply: reply,
-			reason: reason,
-		})
-	},
 	organizationInformation: () => {
+		console.log(appStore.getUser.organization)
 		return http.post('/organization/information', {
 			id: appStore.getUser.organization,
 		})
 	},
-	searchRegisterProgress: (serialNumbers: string[]) => {
-		return http.post('/organization/register/request/progress', {
-			serialNumbers: serialNumbers,
-		})
-	},
+	organizationSubordinateList: () => {
+		return http.get('/organization/subordinate/list')
+	}
 }

@@ -1,8 +1,12 @@
 import { http } from '@/service'
+import { BodyType } from '@/utils/enums'
+import { useAppStore } from '@/store/app'
 
-export const service = {
-	registerAPI: (form: any) => {
-		return http.post('/fabric/api/register', {
+const appStore = useAppStore()
+
+export const apiService = {
+	apiRegisterApply: (form: any) => {
+		return http.post('/api/register/apply', {
 			name: form.name,
 			url: form.protocol + '://' + form.url,
 			method: form.method,
@@ -10,59 +14,66 @@ export const service = {
 			category: form.category,
 			version: form.version,
 			permission: form.permission,
-			header: (() => {
-				if (form.headerType === 'form') {
-					return form.headerList.length ? JSON.stringify(form.headerList) : ''
-				} else if (form.headerType === 'json') {
-					return form.headerText
-				}
-			})(),
 			headerType: form.headerType,
-			request: (() => {
-				if (form.requestType === 'form') {
-					return form.requestList.length ? JSON.stringify(form.requestList) : ''
-				} else if (form.requestType === 'json') {
-					return form.requestText
+			header: (() => {
+				if (form.headerType === BodyType.FORM) {
+					return form.headerList.length ? JSON.stringify(form.headerList) : ''
+				} else if (form.headerType === BodyType.JSON) {
+					return form.headerText
 				}
 			})(),
 			requestType: form.requestType,
-			response: (() => {
-				if (form.responseType === 'form') {
-					return form.responseList.length ? JSON.stringify(form.responseList) : ''
-				} else if (form.responseType === 'json') {
-					return form.responseText
-				}
-			})(),
-			responseType: form.responseType,
-		})
-	},
-  callAPI: (form: any) => {
-    return http.post('/fabric/api/call', {
-      apiID: form.apiID,
-      apiHeader: (() => {
-				if (form.headerType === 'form') {
-					return form.headerList.length ? JSON.stringify(form.headerList) : ''
-				} else if (form.headerType === 'json') {
-					return form.headerText
-				}
-			})(),
-      apiRequest: (() => {
-				if (form.requestType === 'form') {
+			request: (() => {
+				if (form.requestType === BodyType.FORM) {
 					return form.requestList.length ? JSON.stringify(form.requestList) : ''
-				} else if (form.requestType === 'json') {
+				} else if (form.requestType === BodyType.JSON) {
 					return form.requestText
 				}
 			})(),
-    })
-  },
-	getRegisterList: () => {
-		return http.get('/fabric/api/registerList')
+			responseType: form.responseType,
+			response: (() => {
+				if (form.responseType === BodyType.FORM) {
+					return form.responseList.length ? JSON.stringify(form.responseList) : ''
+				} else if (form.responseType === BodyType.JSON) {
+					return form.responseText
+				}
+			})(),
+			author: appStore.getUser.id,
+		})
 	},
-  getAllAPIList: () => {
-		return http.get('/fabric/api/allList')
+	apiRegisterApplyList: () => {
+		return http.get('/api/register/apply/list')
 	},
-	// TODO: 参数
-	getMyAPIList: () => {
-		return http.get('/fabric/api/myList')
+	apiRegisterReply: (serialNumber: string, reply: string | null, reason?: string) => {
+		return http.post('/api/register/reply', {
+			serialNumber: serialNumber,
+			reply: reply,
+			reason: reason,
+		})
+	},
+	apiListMy: () => {
+		return http.get('/api/list/my')
+	},
+	apiListAll: () => {
+		return http.get('/api/list/all')
 	}
+	// callAPI: (form: any) => {
+	// 	return http.post('/fabric/api/call', {
+	// 		apiID: form.apiID,
+	// 		apiHeader: (() => {
+	// 			if (form.headerType === 'form') {
+	// 				return form.headerList.length ? JSON.stringify(form.headerList) : ''
+	// 			} else if (form.headerType === 'json') {
+	// 				return form.headerText
+	// 			}
+	// 		})(),
+	// 		apiRequest: (() => {
+	// 			if (form.requestType === 'form') {
+	// 				return form.requestList.length ? JSON.stringify(form.requestList) : ''
+	// 			} else if (form.requestType === 'json') {
+	// 				return form.requestText
+	// 			}
+	// 		})(),
+	// 	})
+	// },
 }

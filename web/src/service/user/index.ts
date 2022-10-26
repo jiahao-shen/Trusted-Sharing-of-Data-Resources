@@ -6,7 +6,7 @@ const appStore = useAppStore()
 export const userService = {
 	userLogin: (form: any) => {
 		return http.post('/user/login', {
-			id: form.id,
+			username: form.username,
 			password: form.password, // TODO: 使用https传输
 		})
 	},
@@ -16,16 +16,17 @@ export const userService = {
 	userList: () => {
 		return http.get('/user/list')
 	},
-	userExist: (id: string) => {
+	userExist: (username: string) => {
 		return http.post('/user/exist', {
-			id: id,
+			username: username,
 		})
 	},
-	userRegister: (form: any, organization: string) => {
+	userRegister: (form: any, organization: string, type: string) => {
 		return http.post('/user/register', {
-			id: form.id,
+			username: form.username,
 			password: form.password1,
 			organization: organization,
+			type: type,
 		})
 	},
 }

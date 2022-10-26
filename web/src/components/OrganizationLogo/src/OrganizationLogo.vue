@@ -8,5 +8,5 @@ const props = defineProps<{
 </script>
 
 <template>
-	<el-avatar :size="size" :src="src || DEFAULT_ORG_LOGO" />
+	<el-avatar shape="square" :size="size" :src="src || DEFAULT_ORG_LOGO" />
 </template>

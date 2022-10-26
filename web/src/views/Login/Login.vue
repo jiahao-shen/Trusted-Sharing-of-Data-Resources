@@ -12,14 +12,14 @@ const router = useRouter()
 const appStore = useAppStore()
 const formRef = ref<FormInstance>()
 const form = reactive({
-	id: '',
+	username: '',
 	password: '',
 })
 
 const remeber = ref()
 
 const rules = reactive<FormRules>({
-	id: validators.required('账号'),
+	username: validators.required('用户名'),
 	password: validators.required('密码'),
 })
 
@@ -65,8 +65,8 @@ const login = async (formEl: FormInstance | undefined) => {
 					<h2 class="text-2xl">登 录</h2>
 				</div>
 				<el-form class="p-10px" label-position="top" :model="form" :rules="rules" ref="formRef">
-					<el-form-item label="账号" class="my-10px" prop="id">
-						<el-input placeholder="请输入账号" v-model="form.id" clearable />
+					<el-form-item label="用户名" class="my-10px" prop="username">
+						<el-input placeholder="请输入用户名" v-model="form.username" clearable />
 					</el-form-item>
 					<el-form-item label="密码" class="my-10px" prop="password">
 						<el-input placeholder="请输入密码" v-model="form.password" clearable show-password />

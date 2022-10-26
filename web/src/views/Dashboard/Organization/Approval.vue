@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import moment from 'moment'
 import { EnumValues } from 'enum-values'
 import { ref, reactive, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -14,21 +13,21 @@ const router = useRouter()
 const pageSize = 10
 const total = ref(0)
 let currentPage = 1
-let approvalList: any[]
+let registerList: any[]
 let showList = ref(Array())
 
 onMounted(() => {
-	loadOrganizationRegisterRequestList()
+	loadOrganizationRegisterApplyList()
 })
 
-const loadOrganizationRegisterRequestList = () => {
+const loadOrganizationRegisterApplyList = () => {
 	organizationService
-		.organizationRegsiterRequestList()
+		.organizationRegsiterApplyList()
 		.then((res: any) => {
-			console.log(res)
-			approvalList = res.data
-			total.value = approvalList.length
-			showList.value = approvalList.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+			console.log(res.data)
+			registerList = res.data
+			total.value = registerList.length
+			showList.value = registerList.slice((currentPage - 1) * pageSize, currentPage * pageSize)
 		})
 		.catch((err: any) => {
 		})
@@ -36,7 +35,7 @@ const loadOrganizationRegisterRequestList = () => {
 
 const handleCurrentChange = (value: number) => {
 	currentPage = value
-	showList.value = approvalList.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+	showList.value = registerList.slice((currentPage - 1) * pageSize, currentPage * pageSize)
 }
 
 const indexMethod = (index: number) => {
@@ -51,14 +50,14 @@ const allowConfirm = (index: number) => {
 }
 const allow = () => {
 	organizationService
-		.organizationRegisterRequsetReply(
+		.organizationRegisterReply(
 			showList.value[selectedIndex.value].serialNumber,
 			EnumValues.getNameFromValue(RegisterStatus, RegisterStatus.ALLOW)
 		)
 		.then((res: any) => {
 			if (res.data) {
 				allowDialogVisible.value = false
-				loadOrganizationRegisterRequestList()
+				loadOrganizationRegisterApplyList()
 			}
 		})
 		.catch((err: any) => {
@@ -73,7 +72,7 @@ const rejectConfirm = (index: number) => {
 }
 const reject = () => {
 	organizationService
-		.organizationRegisterRequsetReply(
+		.organizationRegisterReply(
 			showList.value[selectedIndex.value].serialNumber,
 			EnumValues.getNameFromValue(RegisterStatus, RegisterStatus.REJECT),
 			rejectReason.value
@@ -81,7 +80,7 @@ const reject = () => {
 		.then((res: any) => {
 			if (res.data) {
 				rejectDialogVisible.value = false
-				loadOrganizationRegisterRequestList()
+				loadOrganizationRegisterApplyList()
 			}
 		})
 		.catch((err: any) => {
@@ -93,7 +92,7 @@ const reject = () => {
 	<div class="w-full p-20px">
 		<el-card class="w-full">
 			<template #header>
-				<h2 class="text-2xl">机构注册审批</h2>
+				<h2 class="text-2xl">{{ route.name }}</h2>
 			</template>
 
 			<el-table :data="showList" highlight-current-row border>
@@ -117,7 +116,7 @@ const reject = () => {
 				<el-table-column label="申请时间" prop="applyTime" />
 				<el-table-column label="操作">
 					<template #default="scope">
-						<div class="w-full h-full flex items-center operate">
+						<div class="w-full h-full flex items-center">
 							<el-tooltip content="详情">
 								<el-button type="primary" icon="More" circle size="default" />
 							</el-tooltip>

@@ -8,30 +8,31 @@ import type { FormInstance, FormRules } from 'element-plus'
 const props = defineProps<{
 	title: string
 	visible: boolean
-	organization: string
+	organization: string,
+	type: string | null,
 }>()
 
 const emit = defineEmits(['close', 'success', 'failed'])
 
 const formRef = ref<FormInstance>()
 const form = reactive({
-	id: '',
+	username: '',
 	password1: '',
 	password2: '',
 	permissions: Array(),
 })
 
 const rules = reactive<FormRules>({
-	id: [
-		validators.required('账号'),
-		validators.notEmpty('账号'),
+	username: [
+		validators.required('用户名'),
+		validators.notEmpty('用户名'),
 		{
 			validator: (rule: any, value: any, callback: any) => {
 				userService
-					.userExist(form.id)
+					.userExist(form.username)
 					.then((res: any) => {
 						if (res.data) {
-							callback('该账号已存在')
+							callback('该用户名已存在')
 						} else {
 							callback()
 						}
@@ -74,7 +75,7 @@ const submit = async (formEl: FormInstance | undefined) => {
 		if (valid) {
 			console.log('valid')
 			userService
-				.userRegister(form, props.organization)
+				.userRegister(form, props.organization, props.type)
 				.then((res: any) => {
 					if (res.data) {
 						ElNotification({
@@ -103,8 +104,8 @@ const submit = async (formEl: FormInstance | undefined) => {
 		<el-form ref="formRef" :model="form" :rules="rules" label-position="top" id="form">
 			<el-row :gutter="60">
 				<el-col>
-					<el-form-item label="账号" prop="id">
-						<el-input placeholder="请输入账号" v-model="form.id" />
+					<el-form-item label="用户名" prop="username">
+						<el-input placeholder="请输入用户名" v-model="form.username" />
 					</el-form-item>
 				</el-col>
 			</el-row>

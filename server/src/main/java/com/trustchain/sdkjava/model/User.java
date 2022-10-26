@@ -1,5 +1,6 @@
 package com.trustchain.sdkjava.model;
 
+import com.trustchain.sdkjava.enums.UserType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
@@ -18,8 +19,9 @@ import java.util.Date;
 @AllArgsConstructor
 @TableName("user")
 public class User {
-    @TableId(value = "id", type = IdType.INPUT)
-    private String id;
+    @TableId(value = "id", type = IdType.ASSIGN_ID)
+    @JSONField(serializeUsing = ToStringSerializer.class)
+    private Long id;
 
     @TableField("username")
     private String username;
@@ -27,6 +29,9 @@ public class User {
     @TableField("password")
     @JSONField(serialize = false)
     private String password;
+
+    @TableField("type")
+    private UserType type;
 
     @TableField("organization")
     @JSONField(serializeUsing = ToStringSerializer.class)

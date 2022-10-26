@@ -27,10 +27,16 @@ http.interceptors.response.use(
 			case HttpStatusCode.Unauthorized: // 401:未登录
 				appStore.setUser(null)
 				router.push('/login')
+				ElNotification({
+					title: '401 UnAthorized',
+					message: '请重新登录',
+					type: 'error',
+				})
 				break
 			case HttpStatusCode.NotFound: // 404:不存在
 				ElNotification({
-					title: '网络请求不存在',
+					title: '404 NotFound',
+					message: '网络请求不存在',
 					type: 'error',
 				})
 				break

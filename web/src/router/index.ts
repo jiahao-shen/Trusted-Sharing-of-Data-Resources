@@ -42,6 +42,40 @@ const router = createRouter({
 			component: () => import('@/views/Dashboard/Dashboard.vue'),
 			children: [
 				{
+					path: 'organization',
+					name: '机构管理',
+					component: () => import('@/views/Dashboard/Organization/Organization.vue'),
+					children: [
+						{
+							path: 'information',
+							name: '机构详情',
+							component: () => import('@/views/Dashboard/Organization/Information.vue'),
+						},
+						{
+							path: 'approval',
+							name: '注册审批',
+							component: () => import('@/views/Dashboard/Organization/Approval.vue'),
+						},
+						{
+							path: 'subordinate',
+							name: '下级机构',
+							component: () => import('@/views/Dashboard/Organization/Subordinate.vue'),
+						}
+					],
+				},
+				{
+					path: 'user',
+					name: '用户管理',
+					component: () => import('@/views/Dashboard/User/User.vue'),
+					children: [
+						{
+							path: 'register',
+							name: '用户注册',
+							component: () => import('@/views/Dashboard/User/Register.vue'),
+						}
+					]
+				},
+				{
 					path: 'api',
 					name: 'API管理',
 					component: () => import('@/views/Dashboard/API/API.vue'),
@@ -70,28 +104,11 @@ const router = createRouter({
 								},
 							],
 						},
-					],
-				},
-				{
-					path: 'organization',
-					name: '机构相关',
-					component: () => import('@/views/Dashboard/Organization/Organization.vue'),
-					children: [
 						{
-							path: 'information',
-							name: '机构详情',
-							component: () => import('@/views/Dashboard/Organization/Information.vue'),
-						},
-						{
-							path: 'user',
-							name: '用户管理',
-							component: () => import('@/views/Dashboard/Organization/User.vue'),
-						},
-						{
-							path: 'approval',
-							name: '注册审批',
-							component: () => import('@/views/Dashboard/Organization/Approval.vue'),
-						},
+							path: 'myAPI',
+							name: '我的API',
+							component: () => import('@/views/Dashboard/API/MyAPI.vue')
+						}
 					],
 				},
 			],

@@ -17,22 +17,22 @@
 
 CREATE TABLE `register_organization`
 (
-    `serial_number` bigint       not null,
+    `serial_number` bigint             not null,
     `id`            bigint,
-    `name`          varchar(32)  not null,
+    `name`          varchar(32) unique not null,
     `logo`          varchar(1024),
-    `type`          int          not null,
-    `telephone`     varchar(32)  not null,
-    `email`         varchar(32)  not null,
-    `city`          varchar(128) not null,
-    `address`       varchar(128) not null,
+    `type`          int                not null,
+    `telephone`     varchar(32)        not null,
+    `email`         varchar(32)        not null,
+    `city`          varchar(128)       not null,
+    `address`       varchar(128)       not null,
     `introduction`  varchar(1024),
     `superior`      bigint,
-    `provide_node`  bool         not null,
-    `num_nodes`     int          not null,
+    `provide_node`  bool               not null,
+    `num_nodes`     int                not null,
     `file`          varchar(1024),
-    `status`        int          not null,
-    `apply_time`    datetime     not null,
+    `status`        int                not null,
+    `apply_time`    datetime           not null,
     `reply_time`    datetime,
     `reply_message` varchar(1024),
     primary key (`serial_number`)
@@ -41,32 +41,82 @@ CREATE TABLE `register_organization`
 DROP TABLE IF EXISTS `organization`;
 CREATE TABLE `organization`
 (
-    `id`           bigint       not null,
-    `name`         varchar(32)  not null,
+    `id`           bigint             not null,
+    `name`         varchar(32) unique not null,
     `logo`         varchar(1024),
-    `type`         int          not null,
-    `telephone`    varchar(32)  not null,
-    `email`        varchar(32)  not null,
-    `city`         varchar(128) not null,
-    `address`      varchar(128) not null,
+    `type`         int                not null,
+    `telephone`    varchar(32)        not null,
+    `email`        varchar(32)        not null,
+    `city`         varchar(128)       not null,
+    `address`      varchar(128)       not null,
     `introduction` varchar(1024),
     `superior`     bigint,
-    `provide_node` bool         not null,
-    `num_nodes`    int          not null,
+    `provide_node` bool               not null,
+    `num_nodes`    int                not null,
     `file`         varchar(1024),
-    `created_time` datetime     not null,
+    `created_time` datetime           not null,
     primary key (`id`)
 ) DEFAULT CHARSET = utf8mb4;
 
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user`
 (
-    `id`           varchar(32)  not null,
-    `username`     varchar(32)  not null,
-    `password`     varchar(128) not null,
-    `organization` bigint       not null,
-    `created_time` datetime     not null,
-    PRIMARY KEY (`id`)
+    `id`           bigint             not null,
+    `username`     varchar(32) unique not null,
+    `password`     varchar(128)       not null,
+    `organization` bigint             not null,
+    `created_time` datetime           not null,
+    PRIMARY KEY (`id`),
+) DEFAULT CHARSET = utf8mb4;
+
+DROP TABLE IF EXISTS `register_api`;
+CREATE TABLE `register_api`
+(
+    `serial_number` bigint        not null,
+    `id`            bigint,
+    `author`        bigint        not null,
+    `organization`  bigint        not null,
+    `name`          varchar(32)   not null,
+    `url`           varchar(1024) not null,
+    `method`        int           not null,
+    `introduction`  varchar(1024),
+    `category`      int,
+    `authorize`     varchar(32),
+    `version`       varchar(32)   not null,
+    `header_type`   int,
+    `header`        varchar(1024),
+    `request_type`  int,
+    `request`       varchar(2014),
+    `response_type` int,
+    `response`      varchar(1024),
+    `status`        int           not null,
+    `apply_time`    datetime      not null,
+    `reply_time`    datetime,
+    `reply_message` varchar(1024),
+    primary key (`serial_number`)
+) DEFAULT CHARSET = utf8mb4;
+
+DROP TABLE IF EXISTS `api`;
+CREATE TABLE `api`
+(
+    `id`            bigint,
+    `author`        bigint        not null,
+    `organization`  bigint        not null,
+    `name`          varchar(32)   not null,
+    `url`           varchar(1024) not null,
+    `method`        int           not null,
+    `introduction`  varchar(1024),
+    `category`      int,
+    `authorize`     varchar(32),
+    `version`       varchar(32)   not null,
+    `header_type`   int,
+    `header`        varchar(1024),
+    `request_type`  int,
+    `request`       varchar(2014),
+    `response_type` int,
+    `response`      varchar(1024),
+    `created_time`  datetime      not null,
+    primary key (`id`)
 ) DEFAULT CHARSET = utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

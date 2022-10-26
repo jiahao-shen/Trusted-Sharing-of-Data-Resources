@@ -1,8 +1,11 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import { EnumValues } from 'enum-values'
+import { apiService } from '@/service/api'
+import { RegisterStatus } from '@/utils/enums'
 import { CopyText } from '@/components/CopyText'
 import { useRouter, useRoute } from 'vue-router'
-import { service } from '@/service/api'
+import { ApplyStatusText } from '@/components/ApplyStatusText'
 
 const route = useRoute()
 const router = useRouter()
@@ -13,13 +16,21 @@ let currentPage = 1
 let registerList: any[]
 let showList = ref(Array())
 
-service.getRegisterList().then((res: any) => {
-	if (res.status === 200) {
-		registerList = res.data
-		total.value = registerList.length
-		showList.value = registerList.slice((currentPage - 1) * pageSize, currentPage * pageSize)
-	}
+onMounted(() => {
+	loadAPIRegisterApplyList()
 })
+
+const loadAPIRegisterApplyList = () => {
+	apiService
+		.apiRegisterApplyList()
+		.then((res: any) => {
+			console.log(res.data)
+			registerList = res.data
+			total.value = registerList.length
+			showList.value = registerList.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+		})
+		.catch()
+}
 
 const handleCurrentChange = (value: number) => {
 	currentPage = value
@@ -30,43 +41,91 @@ const indexMethod = (index: number) => {
 	return (currentPage - 1) * pageSize + index + 1
 }
 
+const selectedIndex = ref()
+const allowDialogVisible = ref(false)
+const allowConfirm = (index: number) => {
+	allowDialogVisible.value = true
+	selectedIndex.value = index
+}
+const allow = () => {
+	apiService
+		.apiRegisterReply(
+			showList.value[selectedIndex.value].serialNumber,
+			EnumValues.getNameFromValue(RegisterStatus, RegisterStatus.ALLOW)
+		)
+		.then((res: any) => {
+			if (res.data) {
+				allowDialogVisible.value = false
+				loadAPIRegisterApplyList()
+			}
+		})
+		.catch((err: any) => {
+		})
+}
+
+const rejectReason = ref('')
+const rejectDialogVisible = ref(false)
+const rejectConfirm = (index: number) => {
+	rejectDialogVisible.value = true
+	selectedIndex.value = index
+}
+const reject = () => {
+	apiService
+		.apiRegisterReply(
+			showList.value[selectedIndex.value].serialNumber,
+			EnumValues.getNameFromValue(RegisterStatus, RegisterStatus.REJECT),
+			rejectReason.value
+		)
+		.then((res: any) => {
+			if (res.data) {
+				rejectDialogVisible.value = false
+				loadAPIRegisterApplyList()
+			}
+		})
+		.catch((err: any) => {
+		})
+}
 </script>
 
 <template>
 	<div class="w-full p-20px" v-if="route.name === 'API注册'">
 		<el-card class="w-full">
 			<template #header>
-				<span class="text-2xl">API注册</span>
+				<span class="text-2xl">{{ route.name }}</span>
 			</template>
 
-			<!-- <h2 class="text-xl">当前注册</h2> -->
 			<el-table :data="showList" highlight-current-row border>
 				<el-table-column label="No." type="index" :index="indexMethod" width="100" />
+				<el-table-column label="申请号" width="400">
+					<template #default="scope">
+						<CopyText :text="scope.row.serialNumber" />
+					</template>
+				</el-table-column>
 				<el-table-column label="名称" prop="name" />
-				<el-table-column label="ID" prop="id" width="400">
+				<el-table-column label="状态">
 					<template #default="scope">
-						<CopyText :text="scope.row.id" />
+						<ApplyStatusText :status="scope.row.status" />
 					</template>
 				</el-table-column>
-				<el-table-column label="状态" prop="status">
-					<template #default="scope">
-						<span class="text-[var(--el-color-primary)]" v-if="scope.row.status === '正在审核'">{{
-							scope.row.status
-						}}</span>
-						<span class="text-[var(--el-color-success)]" v-else-if="scope.row.status === '审核通过'">{{
-							scope.row.status
-						}}</span>
-						<span class="text-[var(--el-color-danger)]" v-else-if="scope.row.status === '审核失败'">{{
-							scope.row.status
-						}}</span>
-					</template>
-				</el-table-column>
-				<el-table-column label="创建时间" prop="createdTime" />
+				<el-table-column label="申请时间" prop="applyTime" />
 				<el-table-column label="操作">
-					<template #default scope>
-						<div class="w-full h-full flex items-center operate">
-							<el-button type="primary" text>编辑</el-button>
-							<el-button type="primary" text>删除</el-button>
+					<template #default="scope">
+						<div class="w-full h-full flex items-center">
+							<el-tooltip content="详情">
+								<el-button type="primary" icon="More" circle size="default" />
+							</el-tooltip>
+							<el-tooltip
+								content="通过"
+								v-if="(RegisterStatus[scope.row.status] as RegisterStatus) === RegisterStatus.PROCESSED"
+							>
+								<el-button type="success" icon="Check" circle size="default" @click="allowConfirm(scope.$index)" />
+							</el-tooltip>
+							<el-tooltip
+								content="驳回"
+								v-if="(RegisterStatus[scope.row.status] as RegisterStatus) === RegisterStatus.PROCESSED"
+							>
+								<el-button type="danger" icon="Close" circle size="default" @click="rejectConfirm(scope.$index)" />
+							</el-tooltip>
 						</div>
 					</template>
 				</el-table-column>
@@ -86,15 +145,33 @@ const indexMethod = (index: number) => {
 				&nbsp新增API
 			</el-button>
 		</el-card>
-	</div>
 
+		<el-dialog v-model="allowDialogVisible" title="提示" width="20%">
+			<h2 class="text-base">允许 {{ showList[selectedIndex].name }} 的注册申请?</h2>
+			<template #footer>
+				<el-button @click="allowDialogVisible = false">取消</el-button>
+				<el-button type="primary" @click="allow">确认</el-button>
+			</template>
+		</el-dialog>
+
+		<el-dialog v-model="rejectDialogVisible" title="提示" width="20%">
+			<h2 class="text-base">驳回 {{ showList[selectedIndex].name }}的注册申请?</h2>
+			<el-input
+				class="mt-20px"
+				:rows="5"
+				type="textarea"
+				maxlength="200"
+				show-word-limit
+				placeholder="请填写理由"
+				v-model="rejectReason"
+			/>
+			<template #footer>
+				<el-button @click="rejectDialogVisible = false">取消</el-button>
+				<el-button type="primary" @click="reject">确认</el-button>
+			</template>
+		</el-dialog>
+	</div>
 	<router-view v-else />
 </template>
 
-<style lang="less" scoped>
-.operate {
-	.el-button {
-		padding: 0px;
-	}
-}
-</style>
+<style lang="less" scoped></style>

@@ -59,13 +59,18 @@ const logout = () => {
 					<el-sub-menu index="/dashboard/organization">
 						<template #title>
 							<el-icon><Setting /></el-icon>
-							<span class="text-base">机构相关</span>
+							<span class="text-base">机构管理</span>
 						</template>
 						<el-menu-item index="/dashboard/organization/information">机构详情</el-menu-item>
-						<el-menu-item index="/dashboard/organization/user">用户管理</el-menu-item>
 						<el-menu-item index="/dashboard/organization/approval">注册审批</el-menu-item>
-						<!-- <el-menu-item index="control-key-management">秘钥管理</el-menu-item> -->
-						<!-- <el-menu-item index="control-release-deployment">发布部署</el-menu-item> -->
+						<el-menu-item index="/dashboard/organization/subordinate">下级机构</el-menu-item>
+					</el-sub-menu>
+					<el-sub-menu index="/dashboard/user">
+						<template #title>
+							<el-icon><User /></el-icon>
+							<span class="text-base">用户管理</span>
+						</template>
+						<el-menu-item index="/dashboard/user/register">用户注册</el-menu-item>
 					</el-sub-menu>
 					<el-sub-menu index="/dashboard/api">
 						<template #title>
@@ -75,16 +80,7 @@ const logout = () => {
 						<el-menu-item index="/dashboard/api/register">API注册</el-menu-item>
 						<el-menu-item index="/dashboard/api/request">API申请</el-menu-item>
 						<el-menu-item index="/dashboard/api/authorization">API授权</el-menu-item>
-						<el-menu-item index="/dashboard/api/information">我的API</el-menu-item>
-					</el-sub-menu>
-					<el-sub-menu index="message">
-						<template #title>
-							<el-icon><Message /></el-icon>
-							<span class="text-base">消息协同</span>
-						</template>
-						<el-menu-item index="topic-register">Topic注册</el-menu-item>
-						<el-menu-item index="topic-request">Topic申请</el-menu-item>
-						<el-menu-item index="topic-information">我的Topic</el-menu-item>
+						<el-menu-item index="/dashboard/api/myAPI">我的API</el-menu-item>
 					</el-sub-menu>
 					<el-sub-menu index="statistics">
 						<template #title>

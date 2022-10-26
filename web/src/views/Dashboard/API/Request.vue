@@ -135,7 +135,7 @@ const requestAPI = (api: any) => {
 	<div class="w-full p-20px" v-if="route.name === 'API申请'">
 		<el-card class="w-full">
 			<template #header>
-				<span class="text-2xl">平台API</span>
+				<span class="text-2xl">{{ route.name }}</span>
 			</template>
 
 			<div class="flex">
@@ -196,7 +196,7 @@ const requestAPI = (api: any) => {
 				<el-table-column label="机构" prop="orgName" />
 				<el-table-column label="机构类别" prop="orgClass" />
 				<el-table-column label="API名称" prop="apiName" />
-				<el-table-column label="ID" prop="apiID" width="400">
+				<el-table-column label="API ID" prop="apiID" width="400">
 					<template #default="scope">
 						<CopyText :text="scope.row.apiID" />
 					</template>
@@ -206,7 +206,7 @@ const requestAPI = (api: any) => {
 
 				<el-table-column label="操作">
 					<template #default="scope">
-						<div class="w-full h-full flex items-center operate">
+						<div class="w-full h-full flex items-center">
 							<el-button type="primary" text>详情</el-button>
 							<el-button type="primary" text @click="requestAPI(scope.row)">申请</el-button>
 						</div>
@@ -229,9 +229,4 @@ const requestAPI = (api: any) => {
 </template>
 
 <style lang="less" scoped>
-.operate {
-	.el-button {
-		padding: 0px;
-	}
-}
 </style>

@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.trustchain.sdkjava.mapper.OrganizationMapper;
 import com.trustchain.sdkjava.mapper.OrganizationRegisterMapper;
-import com.trustchain.sdkjava.mapper.UserMapper;
 import com.trustchain.sdkjava.model.Organization;
 import com.trustchain.sdkjava.enums.OrganizationType;
 import com.trustchain.sdkjava.model.OrganizationRegister;
@@ -17,15 +16,12 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
@@ -38,13 +34,13 @@ public class OrganizationController {
     @Autowired
     private OrganizationRegisterMapper organizationRegisterMapper;
 
-    @Autowired
-    private UserMapper userMapper;
-
     private static final Logger logger = LogManager.getLogger(OrganizationController.class);
 
-    @PostMapping("/organization/register/request")
-    public ResponseEntity<Object> organizationRegisterRequest(@RequestPart("logo") MultipartFile logo, @RequestPart("info") JSONObject request, @RequestPart("file") MultipartFile file, HttpSession session) {
+    /**
+     * 机构注册申请
+     */
+    @PostMapping("/organization/register/apply")
+    public ResponseEntity<Object> organizationRegisterApply(@RequestPart("logo") MultipartFile logo, @RequestPart("info") JSONObject request, @RequestPart("file") MultipartFile file, HttpSession session) {
 
         // 新注册申请
         OrganizationRegister organizationRegister = new OrganizationRegister();
@@ -89,48 +85,48 @@ public class OrganizationController {
         }
     }
 
-    @GetMapping("/organization/register/request/list")
-    public ResponseEntity<Object> organizationRegisterRequestList(HttpSession session) {
-        User user = (User) session.getAttribute("user");
+    /**
+     * 机构注册申请列表
+     */
+    @GetMapping("/organization/register/apply/list")
+    public ResponseEntity<Object> organizationRegisterApplyList(HttpSession session) {
+        User login = (User) session.getAttribute("user");
 
-        if (user != null) {
-            QueryWrapper<OrganizationRegister> queryWrapper = new QueryWrapper<>();
-            queryWrapper.eq("superior", user.getOrganization()).orderByDesc("apply_time");
-            List<OrganizationRegister> organizationRegisterList = organizationRegisterMapper.selectList(queryWrapper);
-
-            return ResponseEntity.status(HttpStatus.OK).body(organizationRegisterList);
-        } else {
+        if (login == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("请重新登陆");
         }
+
+        QueryWrapper<OrganizationRegister> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("superior", login.getOrganization()).orderByDesc("apply_time");
+        List<OrganizationRegister> organizationRegisterList = organizationRegisterMapper.selectList(queryWrapper);
+
+        return ResponseEntity.status(HttpStatus.OK).body(organizationRegisterList);
     }
 
-    @PostMapping("/organization/register/request/progress")
-    public ResponseEntity<Object> organizationRegisterRequestProgress(@RequestBody JSONObject request, HttpSession session) {
-        try {
-            logger.info(request);
-            ArrayList<Long> serialNumbers = request.getObject("serialNumbers", ArrayList.class);
+    /**
+     * 查询注册申请进度
+     */
+    @PostMapping("/organization/register/apply/progress")
+    public ResponseEntity<Object> organizationRegisterApplyProgress(@RequestBody JSONObject request, HttpSession session) {
+        logger.info(request);
 
-            List<OrganizationRegister> organizationRegisterList = organizationRegisterMapper.selectBatchIds(serialNumbers);
+        ArrayList<Long> serialNumbers = request.getObject("serialNumbers", ArrayList.class);
 
-            return ResponseEntity.status(HttpStatus.OK).body(organizationRegisterList);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e);
-        }
+        List<OrganizationRegister> organizationRegisterList = organizationRegisterMapper.selectBatchIds(serialNumbers);
+
+        return ResponseEntity.status(HttpStatus.OK).body(organizationRegisterList);
     }
 
-    @PostMapping("/organization/register/request/reply")
-    public ResponseEntity<Object> organizationRegisterRequsetReply(@RequestBody JSONObject request, HttpSession session) {
+    /**
+     * 回复注册申请
+     */
+    @PostMapping("/organization/register/reply")
+    public ResponseEntity<Object> organizationRegisterReply(@RequestBody JSONObject request, HttpSession session) {
         logger.info(request);
 
         RegisterStatus reply = RegisterStatus.valueOf(request.getString("reply"));
 
         OrganizationRegister organizationRegister = organizationRegisterMapper.selectById(Long.parseLong(request.getString("serialNumber")));
-        organizationRegister.setStatus(reply);  // 更新注册状态
-        if (reply == RegisterStatus.REJECT) {
-            String reason = request.getString("reason");
-            organizationRegister.setReplyMessage(reason);   // 更新回复理由
-        }
-        organizationRegister.setReplyTime(new Date());  // 更新回复时间
 
         // 创建机构
         Organization organization = new Organization();
@@ -154,6 +150,12 @@ public class OrganizationController {
 
         Long orgID = organization.getId();
         organizationRegister.setId(orgID);   // 机构注册绑定机构ID
+        organizationRegister.setStatus(reply);  // 更新注册状态
+        if (reply == RegisterStatus.REJECT) {
+            String reason = request.getString("reason");
+            organizationRegister.setReplyMessage(reason);   // 更新回复理由
+        }
+        organizationRegister.setReplyTime(new Date());  // 更新回复时间
         organizationRegisterMapper.updateById(organizationRegister);
 
         try {
@@ -175,6 +177,9 @@ public class OrganizationController {
         return ResponseEntity.status(HttpStatus.OK).body(true);
     }
 
+    /**
+     * 判断机构是否存在
+     */
     @PostMapping("/organization/exist")
     public ResponseEntity<Object> organizationExist(@RequestBody JSONObject request, HttpSession session) {
         logger.info(request);
@@ -191,6 +196,9 @@ public class OrganizationController {
         }
     }
 
+    /**
+     * 获得全部机构用于选择
+     */
     @GetMapping("/organization/selectList")
     public ResponseEntity<Object> organizationSelectList() {
         QueryWrapper<Organization> queryWrapper = new QueryWrapper<>();
@@ -200,6 +208,9 @@ public class OrganizationController {
         return ResponseEntity.status(HttpStatus.OK).body(organizationList);
     }
 
+    /**
+     * 获取指定机构的信息
+     */
     @PostMapping("/organization/information")
     public ResponseEntity<Object> organizationInformation(@RequestBody JSONObject request, HttpSession session) {
         logger.info(request);
@@ -217,5 +228,20 @@ public class OrganizationController {
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping("/organization/subordinate/list")
+    public ResponseEntity<Object> organizationSubordinateList(HttpSession session) {
+        User user = (User) session.getAttribute("user");
+
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("请重新登陆");
+        }
+
+        QueryWrapper<Organization> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("superior", user.getOrganization());
+        List<Organization> subordinateList = organizationMapper.selectList(queryWrapper);
+
+        return ResponseEntity.status(HttpStatus.OK).body(subordinateList);
     }
 }

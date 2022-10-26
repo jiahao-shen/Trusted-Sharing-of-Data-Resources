@@ -82,7 +82,7 @@ const submit = async (formEl: FormInstance | undefined) => {
 	await formEl?.validate((valid, fields) => {
 		if (valid) {
 			organizationService
-				.organizationRegisterRequest(form)
+				.organizationRegisterApply(form)
 				.then((res: any) => {
 					responseSerialNumber.value = res.data.toString()
 					responseDialogVisible.value = true
