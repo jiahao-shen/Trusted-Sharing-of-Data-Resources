@@ -58,7 +58,7 @@ const logout = () => {
 				<el-menu class="flex-grow" :collapse="collapse" router>
 					<el-sub-menu index="/dashboard/organization">
 						<template #title>
-							<el-icon><Setting /></el-icon>
+							<el-icon><OfficeBuilding /></el-icon>
 							<span class="text-base">机构管理</span>
 						</template>
 						<el-menu-item index="/dashboard/organization/information">机构详情</el-menu-item>

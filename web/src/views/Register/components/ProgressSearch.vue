@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { Icon } from '@iconify/vue'
 import { EnumValues } from 'enum-values'
 import { ElNotification } from 'element-plus'
 import { CopyText } from '@/components/CopyText'
@@ -113,13 +114,9 @@ const registerAdminSuccess = () => {
 								content="创建管理员"
 								v-if="(RegisterStatus[scope.row.status] as RegisterStatus) === RegisterStatus.ALLOW"
 							>
-								<el-button
-									type="success"
-									icon="Plus"
-									circle
-									size="default"
-									@click="openRegisterAdminDialog(scope.row)"
-								/>
+								<el-button type="success" circle size="default" @click="openRegisterAdminDialog(scope.row)">
+									<Icon icon="ant-design:user-add-outlined" />
+								</el-button>
 							</el-tooltip>
 						</div>
 					</template>

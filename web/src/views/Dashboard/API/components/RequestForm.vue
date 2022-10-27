@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { v4 } from 'uuid'
 import { ref, reactive } from 'vue'
-import { ElNotification, ElMessageBox } from 'element-plus'
+import { EnumValues } from 'enum-values'
+import { apiService } from '@/service/api'
 import { validators } from '@/utils/validators'
 import { useRoute, useRouter } from 'vue-router'
-import { service } from '@/service/api'
+import { BodyType, APIInvokeMethod } from '@/utils/enums'
+import { ElNotification, ElMessageBox } from 'element-plus'
 import type { FormInstance, FormRules, Action } from 'element-plus'
 
 const route = useRoute()
@@ -12,25 +13,25 @@ const router = useRouter()
 
 const formRef = ref<FormInstance>()
 const form = reactive({
-	apiName: route.query.apiName,
 	apiID: route.query.apiID,
+	apiName: route.query.apiName,
 	orgName: route.query.orgName,
-	type: 'web',
+	comment: '',
+	invokeType: APIInvokeMethod.WEB,
 	validTime: Array(),
-	headerType: 'form',
+	headerType: BodyType.FORM,
 	headerList: Array(),
 	headerText: '',
-	requestType: 'form',
+	requestType: BodyType.FORM,
 	requestList: Array(),
 	requestText: '',
-	responseType: 'form',
+	responseType: BodyType.FORM,
 	responseList: Array(),
 	responseText: '',
-	comment: '',
 })
 
 const rules = reactive<FormRules>({
-	type: [validators.required('调用方式')],
+	invokeType: [validators.required('调用方式')],
 	validTime: [validators.required('有效期')],
 	comment: [validators.required('备注说明')],
 	headerText: [
@@ -71,8 +72,8 @@ const responseRules = reactive<FormRules>({
 const submit = async (formEl: FormInstance | undefined) => {
 	await formEl?.validate((valid, fields) => {
 		if (valid) {
-			service
-				.callAPI(form)
+			apiService
+				.apiInvokeApply(form)
 				.then((res: any) => {
 					ElMessageBox.alert(res.data, 'API申请调用成功', {
 						confirmButtonText: '确认',
@@ -131,7 +132,7 @@ const deleteResponseItem = (index: number) => {
 			<template #header>
 				<h2 class="text-2xl">API申请</h2>
 			</template>
-			<el-form ref="formRef" :model="form" :rules="rules" label-position="top"  id="form">
+			<el-form ref="formRef" :model="form" :rules="rules" label-position="top" id="form">
 				<el-row :gutter="60">
 					<el-col :span="6">
 						<el-form-item label="API名称" required>
@@ -167,10 +168,13 @@ const deleteResponseItem = (index: number) => {
 					</el-col>
 
 					<el-col :span="4">
-						<el-form-item label="调用方式" prop="type">
-							<el-select placeholder="选择" v-model="form.type">
-								<el-option label="网页" value="web" />
-								<el-option label="SDK" value="sdk" />
+						<el-form-item label="调用方式" prop="invokeType">
+							<el-select placeholder="选择" v-model="form.invokeType">
+								<el-option
+									v-for="item in APIInvokeMethod"
+									:label="item"
+									:value="EnumValues.getNameFromValue(APIInvokeMethod, item)"
+								/>
 							</el-select>
 						</el-form-item>
 					</el-col>
@@ -188,17 +192,18 @@ const deleteResponseItem = (index: number) => {
 					</el-col>
 				</el-row>
 
-				<el-row :gutter="60" v-if="form.type === 'web'">
+				<el-row :gutter="60" v-if="form.invokeType === APIInvokeMethod.SDK">
 					<el-col :span="8">
 						<el-form-item>
 							<div class="w-full flex justify-between">
 								<label class="table-title">请求头</label>
 								<el-radio-group v-model="form.headerType" size="default">
-									<el-radio-button label="form">Form</el-radio-button>
-									<el-radio-button label="json">Json</el-radio-button>
+									<el-radio-button v-for="item in BodyType" :label="EnumValues.getNameFromValue(BodyType, item)">
+										{{ item }}
+									</el-radio-button>
 								</el-radio-group>
 							</div>
-							<div class="w-full" v-if="form.headerType === 'form'">
+							<div class="w-full" v-if="form.headerType === BodyType.FORM">
 								<el-table :data="form.headerList" height="400" empty-text="空" highlight-current-row>
 									<el-table-column label="No." type="index" width="60" />
 									<el-table-column label="字段名" width="300">
@@ -230,7 +235,7 @@ const deleteResponseItem = (index: number) => {
 								<el-button class="w-full mt-20px" @click="addHeaderItem" icon="Plus" />
 							</div>
 
-							<div class="w-full mt-10px" v-else-if="form.headerType === 'json'">
+							<div class="w-full mt-10px" v-else-if="form.headerType === BodyType.JSON">
 								<el-form-item prop="headerText">
 									<el-input
 										placeholder="请输入Header示例(Json格式)"
@@ -248,12 +253,13 @@ const deleteResponseItem = (index: number) => {
 							<div class="w-full flex justify-between">
 								<label class="table-title">请求体</label>
 								<el-radio-group v-model="form.requestType" size="default">
-									<el-radio-button label="form">Form</el-radio-button>
-									<el-radio-button label="json">Json</el-radio-button>
+									<el-radio-button v-for="item in BodyType" :label="EnumValues.getNameFromValue(BodyType, item)">
+										{{ item }}
+									</el-radio-button>
 								</el-radio-group>
 							</div>
 
-							<div class="w-full" v-if="form.requestType === 'form'">
+							<div class="w-full" v-if="form.requestType === BodyType.FORM">
 								<el-table :data="form.requestList" height="400" empty-text="空" highlight-current-row>
 									<el-table-column label="No." type="index" width="60" />
 									<el-table-column label="字段名" width="300">
@@ -287,7 +293,7 @@ const deleteResponseItem = (index: number) => {
 								<el-button class="w-full mt-20px" @click="addRequestItem" icon="Plus" />
 							</div>
 
-							<div class="w-full mt-10px" v-else-if="form.requestType === 'json'">
+							<div class="w-full mt-10px" v-else-if="form.requestType === BodyType.JSON">
 								<el-form-item prop="requestText">
 									<el-input
 										placeholder="请输入Requst示例(Json格式)"
@@ -306,12 +312,13 @@ const deleteResponseItem = (index: number) => {
 							<div class="w-full flex justify-between">
 								<label class="table-title">返回体</label>
 								<el-radio-group v-model="form.responseType" size="default">
-									<el-radio-button label="form">Form</el-radio-button>
-									<el-radio-button label="json">Json</el-radio-button>
+									<el-radio-button v-for="item in BodyType" :label="EnumValues.getNameFromValue(BodyType, item)">
+										{{ item }}
+									</el-radio-button>
 								</el-radio-group>
 							</div>
 
-							<div class="w-full" v-if="form.responseType === 'form'">
+							<div class="w-full" v-if="form.responseType === BodyType.FORM">
 								<el-table :data="form.responseList" height="400" empty-text="空" highlight-current-row>
 									<el-table-column label="No." type="index" width="60" />
 									<el-table-column label="字段名" width="300">
@@ -345,7 +352,7 @@ const deleteResponseItem = (index: number) => {
 								<el-button class="w-full mt-20px" @click="addResponseItem" icon="Plus" />
 							</div>
 
-							<div class="w-full mt-10px" v-else-if="form.responseType === 'json'">
+							<div class="w-full mt-10px" v-else-if="form.responseType === BodyType.JSON">
 								<el-form-item prop="responseText">
 									<el-input
 										placeholder="请输入Response示例(Json格式)"

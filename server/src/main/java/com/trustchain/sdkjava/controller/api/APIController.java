@@ -2,15 +2,15 @@ package com.trustchain.sdkjava.controller.api;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.github.yulichang.wrapper.MPJLambdaWrapper;
+import com.google.protobuf.Api;
 import com.trustchain.sdkjava.enums.BodyType;
 import com.trustchain.sdkjava.enums.HttpMethod;
 import com.trustchain.sdkjava.enums.RegisterStatus;
 import com.trustchain.sdkjava.fabric.FabricGateway;
 import com.trustchain.sdkjava.mapper.APIMapper;
 import com.trustchain.sdkjava.mapper.APIRegisterMapper;
-import com.trustchain.sdkjava.model.API;
-import com.trustchain.sdkjava.model.APIRegister;
-import com.trustchain.sdkjava.model.User;
+import com.trustchain.sdkjava.model.*;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +50,7 @@ public class APIController {
         APIRegister apiRegister = new APIRegister();
         apiRegister.setName(request.getString("name"));
         apiRegister.setAuthor(login.getId());
+        apiRegister.setOrganization(login.getOrganization());
         apiRegister.setUrl(request.getString("url"));
         apiRegister.setMethod(HttpMethod.valueOf(request.getString("method")));
         apiRegister.setIntroducation(request.getString("introduction"));
@@ -154,14 +155,49 @@ public class APIController {
         return ResponseEntity.status(HttpStatus.OK).body(true);
     }
 
-//    @PostMapping("/fabric/api/call")
-//    public ResponseEntity<Object> call(@RequestBody APICallRequest request, HttpSession session) {
-//        logger.info(request);
-//
-//        return ResponseEntity.status(HttpStatus.OK).body(null);
-//        User user = (User) session.getAttribute("user");
-//
-//        logger.warn(user);
+
+    @GetMapping("/api/list/my")
+    public ResponseEntity<Object> myAPIList(HttpSession session) {
+        User user = (User) session.getAttribute("user");
+
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("机构API失败");
+        }
+
+        QueryWrapper<API> queryWrapper = new QueryWrapper<>();
+
+        queryWrapper.eq("author", user.getId());
+        List<API> myAPIList = apiMapper.selectList(queryWrapper);
+
+        return ResponseEntity.status(HttpStatus.OK).body(myAPIList);
+    }
+
+    @GetMapping("/api/list/all")
+    public ResponseEntity<Object> allAPIList(HttpSession session) {
+        List<APIInfo> allAPIList = apiMapper.selectJoinList(APIInfo.class,
+                new MPJLambdaWrapper<API>()
+                        .selectAll(API.class)
+                        .selectAs(Organization::getName, APIInfo::getOrganizationName)
+                        .selectAs(Organization::getType, APIInfo::getOrganizationType)
+                        .leftJoin(Organization.class, Organization::getId, API::getOrganization)
+                        .orderByAsc(API::getId)
+                        .orderByAsc(API::getCreatedTime));
+
+        return ResponseEntity.status(HttpStatus.OK).body(allAPIList);
+    }
+
+
+    @PostMapping("/api/invoke/apply")
+    public ResponseEntity<Object> call(@RequestBody JSONObject request, HttpSession session) {
+        logger.info(request);
+
+        User user = (User) session.getAttribute("user");
+
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("请重新登录");
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body("Invoke Apply");
 //        try {
 //            FabricGateway fg = new FabricGateway();
 //            String response = fg.invoke("requestAPI", UUID.randomUUID().toString(), user.getFabricID(),
@@ -171,39 +207,7 @@ public class APIController {
 //            e.printStackTrace();
 //            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("");
 //        }
-//    }
-
-
-    @GetMapping("/api/list/my")
-    public ResponseEntity<Object> myList(HttpSession session) {
-        User user = (User) session.getAttribute("user");
-
-        if (user == null) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("机构API失败");
-        }
-
-        QueryWrapper<API> queryWrapper = new QueryWrapper<>();
-        System.out.println(user.getId());
-
-        queryWrapper.eq("author", user.getId());
-        List<API> myAPIList = apiMapper.selectList(queryWrapper);
-
-        return ResponseEntity.status(HttpStatus.OK).body(myAPIList);
     }
-//
-//    @GetMapping("/fabric/api/allList")
-//    public ResponseEntity<Object> allList() {
-//        // TODO: 筛选处理
-//        // TODO: 页面处理
-//        // TODO: 加密处理
-//        FabricGateway fg = new FabricGateway();
-//
-//        String response = fg.query("queryAPIList");
-//
-//        logger.info(response);
-//
-//        return ResponseEntity.status(HttpStatus.OK).body(response);
-//    }
 }
 
 

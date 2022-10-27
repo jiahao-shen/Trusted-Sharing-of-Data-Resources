@@ -21,7 +21,7 @@ onMounted(() => {
 
 const loadMyAPIList = () => {
 	apiService
-		.apiListMy()
+		.myAPIList()
 		.then((res: any) => {
 			console.log(res.data)
 			myAPIList = res.data
@@ -59,7 +59,7 @@ const indexMethod = (index: number) => {
 				<el-table-column label="API名称" prop="name" />
 				<el-table-column label="请求方法">
 					<template #default="scope">
-						<el-tag>{{ HttpMethod[scope.row.method] }}</el-tag>
+						<el-tag type="success">{{ HttpMethod[scope.row.method] }}</el-tag>
 					</template>
 				</el-table-column>
 				<el-table-column label="版本" prop="version" />

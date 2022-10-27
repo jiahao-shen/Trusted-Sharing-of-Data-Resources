@@ -15,7 +15,8 @@
 /*!40101 SET @OLD_SQL_MODE = @@SQL_MODE, SQL_MODE = 'NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES = @@SQL_NOTES, SQL_NOTES = 0 */;
 
-CREATE TABLE `register_organization`
+DROP TABLE IF EXISTS `organization_register`;
+CREATE TABLE `organization_register`
 (
     `serial_number` bigint             not null,
     `id`            bigint,
@@ -35,7 +36,8 @@ CREATE TABLE `register_organization`
     `apply_time`    datetime           not null,
     `reply_time`    datetime,
     `reply_message` varchar(1024),
-    primary key (`serial_number`)
+    PRIMARY KEY (`serial_number`),
+    FOREIGN KEY (`id`) REFERENCES `organization` (`id`)
 ) DEFAULT CHARSET = utf8mb4;
 
 DROP TABLE IF EXISTS `organization`;
@@ -55,7 +57,8 @@ CREATE TABLE `organization`
     `num_nodes`    int                not null,
     `file`         varchar(1024),
     `created_time` datetime           not null,
-    primary key (`id`)
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`superior`) REFERENCES `organization` (`id`)
 ) DEFAULT CHARSET = utf8mb4;
 
 DROP TABLE IF EXISTS `user`;
@@ -67,10 +70,11 @@ CREATE TABLE `user`
     `organization` bigint             not null,
     `created_time` datetime           not null,
     PRIMARY KEY (`id`),
+    FOREIGN KEY (`organization`) REFERENCES `organization` (`id`)
 ) DEFAULT CHARSET = utf8mb4;
 
-DROP TABLE IF EXISTS `register_api`;
-CREATE TABLE `register_api`
+DROP TABLE IF EXISTS `api_register`;
+CREATE TABLE `api_register`
 (
     `serial_number` bigint        not null,
     `id`            bigint,
@@ -93,7 +97,8 @@ CREATE TABLE `register_api`
     `apply_time`    datetime      not null,
     `reply_time`    datetime,
     `reply_message` varchar(1024),
-    primary key (`serial_number`)
+    PRIMARY KEY (`serial_number`),
+    FOREIGN KEY (`id`) REFERENCES `api` (`id`)
 ) DEFAULT CHARSET = utf8mb4;
 
 DROP TABLE IF EXISTS `api`;
@@ -116,7 +121,9 @@ CREATE TABLE `api`
     `response_type` int,
     `response`      varchar(1024),
     `created_time`  datetime      not null,
-    primary key (`id`)
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`author`) REFERENCES `user` (`id`),
+    FOREIGN KEY (`organization`) REFERENCES `organization` (`id`)
 ) DEFAULT CHARSET = utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

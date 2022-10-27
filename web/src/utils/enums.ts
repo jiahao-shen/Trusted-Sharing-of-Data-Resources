@@ -1,6 +1,11 @@
+export enum APIInvokeMethod {
+	WEB = '网页',
+	SDK = 'SDK',
+}
+
 export enum InternetProtocol {
-	HTTP = 'http',
-	HTTPS = 'https',
+	HTTP = 'http://',
+	HTTPS = 'https://',
 }
 
 export enum HttpMethod {

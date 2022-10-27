@@ -8,7 +8,7 @@ export const apiService = {
 	apiRegisterApply: (form: any) => {
 		return http.post('/api/register/apply', {
 			name: form.name,
-			url: form.protocol + '://' + form.url,
+			url: form.protocol + form.url,
 			method: form.method,
 			introduction: form.introduction,
 			category: form.category,
@@ -51,29 +51,29 @@ export const apiService = {
 			reason: reason,
 		})
 	},
-	apiListMy: () => {
+	myAPIList: () => {
 		return http.get('/api/list/my')
 	},
-	apiListAll: () => {
+	allAPIList: () => {
 		return http.get('/api/list/all')
-	}
-	// callAPI: (form: any) => {
-	// 	return http.post('/fabric/api/call', {
-	// 		apiID: form.apiID,
-	// 		apiHeader: (() => {
-	// 			if (form.headerType === 'form') {
-	// 				return form.headerList.length ? JSON.stringify(form.headerList) : ''
-	// 			} else if (form.headerType === 'json') {
-	// 				return form.headerText
-	// 			}
-	// 		})(),
-	// 		apiRequest: (() => {
-	// 			if (form.requestType === 'form') {
-	// 				return form.requestList.length ? JSON.stringify(form.requestList) : ''
-	// 			} else if (form.requestType === 'json') {
-	// 				return form.requestText
-	// 			}
-	// 		})(),
-	// 	})
-	// },
+	},
+	apiInvokeApply: (form: any) => {
+		return http.post('/api/invoke/apply', {
+			id: form.apiID,
+			header: (() => {
+				if (form.headerType === BodyType.FORM) {
+					return form.headerList.length ? JSON.stringify(form.headerList) : ''
+				} else if (form.headerType === BodyType.JSON) {
+					return form.headerText
+				}
+			})(),
+			request: (() => {
+				if (form.requestType === BodyType.FORM) {
+					return form.requestList.length ? JSON.stringify(form.requestList) : ''
+				} else if (form.requestType === BodyType.JSON) {
+					return form.requestText
+				}
+			})(),
+		})
+	},
 }

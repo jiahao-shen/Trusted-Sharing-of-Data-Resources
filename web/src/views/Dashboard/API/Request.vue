@@ -1,22 +1,21 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import { EnumValues } from 'enum-values'
+import { apiService } from '@/service/api'
 import { useRoute, useRouter } from 'vue-router'
-import { Search, RefreshLeft } from '@element-plus/icons-vue'
 import { CopyText } from '@/components/CopyText'
-import { service } from '@/service/api'
+import { OrganizationType, HttpMethod } from '@/utils/enums'
 
 const route = useRoute()
 const router = useRouter()
 
-const classList = ref(new Set())
-const functionList = ref(new Set())
-const statusList = ref(new Set())
+const apiCategoryList = ref(new Set())
 
-const orgClass = ref('全部')
-const orgName = ref('')
-const apiName = ref('')
-const apiFunction = ref('全部')
-const apiStatus = ref('全部')
+const selectOrgType = ref('全部')
+const queryOrgName = ref('')
+const queryAPIName = ref('')
+const selectAPICategory = ref('全部')
+const selectAPIMethod = ref('全部')
 
 const pageSize = 10
 const total = ref(0)
@@ -25,31 +24,26 @@ let apiList: any[]
 let filterList: any[]
 let showList = ref(Array())
 
-service.getAllAPIList().then((res: any) => {
-	if (res.status === 200) {
-		apiList = []
-		for (let item of res.data) {
-			apiList.push({
-				orgName: item.author,
-				orgClass: "类别一",
-				apiName: item.name,
-				apiID: item.id,
-				apiFunction: "功能一",
-				apiStatus: "可用"
-			})
-		}
-
-		for (let item of apiList) {
-			classList.value.add(item.orgClass)
-			functionList.value.add(item.apiFunction)
-			statusList.value.add(item.apiStatus)
-		}
-
-		filterList = apiList
-		total.value = filterList.length
-		showList.value = filterList.slice((currentPage - 1) * pageSize, currentPage * pageSize)
-	}
+onMounted(() => {
+	loadAllAPIList()
 })
+
+const loadAllAPIList = () => {
+	apiService
+		.allAPIList()
+		.then((res: any) => {
+			apiList = res.data
+
+			for (let item of apiList) {
+				apiCategoryList.value.add(item.category)
+			}
+
+			filterList = apiList
+			total.value = filterList.length
+			showList.value = filterList.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+		})
+		.catch((err: any) => {})
+}
 
 const handleCurrentChange = (value: number) => {
 	currentPage = value
@@ -81,43 +75,42 @@ const apiStatusChange = (value: string) => {
 }
 
 const resetFilter = () => {
-	orgClass.value = '全部'
-	orgName.value = ''
-	apiName.value = ''
-	apiFunction.value = '全部'
-	apiStatus.value = '全部'
+	selectOrgType.value = '全部'
+	queryOrgName.value = ''
+	queryAPIName.value = ''
+	selectAPICategory.value = '全部'
+	selectAPIMethod.value = '全部'
 
 	computeFilter()
 }
 
 const computeFilter = () => {
-	if (orgClass.value === '全部') {
+	if (selectOrgType.value === '全部') {
 		console.log('机构类别:全部')
 		filterList = apiList
 	} else {
 		console.log('机构类别:筛选')
-		filterList = apiList.filter((item) => item.orgClass === orgClass.value)
+		filterList = apiList.filter((item) => item.organizationType === selectOrgType.value)
 	}
 
-	if (orgName.value.trim() !== '') {
+	if (queryOrgName.value.trim() !== '') {
 		console.log('机构名称')
-		console.log(filterList)
-		filterList = filterList.filter((item) => item.orgName.includes(orgName.value))
+		filterList = filterList.filter((item) => item.organizationName.includes(queryOrgName.value))
 	}
 
-	if (apiName.value.trim() !== '') {
+	if (queryAPIName.value.trim() !== '') {
 		console.log('API名称')
-		filterList = filterList.filter((item) => item.apiName.includes(apiName.value))
+		filterList = filterList.filter((item) => item.name.includes(queryAPIName.value))
 	}
 
-	if (apiFunction.value !== '全部') {
+	if (selectAPICategory.value !== '全部') {
 		console.log('API功能')
-		filterList = filterList.filter((item) => item.apiFunction === apiFunction.value)
+		filterList = filterList.filter((item) => item.category === selectAPICategory.value)
 	}
 
-	if (apiStatus.value !== '全部') {
-		console.log('API状态')
-		filterList = filterList.filter((item) => item.apiStatus === apiStatus.value)
+	if (selectAPIMethod.value !== '全部') {
+		console.log('请求类型')
+		filterList = filterList.filter((item) => item.method === selectAPIMethod.value)
 	}
 
 	total.value = filterList.length
@@ -125,10 +118,6 @@ const computeFilter = () => {
 }
 
 const showDetails = () => {}
-
-const requestAPI = (api: any) => {
-	router.push({ name: '申请表单', query: { orgName: api.orgName, apiName: api.apiName, apiID: api.apiID }})
-}
 </script>
 
 <template>
@@ -140,16 +129,21 @@ const requestAPI = (api: any) => {
 
 			<div class="flex">
 				<span class="inline-flex items-center">机构类别:</span>
-				<el-radio-group class="mx-20px" v-model="orgClass" @change="orgClassChange">
+				<el-radio-group class="mx-20px" v-model="selectOrgType" @change="orgClassChange">
 					<el-radio-button label="全部" />
-					<el-radio-button v-for="item in classList" :label="item" />
+					<el-radio-button
+						v-for="item in OrganizationType"
+						:label="EnumValues.getNameFromValue(OrganizationType, item)"
+					>
+						{{ item }}
+					</el-radio-button>
 				</el-radio-group>
 			</div>
 
 			<div class="flex mt-20px">
 				<span class="inline-flex items-center">机构名称:</span>
 				<div class="w-400px mx-20px inline-flex items-center">
-					<el-input v-model="orgName" placeholder="搜索" clearable>
+					<el-input v-model="queryOrgName" placeholder="搜索" clearable>
 						<template #append>
 							<el-button icon="Search" @click="searchByOrgName" />
 						</template>
@@ -161,7 +155,7 @@ const requestAPI = (api: any) => {
 				<el-col class="flex" :span="8">
 					<span class="inline-flex items-center">API名称:</span>
 					<div class="w-400px mx-20px">
-						<el-input v-model="apiName" placeholder="搜索" clearable>
+						<el-input v-model="queryAPIName" placeholder="搜索" clearable>
 							<template #append>
 								<el-button icon="Search" @click="searchByAPIID" />
 							</template>
@@ -171,17 +165,22 @@ const requestAPI = (api: any) => {
 
 				<el-col class="flex" :span="6">
 					<span class="inline-flex items-center">API功能:</span>
-					<el-select class="mx-20px" v-model="apiFunction" @change="apiFunctionChange">
+					<el-select class="mx-20px" v-model="selectAPICategory" @change="apiFunctionChange">
 						<el-option label="全部" value="全部" />
-						<el-option v-for="item in functionList" :label="item" :value="item" />
+						<!-- TODO: -->
+						<el-option v-for="item in apiCategoryList" :label="item" :value="item" />
 					</el-select>
 				</el-col>
 
 				<el-col class="flex" :span="6">
-					<span class="inline-flex items-center">API状态:</span>
-					<el-select class="mx-20px" v-model="apiStatus" @change="apiStatusChange">
+					<span class="inline-flex items-center">请求类型:</span>
+					<el-select class="mx-20px" v-model="selectAPIMethod" @change="apiStatusChange">
 						<el-option label="全部" value="全部" />
-						<el-option v-for="item in statusList" :label="item" :value="item" />
+						<el-option
+							v-for="item in HttpMethod"
+							:label="item"
+							:value="EnumValues.getNameFromValue(HttpMethod, item)"
+						/>
 					</el-select>
 				</el-col>
 
@@ -193,22 +192,46 @@ const requestAPI = (api: any) => {
 
 			<el-table class="mt-20px" :data="showList" highlight-current-row border>
 				<el-table-column label="No." type="index" :index="indexMethod" width="100" />
-				<el-table-column label="机构" prop="orgName" />
-				<el-table-column label="机构类别" prop="orgClass" />
-				<el-table-column label="API名称" prop="apiName" />
-				<el-table-column label="API ID" prop="apiID" width="400">
+				<el-table-column label="API ID">
 					<template #default="scope">
-						<CopyText :text="scope.row.apiID" />
+						<CopyText :text="scope.row.id" />
 					</template>
 				</el-table-column>
-				<el-table-column label="功能类型" prop="apiFunction" />
-				<el-table-column label="状态" prop="apiStatus" />
+				<el-table-column label="API名称" prop="name" />
+				<el-table-column label="请求类型">
+					<template #default="scope">
+						<el-tag type="success">{{ scope.row.method }}</el-tag>
+					</template>
+				</el-table-column>
+				<el-table-column label="功能分类" prop="category" />
+				<el-table-column label="所属机构" prop="organizationName" />
+				<el-table-column label="机构类别">
+					<template #default="scope">
+						<el-tag>{{ OrganizationType[scope.row.organizationType] }}</el-tag>
+					</template>
+				</el-table-column>
+				<el-table-column label="创建时间" prop="createdTime" />
 
 				<el-table-column label="操作">
 					<template #default="scope">
 						<div class="w-full h-full flex items-center">
-							<el-button type="primary" text>详情</el-button>
-							<el-button type="primary" text @click="requestAPI(scope.row)">申请</el-button>
+							<el-tooltip content="详情">
+								<el-button type="primary" icon="More" circle size="default" />
+							</el-tooltip>
+							<el-tooltip content="申请调用">
+								<el-button
+									type="success"
+									icon="DocumentAdd"
+									circle
+									size="default"
+									@click="
+										router.push({
+											name: '申请表单',
+											query: { orgName: scope.row.organizationName, apiName: scope.row.name, apiID: scope.row.id },
+										})
+									"
+								/>
+							</el-tooltip>
 						</div>
 					</template>
 				</el-table-column>
@@ -216,7 +239,7 @@ const requestAPI = (api: any) => {
 
 			<div class="w-full mt-20px flex items-center justify-center">
 				<el-pagination
-					layout="jumper, prev, pager, next,total"
+					layout="jumper, prev, pager, next, total"
 					:total="total"
 					:page-size="pageSize"
 					@current-change="handleCurrentChange"
@@ -228,5 +251,4 @@ const requestAPI = (api: any) => {
 	<router-view v-else />
 </template>
 
-<style lang="less" scoped>
-</style>
+<style lang="less" scoped></style>
