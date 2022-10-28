@@ -30,9 +30,9 @@ const router = createRouter({
 					component: () => import('@/views/Register/components/RegisterForm.vue'),
 				},
 				{
-					path: 'progress',
+					path: 'search',
 					name: '注册状态查询',
-					component: () => import('@/views/Register/components/ProgressSearch.vue'),
+					component: () => import('@/views/Register/components/ApplySearch.vue'),
 				},
 			],
 		},
@@ -94,7 +94,7 @@ const router = createRouter({
 						},
 						{
 							path: 'request',
-							name: 'API申请',
+							name: 'API调用',
 							component: () => import('@/views/Dashboard/API/Request.vue'),
 							children: [
 								{

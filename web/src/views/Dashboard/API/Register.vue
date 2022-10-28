@@ -13,7 +13,7 @@ const router = useRouter()
 const pageSize = 10
 const total = ref(0)
 let currentPage = 1
-let registerList: any[]
+let apiRegisterApplyList: any[]
 let showList = ref(Array())
 
 onMounted(() => {
@@ -25,16 +25,16 @@ const loadAPIRegisterApplyList = () => {
 		.apiRegisterApplyList()
 		.then((res: any) => {
 			console.log(res.data)
-			registerList = res.data
-			total.value = registerList.length
-			showList.value = registerList.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+			apiRegisterApplyList = res.data
+			total.value = apiRegisterApplyList.length
+			showList.value = apiRegisterApplyList.slice((currentPage - 1) * pageSize, currentPage * pageSize)
 		})
 		.catch()
 }
 
 const handleCurrentChange = (value: number) => {
 	currentPage = value
-	showList.value = registerList.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+	showList.value = apiRegisterApplyList.slice((currentPage - 1) * pageSize, currentPage * pageSize)
 }
 
 const indexMethod = (index: number) => {
@@ -116,13 +116,13 @@ const reject = () => {
 							</el-tooltip>
 							<el-tooltip
 								content="通过"
-								v-if="(RegisterStatus[scope.row.status] as RegisterStatus) === RegisterStatus.PROCESSED"
+								v-if="RegisterStatus[scope.row.status] === RegisterStatus.PROCESSED"
 							>
 								<el-button type="success" icon="Check" circle size="default" @click="allowConfirm(scope.$index)" />
 							</el-tooltip>
 							<el-tooltip
 								content="驳回"
-								v-if="(RegisterStatus[scope.row.status] as RegisterStatus) === RegisterStatus.PROCESSED"
+								v-if="RegisterStatus[scope.row.status] === RegisterStatus.PROCESSED"
 							>
 								<el-button type="danger" icon="Close" circle size="default" @click="rejectConfirm(scope.$index)" />
 							</el-tooltip>
@@ -142,7 +142,7 @@ const reject = () => {
 
 			<el-button class="w-full mt-20px" plain @click="router.push('/dashboard/api/register/form')">
 				<el-icon><Plus /></el-icon>
-				&nbsp新增API
+				&nbsp;新增API
 			</el-button>
 		</el-card>
 

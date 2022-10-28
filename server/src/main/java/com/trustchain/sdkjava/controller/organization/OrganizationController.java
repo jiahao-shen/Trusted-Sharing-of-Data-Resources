@@ -1,17 +1,16 @@
 package com.trustchain.sdkjava.controller.organization;
 
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.trustchain.sdkjava.mapper.OrganizationMapper;
 import com.trustchain.sdkjava.mapper.OrganizationRegisterMapper;
 import com.trustchain.sdkjava.model.Organization;
 import com.trustchain.sdkjava.enums.OrganizationType;
+import com.trustchain.sdkjava.model.OrganizationInfo;
 import com.trustchain.sdkjava.model.OrganizationRegister;
 import com.trustchain.sdkjava.enums.RegisterStatus;
 import com.trustchain.sdkjava.model.User;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,7 +92,7 @@ public class OrganizationController {
     /**
      * 机构注册申请列表
      */
-    @GetMapping("/organization/register/apply/list")
+    @GetMapping("/organization/register/approval/list")
     public ResponseEntity<Object> organizationRegisterApplyList(HttpSession session) {
         User login = (User) session.getAttribute("user");
 
@@ -101,8 +100,9 @@ public class OrganizationController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("请重新登陆");
         }
 
-        QueryWrapper<OrganizationRegister> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("superior", login.getOrganization()).orderByDesc("apply_time");
+        LambdaQueryWrapper<OrganizationRegister> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(OrganizationRegister::getSuperior, login.getOrganization()).orderByDesc(OrganizationRegister::getApplyTime);
+
         List<OrganizationRegister> organizationRegisterList = organizationRegisterMapper.selectList(queryWrapper);
 
         return ResponseEntity.status(HttpStatus.OK).body(organizationRegisterList);
@@ -111,7 +111,7 @@ public class OrganizationController {
     /**
      * 查询注册申请进度
      */
-    @PostMapping("/organization/register/apply/progress")
+    @PostMapping("/organization/register/apply/list")
     public ResponseEntity<Object> organizationRegisterApplyProgress(@RequestBody JSONObject request, HttpSession session) {
         logger.info(request);
 
@@ -190,9 +190,8 @@ public class OrganizationController {
     public ResponseEntity<Object> organizationExist(@RequestBody JSONObject request, HttpSession session) {
         logger.info(request);
 
-        String name = request.getString("name");
-        QueryWrapper<Organization> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("name", name);
+        LambdaQueryWrapper<Organization> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Organization::getName, request.getString("name"));
 
         Organization organization = organizationMapper.selectOne(queryWrapper);
         if (organization != null) {
@@ -207,8 +206,9 @@ public class OrganizationController {
      */
     @GetMapping("/organization/selectList")
     public ResponseEntity<Object> organizationSelectList() {
-        QueryWrapper<Organization> queryWrapper = new QueryWrapper<>();
-        queryWrapper.select("id", "name");
+        LambdaQueryWrapper<Organization> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.select(Organization::getId, Organization::getName);
+
         List<Organization> organizationList = organizationMapper.selectList(queryWrapper);
 
         return ResponseEntity.status(HttpStatus.OK).body(organizationList);
@@ -221,31 +221,9 @@ public class OrganizationController {
     public ResponseEntity<Object> organizationInformation(@RequestBody JSONObject request, HttpSession session) {
         logger.info(request);
 
-        @Data
-        @EqualsAndHashCode(callSuper = true)
-        class OrganizationInfo extends Organization {
-            private String superiorName;
-        }
-
-        OrganizationInfo organizationInfo = organizationMapper.selectJoinOne(OrganizationInfo.class,
-                new MPJLambdaWrapper<Organization>()
-                        .eq(Organization::getId, Long.parseLong("1583391160430190593"))
-                        .selectAll(Organization.class)
-                        .selectAs(Organization::getName, OrganizationInfo::getSuperiorName)
-                        .leftJoin(Organization.class, Organization::getId, Organization::getSuperior));
+        OrganizationInfo organizationInfo = organizationMapper.getOrganizationInformation(request.getString("id"));
 
         System.out.println(organizationInfo);
-//        Organization organization = organizationMapper.selectById(request.getLong("id"));
-//
-//        JSONObject response = JSONObject.parseObject(JSONObject.toJSONString(organization));
-//
-//        Organization superior = organizationMapper.selectById(organization.getSuperior());
-//
-//        if (superior != null) {
-//            response.put("superior", superior.getName());
-//        } else {
-//            response.put("superior", "");
-//        }
 
         return ResponseEntity.status(HttpStatus.OK).body(organizationInfo);
     }
@@ -258,8 +236,9 @@ public class OrganizationController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("请重新登陆");
         }
 
-        QueryWrapper<Organization> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("superior", user.getOrganization());
+        LambdaQueryWrapper<Organization> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Organization::getSuperior, user.getOrganization());
+
         List<Organization> subordinateList = organizationMapper.selectList(queryWrapper);
 
         return ResponseEntity.status(HttpStatus.OK).body(subordinateList);

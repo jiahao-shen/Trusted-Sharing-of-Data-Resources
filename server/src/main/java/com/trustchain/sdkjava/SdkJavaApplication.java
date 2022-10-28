@@ -53,6 +53,9 @@ public class SdkJavaApplication extends WebMvcConfigurationSupport {
 
         FastJsonConfig fastJsonConfig = new FastJsonConfig();
         fastJsonConfig.setSerializerFeatures(SerializerFeature.PrettyFormat);
+        fastJsonConfig.setSerializerFeatures(SerializerFeature.WriteNullListAsEmpty);
+        fastJsonConfig.setSerializerFeatures(SerializerFeature.WriteNullNumberAsZero);
+        fastJsonConfig.setSerializerFeatures(SerializerFeature.WriteNullStringAsEmpty);
 
         fastConverter.setFastJsonConfig(fastJsonConfig);
 

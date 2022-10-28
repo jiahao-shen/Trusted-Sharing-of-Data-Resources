@@ -21,7 +21,7 @@ export const userService = {
 			username: username,
 		})
 	},
-	userRegister: (form: any, organization: string, type: string) => {
+	userRegister: (form: any, organization: string, type: string | null) => {
 		return http.post('/user/register', {
 			username: form.username,
 			password: form.password1,

@@ -57,9 +57,12 @@ export const apiService = {
 	allAPIList: () => {
 		return http.get('/api/list/all')
 	},
-	apiInvokeApply: (form: any) => {
+	apiInvokeApply: (form: any, apiID?: string) => {
 		return http.post('/api/invoke/apply', {
-			id: form.apiID,
+			id: apiID,
+			invokeMethod: form.invokeMethod,
+			startTime: form.validTime[0],
+			endTime: form.validTime[1],
 			header: (() => {
 				if (form.headerType === BodyType.FORM) {
 					return form.headerList.length ? JSON.stringify(form.headerList) : ''
@@ -76,4 +79,7 @@ export const apiService = {
 			})(),
 		})
 	},
+	apiInvokeApplyList: () => {
+		return http.post('', {})
+	}
 }

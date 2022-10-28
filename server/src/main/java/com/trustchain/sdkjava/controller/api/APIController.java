@@ -1,19 +1,16 @@
 package com.trustchain.sdkjava.controller.api;
 
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.github.yulichang.wrapper.MPJLambdaWrapper;
-import com.google.protobuf.Api;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.trustchain.sdkjava.enums.APIInvokeMethod;
 import com.trustchain.sdkjava.enums.BodyType;
 import com.trustchain.sdkjava.enums.HttpMethod;
-import com.trustchain.sdkjava.enums.OrganizationType;
 import com.trustchain.sdkjava.enums.RegisterStatus;
-import com.trustchain.sdkjava.fabric.FabricGateway;
+import com.trustchain.sdkjava.mapper.APIInvokeMapper;
 import com.trustchain.sdkjava.mapper.APIMapper;
 import com.trustchain.sdkjava.mapper.APIRegisterMapper;
+import com.trustchain.sdkjava.mapper.UserMapper;
 import com.trustchain.sdkjava.model.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -37,6 +35,10 @@ public class APIController {
 
     @Autowired
     private APIMapper apiMapper;
+
+
+    @Autowired
+    private APIInvokeMapper apiInvokeMapper;
 
     /**
      * 发起API注册申请
@@ -105,8 +107,9 @@ public class APIController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("请重新登录");
         }
 
-        QueryWrapper<APIRegister> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("organization", login.getOrganization()).orderByDesc("apply_time");
+        LambdaQueryWrapper<APIRegister> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(APIRegister::getOrganization, login.getOrganization()).orderByDesc(APIRegister::getApplyTime);
+
         List<APIRegister> apiRegisterList = apiRegisterMapper.selectList(queryWrapper);
 
         return ResponseEntity.status(HttpStatus.OK).body(apiRegisterList);
@@ -119,7 +122,6 @@ public class APIController {
         RegisterStatus reply = RegisterStatus.valueOf(request.getString("reply"));
 
         APIRegister apiRegister = apiRegisterMapper.selectById(Long.parseLong(request.getString("serialNumber")));
-
 
         API api = new API();
         api.setAuthor(apiRegister.getAuthor());
@@ -167,9 +169,9 @@ public class APIController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("机构API失败");
         }
 
-        QueryWrapper<API> queryWrapper = new QueryWrapper<>();
+        LambdaQueryWrapper<API> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(API::getAuthor, user.getId());
 
-        queryWrapper.eq("author", user.getId());
         List<API> myAPIList = apiMapper.selectList(queryWrapper);
 
         return ResponseEntity.status(HttpStatus.OK).body(myAPIList);
@@ -177,28 +179,18 @@ public class APIController {
 
     @GetMapping("/api/list/all")
     public ResponseEntity<Object> allAPIList(HttpSession session) {
-        @Data
-        @EqualsAndHashCode(callSuper = true)
-        class APIInfo extends API {
-            private String organizationName;
-            private OrganizationType organizationType;
-        }
 
-        List<APIInfo> allAPIList = apiMapper.selectJoinList(APIInfo.class,
-                new MPJLambdaWrapper<API>()
-                        .selectAll(API.class)
-                        .selectAs(Organization::getName, APIInfo::getOrganizationName)
-                        .selectAs(Organization::getType, APIInfo::getOrganizationType)
-                        .leftJoin(Organization.class, Organization::getId, API::getOrganization)
-                        .orderByAsc(API::getId)
-                        .orderByAsc(API::getCreatedTime));
+        LambdaQueryWrapper<API> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.orderByAsc(API::getId).orderByAsc(API::getCreatedTime);
+
+        List<APIInfo> allAPIList = apiMapper.getAllAPIList(queryWrapper);
 
         return ResponseEntity.status(HttpStatus.OK).body(allAPIList);
     }
 
 
     @PostMapping("/api/invoke/apply")
-    public ResponseEntity<Object> call(@RequestBody JSONObject request, HttpSession session) {
+    public ResponseEntity<Object> apiInvokeApply(@RequestBody JSONObject request, HttpSession session) {
         logger.info(request);
 
         User user = (User) session.getAttribute("user");
@@ -207,7 +199,32 @@ public class APIController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("请重新登录");
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body("Invoke Apply");
+        API api = apiMapper.selectById(request.getString("id"));
+
+        APIInvoke apiInvoke = new APIInvoke();
+        apiInvoke.setId(Long.parseLong(request.getString("id")));
+        apiInvoke.setAuthor(api.getAuthor());
+        apiInvoke.setInvokeMethod(APIInvokeMethod.valueOf(request.getString("invokeMethod")));
+
+        try {
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            apiInvoke.setStartTime(format.parse(request.getString("startTime")));
+            apiInvoke.setEndTime(format.parse(request.getString("endTime")));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("日期转换错误");
+        }
+        apiInvoke.setComment(request.getString("comment"));
+        apiInvoke.setCreatedTime(new Date());
+
+        logger.info(apiInvoke);
+
+        int count = apiInvokeMapper.insert(apiInvoke);
+        if (count == 0) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("调用申请失败");
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body("调用申请成功");
+
 //        try {
 //            FabricGateway fg = new FabricGateway();
 //            String response = fg.invoke("requestAPI", UUID.randomUUID().toString(), user.getFabricID(),
@@ -217,6 +234,16 @@ public class APIController {
 //            e.printStackTrace();
 //            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("");
 //        }
+    }
+
+    @GetMapping("/api/invoke/apply/list")
+    public ResponseEntity<Object> apiInvokeApplyList(HttpSession session) {
+        return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
+
+    @GetMapping("/api/invoke/approval/list")
+    public ResponseEntity<Object> apiInvokeApprovalList(HttpSession session) {
+        return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 }
 

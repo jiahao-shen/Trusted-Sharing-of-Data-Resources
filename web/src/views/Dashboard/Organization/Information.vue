@@ -49,7 +49,7 @@ const loadOrganizationInformation = () => {
 					</el-descriptions-item>
 					<el-descriptions-item label="所在城市">{{ organization.city }}</el-descriptions-item>
 					<el-descriptions-item label="详细地址">{{ organization.address }}</el-descriptions-item>
-					<el-descriptions-item label="上级机构">{{ organization.superior }}</el-descriptions-item>
+					<el-descriptions-item label="上级机构">{{ organization.superiorName }}</el-descriptions-item>
 					<el-descriptions-item label="创建时间">
 						{{ organization.createdTime }}
 					</el-descriptions-item>

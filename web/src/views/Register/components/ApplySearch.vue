@@ -41,7 +41,7 @@ const searchRegisterProgress = () => {
 	}
 
 	organizationService
-		.organizationRegisterApplyProgress(tmp)
+		.organizationRegisterApplyList(tmp)
 		.then((res: any) => {
 			console.log(res.data)
 			registerList = res.data
@@ -112,7 +112,7 @@ const registerAdminSuccess = () => {
 
 							<el-tooltip
 								content="创建管理员"
-								v-if="(RegisterStatus[scope.row.status] as RegisterStatus) === RegisterStatus.ALLOW"
+								v-if="RegisterStatus[scope.row.status] === RegisterStatus.ALLOW"
 							>
 								<el-button type="success" circle size="default" @click="openRegisterAdminDialog(scope.row)">
 									<Icon icon="ant-design:user-add-outlined" />

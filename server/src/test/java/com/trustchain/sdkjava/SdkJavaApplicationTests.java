@@ -15,6 +15,7 @@ import com.trustchain.sdkjava.model.*;
 import com.trustchain.sdkjava.util.Generator;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
@@ -27,6 +28,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @SpringBootTest
@@ -233,5 +235,19 @@ class SdkJavaApplicationTests {
 
         System.out.println(JSONObject.toJSONString(apiRegister));
     }
+
+    @Test
+    void testJoin() {
+        OrganizationInfo organizationInfo = organizationMapper.getOrganizationInformation("1583391160430190593");
+
+//        JSONObject organizationInfo = organizationMapper.getOrganizationInformation("1585171695289765890");
+
+        System.out.println(organizationInfo);
+        System.out.println(JSONObject.toJSONString(organizationInfo, SerializerFeature.WriteNullStringAsEmpty));
+
+//        Organization org = organizationMapper.fuck("1583391160430190593");
+//        System.out.println(org);
+    }
+
 }
 

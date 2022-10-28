@@ -13,21 +13,21 @@ const router = useRouter()
 const pageSize = 10
 const total = ref(0)
 let currentPage = 1
-let registerList: any[]
+let approvalList: any[]
 let showList = ref(Array())
 
 onMounted(() => {
-	loadOrganizationRegisterApplyList()
+	loadOrganizationRegisterApprovalList()
 })
 
-const loadOrganizationRegisterApplyList = () => {
+const loadOrganizationRegisterApprovalList = () => {
 	organizationService
-		.organizationRegsiterApplyList()
+		.organizationRegsiterApprovalList()
 		.then((res: any) => {
 			console.log(res.data)
-			registerList = res.data
-			total.value = registerList.length
-			showList.value = registerList.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+			approvalList = res.data
+			total.value = approvalList.length
+			showList.value = approvalList.slice((currentPage - 1) * pageSize, currentPage * pageSize)
 		})
 		.catch((err: any) => {
 		})
@@ -35,7 +35,7 @@ const loadOrganizationRegisterApplyList = () => {
 
 const handleCurrentChange = (value: number) => {
 	currentPage = value
-	showList.value = registerList.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+	showList.value = approvalList.slice((currentPage - 1) * pageSize, currentPage * pageSize)
 }
 
 const indexMethod = (index: number) => {
@@ -57,7 +57,7 @@ const allow = () => {
 		.then((res: any) => {
 			if (res.data) {
 				allowDialogVisible.value = false
-				loadOrganizationRegisterApplyList()
+				loadOrganizationRegisterApprovalList()
 			}
 		})
 		.catch((err: any) => {
@@ -80,7 +80,7 @@ const reject = () => {
 		.then((res: any) => {
 			if (res.data) {
 				rejectDialogVisible.value = false
-				loadOrganizationRegisterApplyList()
+				loadOrganizationRegisterApprovalList()
 			}
 		})
 		.catch((err: any) => {
@@ -122,13 +122,13 @@ const reject = () => {
 							</el-tooltip>
 							<el-tooltip
 								content="通过"
-								v-if="(RegisterStatus[scope.row.status] as RegisterStatus) === RegisterStatus.PROCESSED"
+								v-if="RegisterStatus[scope.row.status] === RegisterStatus.PROCESSED"
 							>
 								<el-button type="success" icon="Check" circle size="default" @click="allowConfirm(scope.$index)" />
 							</el-tooltip>
 							<el-tooltip
 								content="驳回"
-								v-if="(RegisterStatus[scope.row.status] as RegisterStatus) === RegisterStatus.PROCESSED"
+								v-if="RegisterStatus[scope.row.status] === RegisterStatus.PROCESSED"
 							>
 								<el-button type="danger" icon="Close" circle size="default" @click="rejectConfirm(scope.$index)" />
 							</el-tooltip>

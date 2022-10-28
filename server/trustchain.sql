@@ -125,5 +125,23 @@ CREATE TABLE `api`
     FOREIGN KEY (`author`) REFERENCES `user` (`id`),
     FOREIGN KEY (`organization`) REFERENCES `organization` (`id`)
 ) DEFAULT CHARSET = utf8mb4;
+
+DROP TABLE IF EXISTS `api_invoke`;
+CREATE TABLE `api_invoke`
+(
+    `serial_number` bigint   not null,
+    `id`            bigint   not null,
+    `applicant`     bigint   not null,
+    `author`        bigint   not null,
+    `invoke_method` int      not null,
+    `start_time`    datetime not null,
+    `end_time`      datetime not null,
+    `comment`       varchar(512),
+    `created_time`  datetime not null,
+    PRIMARY KEY (`serial_number`),
+    FOREIGN KEY (`id`) REFERENCES `api` (`id`),
+    FOREIGN KEY (`applicant`) REFERENCES `user` (`id`),
+    FOREIGN KEY (`author`) REFERENCES `user` (`id`)
+) DEFAULT CHARSET = utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

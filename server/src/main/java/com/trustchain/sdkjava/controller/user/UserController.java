@@ -1,6 +1,7 @@
 package com.trustchain.sdkjava.controller.user;
 
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.trustchain.sdkjava.enums.UserType;
 import com.trustchain.sdkjava.mapper.UserMapper;
@@ -34,8 +35,10 @@ public class UserController {
         logger.info(request);
 
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("username", request.get("username"));
+
+        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(User::getUsername, request.getString("username"));
+
         User user = userMapper.selectOne(queryWrapper);
 
         if (user != null && encoder.matches(request.getString("password"), user.getPassword())) {
@@ -88,9 +91,12 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("请重新登陆");
         }
 
-        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.select("id", "username", "type", "created_time").eq("organization", login.getOrganization());
+        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.select(User::getId, User::getUsername, User::getType, User::getCreatedTime)
+                .eq(User::getOrganization, login.getOrganization());
+
         List<User> userList = userMapper.selectList(queryWrapper);
+
         return ResponseEntity.status(HttpStatus.OK).body(userList);
     }
 
@@ -101,9 +107,11 @@ public class UserController {
     public ResponseEntity<Object> userExist(@RequestBody JSONObject request, HttpSession session) {
         logger.info(request);
 
-        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("username", request.getString("username"));
+        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(User::getUsername, request.getString("username"));
+
         User user = userMapper.selectOne(queryWrapper);
+
         if (user != null) {
             return ResponseEntity.status(HttpStatus.OK).body(true);
         } else {

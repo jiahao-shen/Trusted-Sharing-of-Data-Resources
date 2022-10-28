@@ -11,13 +11,14 @@ import type { FormInstance, FormRules, Action } from 'element-plus'
 const route = useRoute()
 const router = useRouter()
 
+const apiID = route.query.apiID?.toString();
+const apiName = route.query.apiName?.toString();
+const orgName = route.query.orgName?.toString();
+
 const formRef = ref<FormInstance>()
 const form = reactive({
-	apiID: route.query.apiID,
-	apiName: route.query.apiName,
-	orgName: route.query.orgName,
 	comment: '',
-	invokeType: APIInvokeMethod.WEB,
+	invokeMethod: '',
 	validTime: Array(),
 	headerType: BodyType.FORM,
 	headerList: Array(),
@@ -31,7 +32,7 @@ const form = reactive({
 })
 
 const rules = reactive<FormRules>({
-	invokeType: [validators.required('调用方式')],
+	invokeMethod: [validators.required('调用方式')],
 	validTime: [validators.required('有效期')],
 	comment: [validators.required('备注说明')],
 	headerText: [
@@ -73,13 +74,14 @@ const submit = async (formEl: FormInstance | undefined) => {
 	await formEl?.validate((valid, fields) => {
 		if (valid) {
 			apiService
-				.apiInvokeApply(form)
+				.apiInvokeApply(form, apiID)
 				.then((res: any) => {
-					ElMessageBox.alert(res.data, 'API申请调用成功', {
-						confirmButtonText: '确认',
-						callback: (action: Action) => {},
+					ElNotification({
+						title: 'API调用申请成功',
+						type: 'success',
 					})
 				})
+				router.push('/dashboard/api/request')
 				.catch((err: any) => {
 					ElNotification({
 						title: 'API申请调用失败',
@@ -130,25 +132,25 @@ const deleteResponseItem = (index: number) => {
 	<div class="w-full p-20px">
 		<el-card class="w-full">
 			<template #header>
-				<h2 class="text-2xl">API申请</h2>
+				<h2 class="text-2xl">API调用</h2>
 			</template>
 			<el-form ref="formRef" :model="form" :rules="rules" label-position="top" id="form">
 				<el-row :gutter="60">
 					<el-col :span="6">
 						<el-form-item label="API名称" required>
-							<el-input v-model="form.apiName" disabled />
+							<el-input v-model="apiName" disabled />
 						</el-form-item>
 					</el-col>
 
 					<el-col :span="8">
 						<el-form-item label="API ID" required>
-							<el-input v-model="form.apiID" disabled />
+							<el-input v-model="apiID" disabled />
 						</el-form-item>
 					</el-col>
 
 					<el-col :span="6">
 						<el-form-item label="所属机构" required>
-							<el-input v-model="form.orgName" disabled />
+							<el-input v-model="orgName" disabled />
 						</el-form-item>
 					</el-col>
 				</el-row>
@@ -168,8 +170,8 @@ const deleteResponseItem = (index: number) => {
 					</el-col>
 
 					<el-col :span="4">
-						<el-form-item label="调用方式" prop="invokeType">
-							<el-select placeholder="选择" v-model="form.invokeType">
+						<el-form-item label="调用方式" prop="invokeMethod">
+							<el-select placeholder="选择" v-model="form.invokeMethod">
 								<el-option
 									v-for="item in APIInvokeMethod"
 									:label="item"
@@ -186,13 +188,15 @@ const deleteResponseItem = (index: number) => {
 								type="datetimerange"
 								start-placeholder="请选择开始时间"
 								end-placeholder="请选择结束时间"
+								format="YYYY-MM-DD HH:mm:ss"
+								value-format="YYYY-MM-DD HH:mm:ss"
 								:default-time="[new Date(), new Date()]"
 							/>
 						</el-form-item>
 					</el-col>
 				</el-row>
 
-				<el-row :gutter="60" v-if="form.invokeType === APIInvokeMethod.SDK">
+				<el-row :gutter="60" v-if="APIInvokeMethod[form.invokeMethod] === APIInvokeMethod.WEB">
 					<el-col :span="8">
 						<el-form-item>
 							<div class="w-full flex justify-between">

@@ -78,7 +78,7 @@ const logout = () => {
 							<span class="text-base">API管理</span>
 						</template>
 						<el-menu-item index="/dashboard/api/register">API注册</el-menu-item>
-						<el-menu-item index="/dashboard/api/request">API申请</el-menu-item>
+						<el-menu-item index="/dashboard/api/request">API调用</el-menu-item>
 						<el-menu-item index="/dashboard/api/authorization">API授权</el-menu-item>
 						<el-menu-item index="/dashboard/api/myAPI">我的API</el-menu-item>
 					</el-sub-menu>

@@ -6,9 +6,9 @@ import com.baomidou.mybatisplus.annotation.EnumValue;
 
 @Getter
 @AllArgsConstructor
-public enum BodyType {
-    FORM(1, "FORM"),
-    JSON(2, "JSON");
+public enum APIInvokeMethod {
+    WEB(1, "网页"),
+    SDK(2, "SDK");
 
     @EnumValue
     private final int code;

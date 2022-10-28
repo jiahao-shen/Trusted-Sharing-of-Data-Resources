@@ -6,6 +6,7 @@ import { CodeToText } from 'element-china-area-data'
 const appStore = useAppStore()
 
 export const organizationService = {
+	// 发起机构注册申请
 	organizationRegisterApply: (form: any) => {
 		let info = {
 			name: form.name,
@@ -38,9 +39,17 @@ export const organizationService = {
 			},
 		})
 	},
-	organizationRegsiterApplyList: () => {
-		return http.get('/organization/register/apply/list')
+	// 查询机构申请列表
+	organizationRegisterApplyList: (serialNumbers: string[]) => {
+		return http.post('/organization/register/apply/list', {
+			serialNumbers: serialNumbers,
+		})
 	},
+	// 获取机构审批列表
+	organizationRegsiterApprovalList: () => {
+		return http.get('/organization/register/approval/list')
+	},
+	// 机构注册申请回复
 	organizationRegisterReply: (serialNumber: string, reply: string | null, reason?: string) => {
 		return http.post('/organization/register/reply', {
 			serialNumber: serialNumber,
@@ -48,25 +57,24 @@ export const organizationService = {
 			reason: reason,
 		})
 	},
-	organizationRegisterApplyProgress: (serialNumbers: string[]) => {
-		return http.post('/organization/register/apply/progress', {
-			serialNumbers: serialNumbers,
-		})
-	},
+	// 获取列表用于下拉框
 	organizationSelectList: () => {
 		return http.get('/organization/selectList')
 	},
+	// 查询机构是否存在
 	organizationExist: (name: string) => {
 		return http.post('/organization/exist', {
 			name: name,
 		})
 	},
+	// 获取机构信息
 	organizationInformation: () => {
 		console.log(appStore.getUser.organization)
 		return http.post('/organization/information', {
 			id: appStore.getUser.organization,
 		})
 	},
+	// 获取下级机构列表
 	organizationSubordinateList: () => {
 		return http.get('/organization/subordinate/list')
 	}
