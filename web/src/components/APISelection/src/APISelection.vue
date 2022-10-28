@@ -191,11 +191,7 @@ const showDetails = () => {}
 				</template>
 			</el-table-column>
 			<el-table-column label="API名称" prop="name" />
-			<el-table-column label="请求类型" width="100">
-				<template #default="scope">
-					<el-tag type="success">{{ scope.row.method }}</el-tag>
-				</template>
-			</el-table-column>
+			<el-table-column label="请求类型" prop="method" width="100" />
 			<el-table-column label="功能分类" prop="category" width="100" />
 			<el-table-column label="所属机构" prop="organizationName" />
 			<el-table-column label="机构类别" width="100">

@@ -60,7 +60,9 @@ export const apiService = {
 	apiInvokeApply: (form: any, apiID?: string) => {
 		return http.post('/api/invoke/apply', {
 			id: apiID,
+			applicant: appStore.getUser.id,
 			invokeMethod: form.invokeMethod,
+			comment: form.comment,
 			startTime: form.validTime[0],
 			endTime: form.validTime[1],
 			header: (() => {
@@ -80,6 +82,6 @@ export const apiService = {
 		})
 	},
 	apiInvokeApplyList: () => {
-		return http.post('', {})
-	}
+		return http.get('/api/invoke/apply/list')
+	},
 }

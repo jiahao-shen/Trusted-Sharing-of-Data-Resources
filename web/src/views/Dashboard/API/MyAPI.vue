@@ -57,11 +57,7 @@ const indexMethod = (index: number) => {
 					</template>
 				</el-table-column>
 				<el-table-column label="API名称" prop="name" />
-				<el-table-column label="请求方法">
-					<template #default="scope">
-						<el-tag type="success">{{ HttpMethod[scope.row.method] }}</el-tag>
-					</template>
-				</el-table-column>
+				<el-table-column label="请求方法" prop="method" />
 				<el-table-column label="版本" prop="version" />
 				<el-table-column label="创建时间" prop="createdTime" />
         <el-table-column label="操作">

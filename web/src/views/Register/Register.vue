@@ -12,7 +12,7 @@ const router = useRouter()
 				<el-icon :size="150"><OfficeBuilding /></el-icon>
 				<h2 class="text-2xl">注册新机构</h2>
 			</div>
-			<div class="w-[50%] h-full flex flex-col justify-center items-center border-l-1 cursor-pointer hover:bg-gray-200" @click="router.push('/register/progress')">
+			<div class="w-[50%] h-full flex flex-col justify-center items-center border-l-1 cursor-pointer hover:bg-gray-200" @click="router.push('/register/search')">
 				<el-icon :size="150"><Search /></el-icon>
 				<h2 class="text-2xl">注册进度查询</h2>
 			</div>

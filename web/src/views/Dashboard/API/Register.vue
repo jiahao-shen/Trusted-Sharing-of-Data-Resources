@@ -29,7 +29,9 @@ const loadAPIRegisterApplyList = () => {
 			total.value = apiRegisterApplyList.length
 			showList.value = apiRegisterApplyList.slice((currentPage - 1) * pageSize, currentPage * pageSize)
 		})
-		.catch()
+		.catch((err: any) => {
+
+		})
 }
 
 const handleCurrentChange = (value: number) => {
@@ -101,7 +103,8 @@ const reject = () => {
 						<CopyText :text="scope.row.serialNumber" />
 					</template>
 				</el-table-column>
-				<el-table-column label="名称" prop="name" />
+				<el-table-column label="API名称" prop="name" />
+				<el-table-column label="请求类型" prop="method" />
 				<el-table-column label="状态">
 					<template #default="scope">
 						<ApplyStatusText :status="scope.row.status" />

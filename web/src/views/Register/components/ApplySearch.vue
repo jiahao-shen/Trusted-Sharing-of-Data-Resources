@@ -94,7 +94,7 @@ const registerAdminSuccess = () => {
 				<el-table-column label="机构名称" prop="name" />
 				<el-table-column label="机构类型" width="100">
 					<template #default="scope">
-						{{ OrganizationType[scope.row.type] }}
+						<el-tag>{{ OrganizationType[scope.row.type] }}</el-tag>
 					</template>
 				</el-table-column>
 				<el-table-column label="状态" width="100">
