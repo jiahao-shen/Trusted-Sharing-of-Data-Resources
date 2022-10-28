@@ -6,11 +6,14 @@ import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.google.protobuf.Api;
 import com.trustchain.sdkjava.enums.BodyType;
 import com.trustchain.sdkjava.enums.HttpMethod;
+import com.trustchain.sdkjava.enums.OrganizationType;
 import com.trustchain.sdkjava.enums.RegisterStatus;
 import com.trustchain.sdkjava.fabric.FabricGateway;
 import com.trustchain.sdkjava.mapper.APIMapper;
 import com.trustchain.sdkjava.mapper.APIRegisterMapper;
 import com.trustchain.sdkjava.model.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -174,6 +177,13 @@ public class APIController {
 
     @GetMapping("/api/list/all")
     public ResponseEntity<Object> allAPIList(HttpSession session) {
+        @Data
+        @EqualsAndHashCode(callSuper = true)
+        class APIInfo extends API {
+            private String organizationName;
+            private OrganizationType organizationType;
+        }
+
         List<APIInfo> allAPIList = apiMapper.selectJoinList(APIInfo.class,
                 new MPJLambdaWrapper<API>()
                         .selectAll(API.class)

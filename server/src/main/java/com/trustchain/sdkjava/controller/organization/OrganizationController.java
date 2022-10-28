@@ -2,6 +2,7 @@ package com.trustchain.sdkjava.controller.organization;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.trustchain.sdkjava.mapper.OrganizationMapper;
 import com.trustchain.sdkjava.mapper.OrganizationRegisterMapper;
 import com.trustchain.sdkjava.model.Organization;
@@ -9,6 +10,8 @@ import com.trustchain.sdkjava.enums.OrganizationType;
 import com.trustchain.sdkjava.model.OrganizationRegister;
 import com.trustchain.sdkjava.enums.RegisterStatus;
 import com.trustchain.sdkjava.model.User;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -218,19 +221,33 @@ public class OrganizationController {
     public ResponseEntity<Object> organizationInformation(@RequestBody JSONObject request, HttpSession session) {
         logger.info(request);
 
-        Organization organization = organizationMapper.selectById(request.getLong("id"));
-
-        JSONObject response = JSONObject.parseObject(JSONObject.toJSONString(organization));
-
-        Organization superior = organizationMapper.selectById(organization.getSuperior());
-
-        if (superior != null) {
-            response.put("superior", superior.getName());
-        } else {
-            response.put("superior", "");
+        @Data
+        @EqualsAndHashCode(callSuper = true)
+        class OrganizationInfo extends Organization {
+            private String superiorName;
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        OrganizationInfo organizationInfo = organizationMapper.selectJoinOne(OrganizationInfo.class,
+                new MPJLambdaWrapper<Organization>()
+                        .eq(Organization::getId, Long.parseLong("1583391160430190593"))
+                        .selectAll(Organization.class)
+                        .selectAs(Organization::getName, OrganizationInfo::getSuperiorName)
+                        .leftJoin(Organization.class, Organization::getId, Organization::getSuperior));
+
+        System.out.println(organizationInfo);
+//        Organization organization = organizationMapper.selectById(request.getLong("id"));
+//
+//        JSONObject response = JSONObject.parseObject(JSONObject.toJSONString(organization));
+//
+//        Organization superior = organizationMapper.selectById(organization.getSuperior());
+//
+//        if (superior != null) {
+//            response.put("superior", superior.getName());
+//        } else {
+//            response.put("superior", "");
+//        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(organizationInfo);
     }
 
     @GetMapping("/organization/subordinate/list")
