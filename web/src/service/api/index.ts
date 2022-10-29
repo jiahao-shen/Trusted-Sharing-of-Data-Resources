@@ -5,6 +5,7 @@ import { useAppStore } from '@/store/app'
 const appStore = useAppStore()
 
 export const apiService = {
+	// API注册申请
 	apiRegisterApply: (form: any) => {
 		return http.post('/api/register/apply', {
 			name: form.name,
@@ -41,9 +42,11 @@ export const apiService = {
 			author: appStore.getUser.id,
 		})
 	},
+	// 查询API注册申请列表
 	apiRegisterApplyList: () => {
 		return http.get('/api/register/apply/list')
 	},
+	// API注册申请回复
 	apiRegisterReply: (serialNumber: string, reply: string | null, reason?: string) => {
 		return http.post('/api/register/reply', {
 			serialNumber: serialNumber,
@@ -51,12 +54,15 @@ export const apiService = {
 			reason: reason,
 		})
 	},
+	// 我的全部API列表
 	myAPIList: () => {
 		return http.get('/api/list/my')
 	},
+	// 所有的API列表
 	allAPIList: () => {
 		return http.get('/api/list/all')
 	},
+	// API调用请求
 	apiInvokeApply: (form: any, apiID?: string) => {
 		return http.post('/api/invoke/apply', {
 			id: apiID,
@@ -81,7 +87,20 @@ export const apiService = {
 			})(),
 		})
 	},
+	// API调用请求列表(发起方)
 	apiInvokeApplyList: () => {
 		return http.get('/api/invoke/apply/list')
 	},
+	// API调用请求列表(所有者)
+	apiInvokeApprovalList: () => {
+		return http.get('/api/invoke/approval/list')
+	},
+	// API调用请求回复
+	apiInvokeReply: (serialNumber: string, reply: string | null, reason?: string) => {
+		return http.post('/api/invoke/reply', {
+			serialNumber: serialNumber,
+			reply: reply,
+			reason: reason
+		})
+	}
 }

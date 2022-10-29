@@ -3,7 +3,6 @@ import { ref, onMounted } from 'vue'
 import { EnumValues } from 'enum-values'
 import { apiService } from '@/service/api'
 import { useRoute, useRouter } from 'vue-router'
-import { CopyText } from '@/components/CopyText'
 import { OrganizationType, HttpMethod } from '@/utils/enums'
 
 const emit = defineEmits(['select'])

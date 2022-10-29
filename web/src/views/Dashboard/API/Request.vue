@@ -4,9 +4,7 @@ import { EnumValues } from 'enum-values'
 import { apiService } from '@/service/api'
 import { APIInvokeMethod } from '@/utils/enums'
 import { useRoute, useRouter } from 'vue-router'
-import { CopyText } from '@/components/CopyText'
 import { APISelection } from '@/components/APISelection'
-import { ApplyStatusText } from '@/components/ApplyStatusText'
 
 const route = useRoute()
 const router = useRouter()

@@ -1,8 +1,9 @@
-<script setup lang="ts">
+<script lang="ts" setup>
+import { ref, onMounted } from 'vue'
 import { EnumValues } from 'enum-values'
-import { ref, reactive, onMounted } from 'vue'
+import { apiService } from '@/service/api'
+import { APIInvokeMethod } from '@/utils/enums'
 import { useRoute, useRouter } from 'vue-router'
-import { organizationService } from '@/service/organization'
 import { RegisterStatus, OrganizationType } from '@/utils/enums'
 
 const route = useRoute()
@@ -11,28 +12,30 @@ const router = useRouter()
 const pageSize = 10
 const total = ref(0)
 let currentPage = 1
-let approvalList: any[]
+let apiInvokeApprovalList: any[]
 let showList = ref(Array())
 
 onMounted(() => {
-	loadOrganizationRegisterApprovalList()
+	loadAPIInvokeApprovalList()
 })
 
-const loadOrganizationRegisterApprovalList = () => {
-	organizationService
-		.organizationRegsiterApprovalList()
+const loadAPIInvokeApprovalList = () => {
+	apiService
+		.apiInvokeApprovalList()
 		.then((res: any) => {
 			console.log(res.data)
-			approvalList = res.data
-			total.value = approvalList.length
-			showList.value = approvalList.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+			apiInvokeApprovalList = res.data
+			total.value = apiInvokeApprovalList.length
+			showList.value = apiInvokeApprovalList.slice((currentPage - 1) * pageSize, currentPage * pageSize)
 		})
-		.catch((err: any) => {})
+		.catch((err: any) => {
+			console.error(err)
+		})
 }
 
 const handleCurrentChange = (value: number) => {
 	currentPage = value
-	showList.value = approvalList.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+	showList.value = apiInvokeApprovalList.slice((currentPage - 1) * pageSize, currentPage * pageSize)
 }
 
 const indexMethod = (index: number) => {
@@ -40,26 +43,22 @@ const indexMethod = (index: number) => {
 }
 
 const allow = (item: any) => {
-	organizationService
-		.organizationRegisterReply(item.serialNumber, EnumValues.getNameFromValue(RegisterStatus, RegisterStatus.ALLOW))
+	apiService
+		.apiInvokeReply(item.serialNumber, EnumValues.getNameFromValue(RegisterStatus, RegisterStatus.ALLOW))
 		.then((res: any) => {
 			if (res.data) {
-				loadOrganizationRegisterApprovalList()
+				loadAPIInvokeApprovalList()
 			}
 		})
 		.catch((err: any) => {})
 }
 
 const reject = (item: any, reason: string) => {
-	organizationService
-		.organizationRegisterReply(
-			item.serialNumber,
-			EnumValues.getNameFromValue(RegisterStatus, RegisterStatus.REJECT),
-			reason
-		)
+	apiService
+		.apiInvokeReply(item.serialNumber, EnumValues.getNameFromValue(RegisterStatus, RegisterStatus.REJECT), reason)
 		.then((res: any) => {
 			if (res.data) {
-				loadOrganizationRegisterApprovalList()
+				loadAPIInvokeApprovalList()
 			}
 		})
 		.catch((err: any) => {})
@@ -70,27 +69,29 @@ const reject = (item: any, reason: string) => {
 	<div class="w-full p-20px">
 		<el-card class="w-full">
 			<template #header>
-				<h2 class="text-2xl">{{ route.name }}</h2>
+				<span class="text-2xl">{{ route.name }}</span>
 			</template>
 
 			<el-table :data="showList" highlight-current-row border>
-				<el-table-column label="No." type="index" :index="indexMethod" width="60" />
-				<el-table-column label="申请号">
+				<el-table-column label="No." type="index" :index="indexMethod" width="80" />
+				<el-table-column label="申请号" width="300">
 					<template #default="scope">
 						<CopyText :text="scope.row.serialNumber" />
 					</template>
 				</el-table-column>
-				<el-table-column label="机构名称" prop="name" />
-				<el-table-column label="机构类型">
+				<el-table-column label="API名称" prop="apiName" />
+				<el-table-column label="申请人" prop="applicantName" />
+				<el-table-column label="调用方式">
 					<template #default="scope">
-						{{ OrganizationType[scope.row.type] }}
+						<el-tag>{{ APIInvokeMethod[scope.row.invokeMethod] }}</el-tag>
 					</template>
 				</el-table-column>
-				<el-table-column label="状态">
+				<el-table-column label="申请状态">
 					<template #default="scope">
 						<ApplyStatusText :status="scope.row.status" />
 					</template>
 				</el-table-column>
+
 				<el-table-column label="申请时间" prop="applyTime" />
 				<el-table-column label="操作">
 					<template #default="scope">
@@ -101,14 +102,14 @@ const reject = (item: any, reason: string) => {
 							<AllowButton
 								v-if="RegisterStatus[scope.row.status] === RegisterStatus.PROCESSED"
 								title="提示"
-								:text="`允许 ${scope.row.name} 的注册申请?`"
+								:text="`允许 ${scope.row.apiName} 的调用申请?`"
 								:item="scope.row"
 								@allow="allow"
 							/>
 							<RejectButton
 								v-if="RegisterStatus[scope.row.status] === RegisterStatus.PROCESSED"
 								title="提示"
-								:text="`驳回 ${scope.row.name} 的注册申请?`"
+								:text="`驳回 ${scope.row.apiName} 的调用申请?`"
 								:item="scope.row"
 								@reject="reject"
 							/>
@@ -119,7 +120,7 @@ const reject = (item: any, reason: string) => {
 
 			<div class="w-full mt-20px flex items-center justify-center">
 				<el-pagination
-					layout="jumper, prev, pager, next,total"
+					layout="jumper, prev, pager, next, total"
 					:total="total"
 					:page-size="pageSize"
 					@current-change="handleCurrentChange"

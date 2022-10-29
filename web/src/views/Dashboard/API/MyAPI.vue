@@ -3,7 +3,6 @@ import { EnumValues } from 'enum-values'
 import { apiService } from '@/service/api'
 import { ref, reactive, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { CopyText } from '@/components/CopyText'
 import { HttpMethod } from '@/utils/enums'
 
 const route = useRoute()

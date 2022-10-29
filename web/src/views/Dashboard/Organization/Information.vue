@@ -2,7 +2,6 @@
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useAppStore } from '@/store/app'
-import { OrganizationLogo } from '@/components/OrganizationLogo'
 import { OrganizationType } from '@/utils/enums'
 import { organizationService } from '@/service/organization'
 

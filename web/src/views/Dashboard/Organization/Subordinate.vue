@@ -2,9 +2,7 @@
 import { EnumValues } from 'enum-values'
 import { ref, reactive, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { CopyText } from '@/components/CopyText'
 import { organizationService } from '@/service/organization'
-import { ApplyStatusText } from '@/components/ApplyStatusText'
 import { RegisterStatus, OrganizationType } from '@/utils/enums'
 
 const route = useRoute()

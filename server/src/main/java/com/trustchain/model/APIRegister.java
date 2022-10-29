@@ -78,14 +78,14 @@ public class APIRegister {
     @TableField("status")
     private RegisterStatus status;
 
-    @TableField(value = "apply_time")
+    @TableField("apply_time")
     @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date applyTime;    // 申请时间
 
-    @TableField(value = "reply_time")
+    @TableField("reply_time")
     @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date replyTime;   // 批复时间
 
-    @TableField(value = "reply_message")
+    @TableField("reply_message")
     private String replyMessage;    // 批复内容
 }

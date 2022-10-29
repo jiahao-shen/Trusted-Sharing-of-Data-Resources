@@ -3,7 +3,6 @@ import { Icon } from '@iconify/vue'
 import { useAppStore } from '@/store/app'
 import { useFullscreen } from '@vueuse/core'
 import { userService } from '@/service/user'
-import { UserLogo } from '@/components/UserLogo'
 import { useRoute, useRouter } from 'vue-router'
 import { unref, ref, watch, computed } from 'vue'
 
@@ -79,7 +78,7 @@ const logout = () => {
 						</template>
 						<el-menu-item index="/dashboard/api/register">API注册</el-menu-item>
 						<el-menu-item index="/dashboard/api/request">API调用</el-menu-item>
-						<el-menu-item index="/dashboard/api/authorization">API授权</el-menu-item>
+						<el-menu-item index="/dashboard/api/approval">调用审批</el-menu-item>
 						<el-menu-item index="/dashboard/api/myAPI">我的API</el-menu-item>
 					</el-sub-menu>
 					<el-sub-menu index="statistics">

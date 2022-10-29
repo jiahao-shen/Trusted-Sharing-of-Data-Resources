@@ -55,4 +55,11 @@ public class APIInvoke {
     @TableField("apply_time")
     @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date applyTime;
+
+    @TableField("reply_time")
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
+    private Date replyTime;
+
+    @TableField("reply_message")
+    private String replyMessage;
 }

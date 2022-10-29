@@ -105,6 +105,11 @@ const router = createRouter({
 							],
 						},
 						{
+							path: 'approval',
+							name: '调用审批',
+							component: () => import('@/views/Dashboard/API/Approval.vue')
+						},
+						{
 							path: 'myAPI',
 							name: '我的API',
 							component: () => import('@/views/Dashboard/API/MyAPI.vue')

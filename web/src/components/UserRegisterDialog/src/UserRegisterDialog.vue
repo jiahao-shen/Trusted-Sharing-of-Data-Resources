@@ -6,8 +6,8 @@ import { validators } from '@/utils/validators'
 import type { FormInstance, FormRules } from 'element-plus'
 
 const props = defineProps<{
-	title: string
-	visible: boolean
+	title: string,
+	visible: boolean,
 	organization: string,
 	type: string | null,
 }>()

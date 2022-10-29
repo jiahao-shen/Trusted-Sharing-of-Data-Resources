@@ -139,6 +139,8 @@ CREATE TABLE `api_invoke`
     `status`        int      not null,
     `comment`       varchar(512),
     `apply_time`    datetime not null,
+    `reply_time`    datetime,
+    `reply_message` varchar(1024),
     PRIMARY KEY (`serial_number`),
     FOREIGN KEY (`id`) REFERENCES `api` (`id`),
     FOREIGN KEY (`applicant`) REFERENCES `user` (`id`),

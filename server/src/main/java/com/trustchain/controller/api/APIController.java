@@ -247,14 +247,44 @@ public class APIController {
         queryWrapper.orderByDesc(APIInvoke::getApplyTime);
 
         List<APIInvokeApplyInfo> apiInvokeApplyList = apiInvokeMapper.getAPIInvokeApplyList(login.getId(), queryWrapper);
-        System.out.println(apiInvokeApplyList);
 
         return ResponseEntity.status(HttpStatus.OK).body(apiInvokeApplyList);
     }
 
     @GetMapping("/api/invoke/approval/list")
     public ResponseEntity<Object> apiInvokeApprovalList(HttpSession session) {
-        return ResponseEntity.status(HttpStatus.OK).body(null);
+        User login = (User) session.getAttribute("login");
+
+        if (login == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("请重新登录");
+        }
+
+        LambdaQueryWrapper<APIInvoke> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.orderByDesc(APIInvoke::getApplyTime);
+
+        List<APIInvokeApprovalInfo> apiInvokeApprovalList = apiInvokeMapper.getAPIInvokeApprovalList(login.getId(), queryWrapper);
+
+        return ResponseEntity.status(HttpStatus.OK).body(apiInvokeApprovalList);
+    }
+
+    @PostMapping("/api/invoke/reply")
+    public ResponseEntity<Object> apiInvokeReply(@RequestBody JSONObject request, HttpSession session) {
+        logger.info(request);
+
+        RegisterStatus reply = RegisterStatus.valueOf(request.getString("reply"));
+
+        APIInvoke apiInvoke = apiInvokeMapper.selectById(Long.parseLong(request.getString("serialNumber")));
+
+        apiInvoke.setStatus(reply);
+        if (reply == RegisterStatus.REJECT) {
+            String reason = request.getString("reason");
+            apiInvoke.setReplyMessage(reason);
+        }
+        apiInvoke.setReplyTime(new Date());
+
+        apiInvokeMapper.updateById(apiInvoke);
+
+        return ResponseEntity.status(HttpStatus.OK).body(true);
     }
 }
 
