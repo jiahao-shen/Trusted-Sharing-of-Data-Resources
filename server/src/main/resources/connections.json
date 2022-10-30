@@ -34,10 +34,10 @@
         "peer0.BHospital.trustchain.com"
       ],
       "adminPrivateKeyPEM": {
-        "path": "src/main/resources/crypto-config/peerOrganizations/BHospital.trustchain.com/users/Admin@BHospital.trustchain.com/msp/keystore/75214e9125760153e6c131983549207b7d26a2f17cc96ceeb50329abc402f777_sk"
+        "path": "src/main/resources/crypto-config/peerOrganizations/BHospital.trustchain.com/users/Admin@BHospital.trustchain.com/msp/keystore/75214e9125760153e6c131983549207b7d26a2f17cc96ceeb50329abc402f777_sk",
       },
       "signedCertPEM": {
-        "path": "src/main/resources/crypto-config/peerOrganizations/BHospital.trustchain.com/users/Admin@BHospital.trustchain.com/msp/signcerts/Admin@BHospital.trustchain.com-cert.pem"
+        "path": "src/main/resources/crypto-config/peerOrganizations/BHospital.trustchain.com/users/Admin@BHospital.trustchain.com/msp/signcerts/Admin@BHospital.trustchain.com-cert.pem",
       }
     }
   },
@@ -49,7 +49,7 @@
         "hostnameOverride": "orderer1.trustchain.com"
       },
       "tlsCACerts": {
-        "path": "src/main/resources/crypto-config/ordererOrganizations/trustchain.com/tlsca/tlsca.trustchain.com-cert.pem"
+        "path": "src/main/resources/crypto-config/ordererOrganizations/trustchain.com/tlsca/tlsca.trustchain.com-cert.pem",
       }
     }
   },
@@ -61,7 +61,7 @@
         "hostnameOverride": "peer0.BHospital.trustchain.com"
       },
       "tlsCACerts": {
-        "path": "src/main/resources/crypto-config/peerOrganizations/BHospital.trustchain.com/tlsca/tlsca.BHospital.trustchain.com-cert.pem"
+        "path": "src/main/resources/crypto-config/peerOrganizations/BHospital.trustchain.com/tlsca/tlsca.BHospital.trustchain.com-cert.pem",
       }
     }
   }

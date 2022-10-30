@@ -39,11 +39,6 @@ class SpringbootApplicationTests {
     private OrganizationRegisterMapper registerOrganizationMapper;
 
     @Test
-    void testMySQL() {
-        System.out.println("Test MySQL");
-    }
-
-    @Test
     void testAddUser() {
 //        userMapper.insert(new User("test", DigestUtils.sha256Hex("test"), "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png", "e993ed9a-9119-45e6-8561-005e218e2005"));
 //        userMapper.insert(new User("admin", DigestUtils.sha256Hex("admin"), "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png", "e7dc5bfe-14f6-49e5-8023-bb5000c26bda"));
@@ -74,19 +69,12 @@ class SpringbootApplicationTests {
 
     @Test
     void testFabric() {
+
         FabricGateway fg = new FabricGateway();
 
-//        try {
-//            JSONArray jsonArray = new JSONArray(fg.query("queryAPIList"));
-//            for (int i = 0; i < jsonArray.length(); i++) {
-//                System.out.println(jsonArray.getJSONObject(i).get("id"));
-//            }
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-        System.out.println(fg.query("queryAPIList"));
+        System.out.println(fg.query("queryOrganizationList"));
+//        System.out.println(fg.query("queryAPIList"));
 //        fg.invoke("createOrganization", "test", "test", "test", "test", "", "now");
-//        System.out.println(fg.query("queryOrganizationList"));
 //        UUID apiID = UUID.randomUUID();
 //        System.out.println(apiID);
 //        System.out.println(new Date().getTime());

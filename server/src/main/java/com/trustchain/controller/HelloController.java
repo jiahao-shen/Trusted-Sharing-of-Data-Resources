@@ -1,6 +1,7 @@
 package com.trustchain.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.trustchain.fabric.FabricGateway;
 import com.trustchain.mapper.OrganizationRegisterMapper;
 import com.trustchain.model.OrganizationRegister;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,5 +37,11 @@ public class HelloController {
         OrganizationRegister ro = organizationRegisterMapper.selectById("1583321439534010370");
 
         return ResponseEntity.status(HttpStatus.OK).body(ro);
+    }
+
+    @GetMapping("/test/fabric")
+    public ResponseEntity<Object> testFabric() {
+        FabricGateway fg = new FabricGateway();
+        return ResponseEntity.status(HttpStatus.OK).body(fg.query("queryAPIList"));
     }
 }
