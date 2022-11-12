@@ -2,6 +2,7 @@ package com.trustchain.controller.organization;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.trustchain.fabric.FabricGateway;
 import com.trustchain.mapper.OrganizationMapper;
 import com.trustchain.mapper.OrganizationRegisterMapper;
 import com.trustchain.model.User;
@@ -145,6 +146,20 @@ public class OrganizationController {
 
         if (count == 0) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("机构创建失败");
+        }
+
+        try {
+            FabricGateway fg = new FabricGateway();
+            fg.invoke("createOrganization",
+                    organization.getId().toString(),
+                    organization.getName(),
+                    organization.getType().toString(),
+                    organization.getIntroduction(),
+                    organization.getSuperior().toString(),
+                    organization.getCreatedTime().toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("链码写入失败");
         }
 
         Long orgID = organization.getId();

@@ -102,5 +102,13 @@ export const apiService = {
 			reply: reply,
 			reason: reason
 		})
+	},
+	// API通过网页调用
+	apiInvokeByWeb: (apiInvoke: any) => {
+		return http.post('/api/invoke/web', {
+			id: apiInvoke.id,
+			applicant: apiInvoke.applicant,
+			serialNumber: apiInvoke.serialNumber,
+		})
 	}
 }

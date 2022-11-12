@@ -2,9 +2,10 @@
 import { ref, onMounted } from 'vue'
 import { EnumValues } from 'enum-values'
 import { apiService } from '@/service/api'
-import { APIInvokeMethod } from '@/utils/enums'
 import { useRoute, useRouter } from 'vue-router'
 import { APISelection } from '@/components/APISelection'
+import { APIInvokeMethod, RegisterStatus } from '@/utils/enums'
+import { InvokeResponseDialog } from '@/components/InvokeResponseDialog'
 
 const route = useRoute()
 const router = useRouter()
@@ -51,6 +52,25 @@ const selectAPI = (api: any) => {
 		query: { apiID: api.id, apiName: api.name, orgName: api.organizationName },
 	})
 }
+
+const invokeResponseDialogVisible = ref(false)
+
+const invokeResponse = ref('')
+
+const invokeByWeb = (invokeAPI: any) => {
+	console.log('Invoke')
+	console.log(invokeAPI)
+
+	apiService
+		.apiInvokeByWeb(invokeAPI)
+		.then((res: any) => {
+			invokeResponse.value = res
+			invokeResponseDialogVisible.value = true
+		})
+		.catch((err: any) => {
+			console.error(err)
+		})
+}
 </script>
 
 <template>
@@ -87,6 +107,16 @@ const selectAPI = (api: any) => {
 							<el-tooltip content="详情">
 								<el-button type="primary" icon="More" circle size="default" />
 							</el-tooltip>
+
+							<el-tooltip
+								content="调用"
+								v-if="
+									APIInvokeMethod[scope.row.invokeMethod] === APIInvokeMethod.WEB &&
+									RegisterStatus[scope.row.status] === RegisterStatus.ALLOW
+								"
+							>
+								<el-button type="success" icon="Promotion" circle size="default" @click="invokeByWeb(scope.row)" />
+							</el-tooltip>
 						</div>
 					</template>
 				</el-table-column>
@@ -110,6 +140,13 @@ const selectAPI = (api: any) => {
 		<el-dialog v-model="apiSelectionVisible" title="API列表" width="90%">
 			<APISelection @select="selectAPI" />
 		</el-dialog>
+
+		<InvokeResponseDialog
+			:visible="invokeResponseDialogVisible"
+			title="调用结果"
+			:response="invokeResponse"
+			@close="invokeResponseDialogVisible = false"
+		/>
 	</div>
 
 	<router-view v-else />

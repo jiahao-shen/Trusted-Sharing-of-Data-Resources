@@ -2,6 +2,7 @@ package com.trustchain.controller.api;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.trustchain.fabric.FabricGateway;
 import com.trustchain.mapper.APIMapper;
 import com.trustchain.mapper.APIRegisterMapper;
 import com.trustchain.model.*;
@@ -22,8 +23,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 public class APIController {
@@ -75,23 +78,9 @@ public class APIController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("未知错误");
         }
 
+
         return ResponseEntity.status(HttpStatus.OK).body(true);
-//
-//        try {
-//            FabricGateway fg = new FabricGateway();
-//            String response = fg.invoke("createAPI", UUID.randomUUID().toString(), request.getName(),
-//                    request.getIntroduction(), user.getFabricID(), request.getUrl(), request.getMethod(),
-//                    request.getHeader(), request.getHeaderType(),
-//                    request.getRequest(), request.getRequestType(),
-//                    request.getResponse(), request.getResponseType(),
-//                    request.getVersion(), LocalDateTime.now().toString());
-//
-//            return ResponseEntity.status(HttpStatus.OK).body(response);
-//        } catch (Exception e) {
-//
-//            e.printStackTrace();
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("");
-//        }
+
     }
 
     /**
@@ -143,6 +132,28 @@ public class APIController {
 
         if (count == 0) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("机构API失败");
+        }
+
+        try {
+            FabricGateway fg = new FabricGateway();
+            String response = fg.invoke("createAPI",
+                    api.getId().toString(),
+                    api.getName(),
+                    api.getIntroducation(),
+                    api.getOrganization().toString(),
+                    api.getUrl(),
+                    api.getMethod().toString(),
+                    api.getHeader(),
+                    api.getHeaderType().toString(),
+                    api.getRequest(),
+                    api.getResponseType().toString(),
+                    api.getResponse(),
+                    api.getResponseType().toString(),
+                    api.getVersion(),
+                    api.getCreatedTime().toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("链码写入失败");
         }
 
         Long apiID = api.getId();
@@ -212,6 +223,7 @@ public class APIController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("日期转换错误");
         }
+        apiInvoke.setStatus(RegisterStatus.PROCESSED);
         apiInvoke.setComment(request.getString("comment"));
         apiInvoke.setApplyTime(new Date());
 
@@ -223,16 +235,6 @@ public class APIController {
         }
 
         return ResponseEntity.status(HttpStatus.OK).body("调用申请成功");
-
-//        try {
-//            FabricGateway fg = new FabricGateway();
-//            String response = fg.invoke("requestAPI", UUID.randomUUID().toString(), user.getFabricID(),
-//                    request.getApiID(), request.getApiRequest(), LocalDateTime.now().toString());
-//            return ResponseEntity.status(HttpStatus.OK).body(response);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("");
-//        }
     }
 
     @GetMapping("/api/invoke/apply/list")
@@ -285,6 +287,34 @@ public class APIController {
         apiInvokeMapper.updateById(apiInvoke);
 
         return ResponseEntity.status(HttpStatus.OK).body(true);
+    }
+
+    @PostMapping("/api/invoke/web")
+    public ResponseEntity<Object> apiInvokeByWeb(@RequestBody JSONObject request, HttpSession session) {
+        logger.info(request);
+        User login = (User) session.getAttribute("login");
+
+        if (login == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("请重新登录");
+        }
+
+        // TODO: 查验有效期
+        // TODO: 查验审批状态
+        // TODO: 查验调用方式
+
+        try {
+            FabricGateway fg = new FabricGateway();
+            String response = fg.invoke("requestAPI",
+                    UUID.randomUUID().toString(),
+                    request.getString("applicant"),
+                    request.getString("id"),
+                    "",
+                    LocalDateTime.now().toString());
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("链码调用失败");
+        }
     }
 }
 

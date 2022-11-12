@@ -2,11 +2,10 @@ package com.trustchain;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.trustchain.model.APIRegister;
-import com.trustchain.model.Organization;
-import com.trustchain.model.OrganizationInfo;
-import com.trustchain.model.User;
+import com.trustchain.mapper.APIInvokeMapper;
+import com.trustchain.model.*;
 import com.trustchain.enums.HttpMethod;
 import com.trustchain.enums.OrganizationType;
 import com.trustchain.enums.RegisterStatus;
@@ -21,11 +20,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.io.File;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @SpringBootTest
@@ -85,8 +87,8 @@ class SpringbootApplicationTests {
     void testCreateOrganization() {
         FabricGateway fg = new FabricGateway();
 
-        fg.invoke("createOrganization", "e993ed9a-9119-45e6-8561-005e218e2005", "test", "测试", "", "", LocalDateTime.now().toString());
-        fg.invoke("createOrganization", "e7dc5bfe-14f6-49e5-8023-bb5000c26bda", "admin", "管理", "", "", LocalDateTime.now().toString());
+//        fg.invoke("createOrganization", "1583391160430190593", "数据资源可信共享运营平台", "EDUCATION", "", "", "2022-10-21 17:34:05");
+//        fg.invoke("createOrganization", "e7dc5bfe-14f6-49e5-8023-bb5000c26bda", "admin", "管理", "", "", LocalDateTime.now().toString());
         System.out.println(fg.query("queryOrganizationList"));
     }
 
@@ -217,5 +219,19 @@ class SpringbootApplicationTests {
 //        System.out.println(org);
     }
 
+    @Autowired
+    private APIInvokeMapper apiInvokeMapper;
+
+    @Test
+    void testOrderByTime() {
+        Long id = Long.parseLong("1585170615678930946");
+
+        LambdaQueryWrapper<APIInvoke> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.orderByDesc(APIInvoke::getApplyTime);
+
+        List<APIInvokeApplyInfo> apiInvokeApplyList = apiInvokeMapper.getAPIInvokeApplyList(id, queryWrapper);
+
+        System.out.println(apiInvokeApplyList);
+    }
 }
 

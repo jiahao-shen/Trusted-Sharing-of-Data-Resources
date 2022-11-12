@@ -19,6 +19,7 @@ import { CopyText } from '@/components/CopyText'
 import { OrganizationLogo } from '@/components/OrganizationLogo'
 import { RejectButton } from '@/components/RejectButton'
 import { UserLogo } from '@/components/UserLogo'
+import { InvokeResponseDialog } from '@/components/InvokeResponseDialog'
 
 const app = createApp(App)
 
@@ -42,5 +43,6 @@ app.component('CopyText', CopyText)
 app.component('OrganizationLogo', OrganizationLogo)
 app.component('RejectButton', RejectButton)
 app.component('UserLogo', UserLogo)
+app.component('InvokeResponseDialog', InvokeResponseDialog)
 
 app.mount('#app')
