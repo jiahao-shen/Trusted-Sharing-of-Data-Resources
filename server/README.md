@@ -8,6 +8,7 @@
 - [FastJSON](https://github.com/alibaba/fastjson): JSON工具
 - [Passay](https://www.passay.org/): 密码工具
 - [Spring-Security](https://spring.io/projects/spring-security): 安全工具
+- [MinIO](https://min.io/): 文件服务器
 
 ## TODO
 - selectPage分页查询

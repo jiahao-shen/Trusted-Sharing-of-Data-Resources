@@ -37,7 +37,9 @@ public class OrganizationController {
      * 机构注册申请
      */
     @PostMapping("/organization/register/apply")
-    public ResponseEntity<Object> organizationRegisterApply(@RequestPart("logo") MultipartFile logo, @RequestPart("info") JSONObject request, @RequestPart("file") MultipartFile file, HttpSession session) {
+    public ResponseEntity<Object> organizationRegisterApply(@RequestPart("logo") MultipartFile logo,
+                                                            @RequestPart("info") JSONObject request,
+                                                            @RequestPart("file") MultipartFile file, HttpSession session) {
 
         // 新注册申请
         OrganizationRegister organizationRegister = new OrganizationRegister();

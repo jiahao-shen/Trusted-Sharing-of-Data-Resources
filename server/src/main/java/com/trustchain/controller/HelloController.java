@@ -3,19 +3,21 @@ package com.trustchain.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.trustchain.fabric.FabricGateway;
 import com.trustchain.mapper.OrganizationRegisterMapper;
+import com.trustchain.minio.MinioUtil;
 import com.trustchain.model.OrganizationRegister;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 public class HelloController {
     @Autowired
     private OrganizationRegisterMapper organizationRegisterMapper;
+
+    @Autowired
+    private MinioUtil minioUtil;
 
     @GetMapping("/hello")
     public String hello() {
@@ -43,5 +45,16 @@ public class HelloController {
     public ResponseEntity<Object> testFabric() {
         FabricGateway fg = new FabricGateway();
         return ResponseEntity.status(HttpStatus.OK).body(fg.query("queryAPIList"));
+    }
+
+    @PostMapping("/test/minio")
+    public ResponseEntity<Object> testMinio(@RequestPart("file") MultipartFile file) {
+        try {
+            minioUtil.upload(file, "/fuckyou.jpg");
+            return ResponseEntity.status(HttpStatus.OK).body("yes");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.OK).body("no");
+        }
     }
 }

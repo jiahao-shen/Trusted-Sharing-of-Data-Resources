@@ -5,6 +5,7 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.trustchain.mapper.APIInvokeMapper;
+import com.trustchain.minio.MinioUtil;
 import com.trustchain.model.*;
 import com.trustchain.enums.HttpMethod;
 import com.trustchain.enums.OrganizationType;
@@ -13,6 +14,9 @@ import com.trustchain.fabric.FabricGateway;
 import com.trustchain.mapper.OrganizationMapper;
 import com.trustchain.mapper.OrganizationRegisterMapper;
 import com.trustchain.mapper.UserMapper;
+import io.minio.MakeBucketArgs;
+import io.minio.MinioClient;
+import io.minio.PutObjectArgs;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
@@ -24,6 +28,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -232,6 +237,28 @@ class SpringbootApplicationTests {
         List<APIInvokeApplyInfo> apiInvokeApplyList = apiInvokeMapper.getAPIInvokeApplyList(id, queryWrapper);
 
         System.out.println(apiInvokeApplyList);
+    }
+
+    @Autowired
+    private MinioUtil minioUtil;
+
+    @Autowired
+    private MinioClient client;
+
+    @Test
+    void testMinio() {
+        try {
+//            minioUtil.listBuckets();
+//            client.putObject(PutObjectArgs.builder()
+//                    .bucket("trustchain")
+//                    .object("test.txt")
+//                    .stream(new ByteArrayInputStream("abcdedf".getBytes()), -1, 10485760)
+//                    .build());
+            client.makeBucket(MakeBucketArgs.builder().bucket("fuck").build());
+//            minioUtil.listBuckets();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
 

@@ -105,6 +105,12 @@
             <version>2.7.4</version>
         </dependency>
 
+        <dependency>
+            <groupId>io.minio</groupId>
+            <artifactId>minio</artifactId>
+            <version>8.4.5</version>
+        </dependency>
+
     </dependencies>
 
     <build>
