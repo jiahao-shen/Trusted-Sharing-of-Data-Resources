@@ -1,6 +1,7 @@
 package com.trustchain.model;
 
 import com.trustchain.enums.OrganizationType;
+import com.trustchain.minio.MinioURLSerializer;
 import lombok.Data;
 
 import java.util.Date;
@@ -28,6 +29,7 @@ public class Organization {
     private String name;    // 机构名称
 
     @TableField("logo")
+    @JSONField(serializeUsing = MinioURLSerializer.class)
     private String logo; // 机构Logo
 
     @TableField("type")
@@ -58,6 +60,7 @@ public class Organization {
     private int numNodes;   // 节点数量
 
     @TableField("file")
+    @JSONField(serializeUsing = MinioURLSerializer.class)
     private String file;    // 机构文件
 
     @TableField("created_time")

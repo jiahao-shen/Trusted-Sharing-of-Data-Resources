@@ -11,5 +11,7 @@
 - [MinIO](https://min.io/): 文件服务器
 
 ## TODO
+- Fabric异步存储
 - selectPage分页查询
 - 前后端分离Spring-Security认证
+

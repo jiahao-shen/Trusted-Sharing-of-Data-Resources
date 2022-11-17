@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.trustchain.fabric.FabricGateway;
 import com.trustchain.mapper.OrganizationMapper;
 import com.trustchain.mapper.OrganizationRegisterMapper;
+import com.trustchain.minio.MinioUtil;
 import com.trustchain.model.User;
 import com.trustchain.model.Organization;
 import com.trustchain.enums.OrganizationType;
@@ -30,6 +31,9 @@ public class OrganizationController {
     private OrganizationMapper organizationMapper;
     @Autowired
     private OrganizationRegisterMapper organizationRegisterMapper;
+
+    @Autowired
+    private MinioUtil minioUtil;
 
     private static final Logger logger = LogManager.getLogger(OrganizationController.class);
 
@@ -61,21 +65,15 @@ public class OrganizationController {
         if (count != 0) {
             try {
                 String serialNumber = organizationRegister.getSerialNumber().toString();
-
-                // TODO: 文件读写
-//                Resource resource = new ClassPathResource("static");
-//                String directory = resource.getFile().getPath() + "/" + serialNumber;
-//                Files.createDirectory(Paths.get(directory)); // 按申请号创建文件夹
-//
-//                // 写入Logo和File
-//                logo.transferTo(new File(directory + "/logo.jpg"));
-//                file.transferTo(new File(directory + "/file.zip"));
-//
-//                // 更新数据库中的Logo和File
-//                organizationRegister.setLogo("http://localhost:5173/server/" + serialNumber + "/logo.jpg");
-//                organizationRegister.setFile("http://localhost:5173/server/" + serialNumber + "/file.zip");
-//
-//                organizationRegisterMapper.updateById(organizationRegister);
+                String logoPath = String.format("organization_register/%s/logo.jpg", serialNumber);
+                String filePath = String.format("organization_register/%s/file.zip", serialNumber);
+                // 上传至云盘
+                minioUtil.upload(logo, logoPath);
+                minioUtil.upload(file, filePath);
+                // 更新Logo和File路径
+                organizationRegister.setLogo(logoPath);
+                organizationRegister.setFile(filePath);
+                organizationRegisterMapper.updateById(organizationRegister);
 
                 return ResponseEntity.status(HttpStatus.OK).body(serialNumber);
             } catch (Exception e) {
@@ -150,6 +148,32 @@ public class OrganizationController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("机构创建失败");
         }
 
+        Long orgID = organization.getId();
+        organizationRegister.setId(orgID);   // 机构注册绑定机构ID
+        organizationRegister.setStatus(reply);  // 更新注册状态
+        if (reply == RegisterStatus.REJECT) {
+            String reason = request.getString("reason");
+            organizationRegister.setReplyMessage(reason);   // 更新回复理由
+        }
+        organizationRegister.setReplyTime(new Date());  // 更新回复时间
+        organizationRegisterMapper.updateById(organizationRegister);
+
+        try {
+            String newLogoPath = String.format("organization/%s/logo.jpg", orgID);
+            String newFilePath = String.format("organization/%s/file.zip", orgID);
+            // 云端复制文件
+            minioUtil.copy(organizationRegister.getLogo(), newLogoPath);
+            minioUtil.copy(organizationRegister.getFile(), newFilePath);
+            // 存入数据库
+            organization.setLogo(newLogoPath);
+            organization.setFile(newFilePath);
+
+            organizationMapper.updateById(organization);
+        } catch (Exception e) {
+            logger.error(e);
+        }
+
+        // 存储到链码
         try {
             FabricGateway fg = new FabricGateway();
             fg.invoke("createOrganization",
@@ -163,33 +187,6 @@ public class OrganizationController {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("链码写入失败");
         }
-
-        Long orgID = organization.getId();
-        organizationRegister.setId(orgID);   // 机构注册绑定机构ID
-        organizationRegister.setStatus(reply);  // 更新注册状态
-        if (reply == RegisterStatus.REJECT) {
-            String reason = request.getString("reason");
-            organizationRegister.setReplyMessage(reason);   // 更新回复理由
-        }
-        organizationRegister.setReplyTime(new Date());  // 更新回复时间
-        organizationRegisterMapper.updateById(organizationRegister);
-
-        // TODO: 文件读写
-//        try {
-//            String serialNumber = organizationRegister.getSerialNumber().toString();
-//            Resource resource = new ClassPathResource("static");
-//            String oldDirectory = resource.getFile().getPath() + "/" + serialNumber;
-//            String newDirectory = resource.getFile().getPath() + "/" + orgID;
-//            // 移动Logo和File至新目录
-//            new File(oldDirectory).renameTo(new File(newDirectory));
-//        } catch (Exception e) {
-//            logger.warn("移动文件失败");
-//        }
-
-        // 更新机构
-//        organization.setLogo("http://localhost:5173/server/" + orgID + "/logo.jpg");
-//        organization.setFile("http://localhost:5173/server/" + orgID + "/file.zip");
-//        organizationMapper.updateById(organization);
 
         return ResponseEntity.status(HttpStatus.OK).body(true);
     }

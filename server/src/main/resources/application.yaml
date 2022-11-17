@@ -13,8 +13,14 @@ spring:
 logging:
   config: classpath:log4j2.xml
 
-
 server:
   servlet:
     session:
       timeout: 3600s
+
+minio:
+  endpoint: http://127.0.0.1:9000  # TODO: 端口转发
+  accessKey: minioadmin
+  secretKey: minioadmin
+  bucket: trustchain
+  baseURL: http://192.168.100.78:9000

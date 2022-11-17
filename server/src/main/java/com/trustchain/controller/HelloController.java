@@ -50,8 +50,8 @@ public class HelloController {
     @PostMapping("/test/minio")
     public ResponseEntity<Object> testMinio(@RequestPart("file") MultipartFile file) {
         try {
-            minioUtil.upload(file, "/fuckyou.jpg");
-            return ResponseEntity.status(HttpStatus.OK).body("yes");
+            minioUtil.upload(file, "test.jpg");
+            return ResponseEntity.status(HttpStatus.OK).body("good");
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.OK).body("no");

@@ -5,6 +5,7 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.trustchain.mapper.APIInvokeMapper;
+import com.trustchain.minio.MinioConfig;
 import com.trustchain.minio.MinioUtil;
 import com.trustchain.model.*;
 import com.trustchain.enums.HttpMethod;
@@ -21,6 +22,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -242,23 +244,25 @@ class SpringbootApplicationTests {
     @Autowired
     private MinioUtil minioUtil;
 
-    @Autowired
-    private MinioClient client;
-
     @Test
     void testMinio() {
         try {
 //            minioUtil.listBuckets();
-//            client.putObject(PutObjectArgs.builder()
-//                    .bucket("trustchain")
-//                    .object("test.txt")
-//                    .stream(new ByteArrayInputStream("abcdedf".getBytes()), -1, 10485760)
-//                    .build());
-            client.makeBucket(MakeBucketArgs.builder().bucket("fuck").build());
-//            minioUtil.listBuckets();
+            minioUtil.copy("organization_register/1593230328973996033/logo.jpg",
+                    "organization/1593230328973996033/logo.jpg");
+            System.out.println("success");
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+
+    @Test
+    void testCustomSerializer() {
+
+        OrganizationRegister or = registerOrganizationMapper.selectById(Long.parseLong("1593230328973996033"));
+
+        System.out.println(JSONObject.toJSONString(or));
     }
 }
 

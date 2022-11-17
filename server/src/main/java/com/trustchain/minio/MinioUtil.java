@@ -1,9 +1,6 @@
 package com.trustchain.minio;
 
-import io.minio.ListObjectsArgs;
-import io.minio.MinioClient;
-import io.minio.PutObjectArgs;
-import io.minio.errors.ErrorResponseException;
+import io.minio.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -12,25 +9,48 @@ import java.io.InputStream;
 
 @Component
 public class MinioUtil {
-    @Autowired
-    private MinioClient client;
-    private final String bucket = "trustchain";
+    private MinioConfig config;
 
-    public void upload(MultipartFile file, String path) throws Exception {
-        try {
-            client.putObject(PutObjectArgs.builder()
-                    .bucket(bucket)
-                    .object(path)
-                    .stream(file.getInputStream(), file.getSize(), -1)
-                    .contentType(file.getContentType())
-                    .build());
-        } catch (ErrorResponseException e) {
-            e.printStackTrace();
-        }
+    private MinioClient client;
+
+    @Autowired
+    MinioUtil(MinioConfig config) {
+        this.config = config;
+
+        client = MinioClient.builder()
+                .endpoint(config.getEndpoint())
+                .credentials(config.getAccessKey(), config.getSecretKey())
+                .build();
+
     }
 
-    public void download() throws Exception {
+    // 上传文件
+    public void upload(MultipartFile file, String path) throws Exception {
+        client.putObject(PutObjectArgs.builder()
+                .bucket(config.getBucket())
+                .object(path)
+                .stream(file.getInputStream(), file.getSize(), -1)
+                .contentType(file.getContentType())
+                .build());
+    }
 
+    // TODO: 下载文件
+    public void download() throws Exception {
+    }
+
+    // 复制文件
+    public void copy(String oldPath, String newPath) throws Exception {
+        client.copyObject(CopyObjectArgs.builder()
+                .bucket(config.getBucket())
+                .object(newPath)
+                .source(CopySource.builder()
+                        .bucket(config.getBucket())
+                        .object(oldPath).build())
+                .build());
+    }
+
+    public void createBucket(String name) throws Exception {
+        client.makeBucket(MakeBucketArgs.builder().bucket(name).build());
     }
 
     public void listBuckets() throws Exception {
@@ -40,7 +60,7 @@ public class MinioUtil {
     }
 
     public void listFiles() throws Exception {
-        client.listObjects(ListObjectsArgs.builder().bucket(bucket).recursive(false).build()).forEach(r -> {
+        client.listObjects(ListObjectsArgs.builder().bucket(config.getBucket()).recursive(false).build()).forEach(r -> {
             try {
                 System.out.println(r.get().objectName());
             } catch (Exception e) {

@@ -134,6 +134,16 @@ public class APIController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("机构API失败");
         }
 
+        Long apiID = api.getId();
+        apiRegister.setId(apiID);
+        apiRegister.setStatus(reply);
+        if (reply == RegisterStatus.REJECT) {
+            String reason = request.getString("reason");
+            apiRegister.setReplyMessage(reason);
+        }
+        apiRegister.setReplyTime(new Date());
+        apiRegisterMapper.updateById(apiRegister);
+
         try {
             FabricGateway fg = new FabricGateway();
             String response = fg.invoke("createAPI",
@@ -155,16 +165,6 @@ public class APIController {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("链码写入失败");
         }
-
-        Long apiID = api.getId();
-        apiRegister.setId(apiID);
-        apiRegister.setStatus(reply);
-        if (reply == RegisterStatus.REJECT) {
-            String reason = request.getString("reason");
-            apiRegister.setReplyMessage(reason);
-        }
-        apiRegister.setReplyTime(new Date());
-        apiRegisterMapper.updateById(apiRegister);
 
         return ResponseEntity.status(HttpStatus.OK).body(true);
     }
