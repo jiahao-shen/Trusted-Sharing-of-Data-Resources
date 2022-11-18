@@ -3,7 +3,7 @@ package com.trustchain.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.trustchain.fabric.FabricGateway;
 import com.trustchain.mapper.OrganizationRegisterMapper;
-import com.trustchain.minio.MinioUtil;
+import com.trustchain.service.MinioService;
 import com.trustchain.model.OrganizationRegister;
 import com.trustchain.service.HelloService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ public class HelloController {
     private OrganizationRegisterMapper organizationRegisterMapper;
 
     @Autowired
-    private MinioUtil minioUtil;
+    private MinioService minioService;
 
     @Autowired
     private HelloService service;
@@ -59,7 +59,7 @@ public class HelloController {
     @PostMapping("/test/minio")
     public ResponseEntity<Object> testMinio(@RequestPart("file") MultipartFile file) {
         try {
-            minioUtil.upload(file, "test.jpg");
+            minioService.upload(file, "test.jpg");
             return ResponseEntity.status(HttpStatus.OK).body("good");
         } catch (Exception e) {
             e.printStackTrace();

@@ -2,10 +2,9 @@ package com.trustchain.controller.organization;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.trustchain.fabric.FabricGateway;
 import com.trustchain.mapper.OrganizationMapper;
 import com.trustchain.mapper.OrganizationRegisterMapper;
-import com.trustchain.minio.MinioUtil;
+import com.trustchain.service.MinioService;
 import com.trustchain.model.User;
 import com.trustchain.model.Organization;
 import com.trustchain.enums.OrganizationType;
@@ -34,7 +33,7 @@ public class OrganizationController {
     private OrganizationRegisterMapper organizationRegisterMapper;
 
     @Autowired
-    private MinioUtil minioUtil;
+    private MinioService minioService;
 
     @Autowired
     private FabricService fabricService;
@@ -67,22 +66,18 @@ public class OrganizationController {
         int count = organizationRegisterMapper.insert(organizationRegister);
 
         if (count != 0) {
-            try {
-                String serialNumber = organizationRegister.getSerialNumber().toString();
-                String logoPath = String.format("organization_register/%s/logo.jpg", serialNumber);
-                String filePath = String.format("organization_register/%s/file.zip", serialNumber);
-                // 上传至云盘
-                minioUtil.upload(logo, logoPath);
-                minioUtil.upload(file, filePath);
-                // 更新Logo和File路径
-                organizationRegister.setLogo(logoPath);
-                organizationRegister.setFile(filePath);
-                organizationRegisterMapper.updateById(organizationRegister);
+            String serialNumber = organizationRegister.getSerialNumber().toString();
+            String logoPath = String.format("organization_register/%s/logo.jpg", serialNumber);
+            String filePath = String.format("organization_register/%s/file.zip", serialNumber);
+            // 上传至云盘
+            minioService.upload(logo, logoPath);
+            minioService.upload(file, filePath);
+            // 更新Logo和File路径
+            organizationRegister.setLogo(logoPath);
+            organizationRegister.setFile(filePath);
+            organizationRegisterMapper.updateById(organizationRegister);
 
-                return ResponseEntity.status(HttpStatus.OK).body(serialNumber);
-            } catch (Exception e) {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("文件上传失败");
-            }
+            return ResponseEntity.status(HttpStatus.OK).body(serialNumber);
         } else {
             System.out.println("fuck");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("未知错误");
@@ -163,19 +158,15 @@ public class OrganizationController {
         organizationRegister.setReplyTime(new Date());  // 更新回复时间
         organizationRegisterMapper.updateById(organizationRegister);
 
-        try {
-            String newLogoPath = String.format("organization/%s/logo.jpg", orgID);
-            String newFilePath = String.format("organization/%s/file.zip", orgID);
-            // 云端复制文件
-            minioUtil.copy(organizationRegister.getLogo(), newLogoPath);
-            minioUtil.copy(organizationRegister.getFile(), newFilePath);
-            // 存入数据库
-            organization.setLogo(newLogoPath);
-            organization.setFile(newFilePath);
-            organizationMapper.updateById(organization);
-        } catch (Exception e) {
-            logger.error(e);
-        }
+        String newLogoPath = String.format("organization/%s/logo.jpg", orgID);
+        String newFilePath = String.format("organization/%s/file.zip", orgID);
+        // 云端复制文件
+        minioService.copy(organizationRegister.getLogo(), newLogoPath);
+        minioService.copy(organizationRegister.getFile(), newFilePath);
+        // 存入数据库
+        organization.setLogo(newLogoPath);
+        organization.setFile(newFilePath);
+        organizationMapper.updateById(organization);
 
         // 存储上链
         fabricService.saveOrganization(organization);

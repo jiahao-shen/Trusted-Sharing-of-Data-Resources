@@ -5,8 +5,7 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.trustchain.mapper.APIInvokeMapper;
-import com.trustchain.minio.MinioConfig;
-import com.trustchain.minio.MinioUtil;
+import com.trustchain.service.MinioService;
 import com.trustchain.model.*;
 import com.trustchain.enums.HttpMethod;
 import com.trustchain.enums.OrganizationType;
@@ -15,24 +14,16 @@ import com.trustchain.fabric.FabricGateway;
 import com.trustchain.mapper.OrganizationMapper;
 import com.trustchain.mapper.OrganizationRegisterMapper;
 import com.trustchain.mapper.UserMapper;
-import io.minio.MakeBucketArgs;
-import io.minio.MinioClient;
-import io.minio.PutObjectArgs;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -242,13 +233,13 @@ class SpringbootApplicationTests {
     }
 
     @Autowired
-    private MinioUtil minioUtil;
+    private MinioService minioService;
 
     @Test
     void testMinio() {
         try {
-//            minioUtil.listBuckets();
-            minioUtil.copy("organization_register/1593230328973996033/logo.jpg",
+//            minioSerive.listBuckets();
+            minioService.copy("organization_register/1593230328973996033/logo.jpg",
                     "organization/1593230328973996033/logo.jpg");
             System.out.println("success");
         } catch (Exception e) {

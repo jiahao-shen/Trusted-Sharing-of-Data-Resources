@@ -160,180 +160,182 @@ const handleClose = (done: () => void) => {
 </script>
 
 <template>
-	<div class="flex w-full h-full justify-center items-center">
-		<el-card class="w-800px">
-			<template #header>
-				<h2 class="text-2xl">机构注册</h2>
-			</template>
-			<el-form class="w-full" ref="formRef" :model="form" :rules="rules" label-position="top" id="form">
-				<el-row :gutter="60">
-					<el-col :offset="6" :span="12">
-						<el-form-item>
-							<div class="flex flex-col justify-center items-center">
-								<el-upload
-									v-model:file-list="form.logo"
-									ref="logoRef"
-									class="w-150px h-150px"
-									action=""
-									list-type="picture-card"
-									:limit="1"
-									:show-file-list="true"
-									:on-change="onLogoChange"
-									:on-success="uploadLogoSuccess"
-									:on-preview="onLogoPreview"
-									:before-upload="beforeLogoUpload"
-									:accept="logoAcceptFormat.join(',')"
-									:auto-upload="false"
-								>
-									<el-icon :size="50" color="#8c939d"><Plus /></el-icon>
-								</el-upload>
-								<label class="table-title">请上传Logo</label>
-							</div>
-						</el-form-item>
-					</el-col>
-				</el-row>
+	<div class="w-full h-full">
+		<el-scrollbar class="flex w-full h-full justify-center items-center">
+			<el-card class="w-800px m-50px">
+				<template #header>
+					<h2 class="text-2xl">机构注册</h2>
+				</template>
+				<el-form class="w-full" ref="formRef" :model="form" :rules="rules" label-position="top" id="form">
+					<el-row :gutter="60">
+						<el-col :offset="6" :span="12">
+							<el-form-item>
+								<div class="flex flex-col justify-center items-center">
+									<el-upload
+										v-model:file-list="form.logo"
+										ref="logoRef"
+										class="w-150px h-150px"
+										action=""
+										list-type="picture-card"
+										:limit="1"
+										:show-file-list="true"
+										:on-change="onLogoChange"
+										:on-success="uploadLogoSuccess"
+										:on-preview="onLogoPreview"
+										:before-upload="beforeLogoUpload"
+										:accept="logoAcceptFormat.join(',')"
+										:auto-upload="false"
+									>
+										<el-icon :size="50" color="#8c939d"><Plus /></el-icon>
+									</el-upload>
+									<label class="table-title">请上传Logo</label>
+								</div>
+							</el-form-item>
+						</el-col>
+					</el-row>
 
-				<el-row :gutter="60">
-					<el-col :span="16">
-						<el-form-item label="机构名称" prop="name">
-							<el-input placeholder="请输入机构名称" v-model="form.name" clearable />
-						</el-form-item>
-					</el-col>
+					<el-row :gutter="60">
+						<el-col :span="16">
+							<el-form-item label="机构名称" prop="name">
+								<el-input placeholder="请输入机构名称" v-model="form.name" clearable />
+							</el-form-item>
+						</el-col>
 
-					<el-col :span="8">
-						<el-form-item label="机构类型" prop="type">
-							<el-select placeholder="选择" v-model="form.type">
-								<el-option
-									v-for="item in OrganizationType"
-									:value="EnumValues.getNameFromValue(OrganizationType, item)"
-									:label="item"
+						<el-col :span="8">
+							<el-form-item label="机构类型" prop="type">
+								<el-select placeholder="选择" v-model="form.type">
+									<el-option
+										v-for="item in OrganizationType"
+										:value="EnumValues.getNameFromValue(OrganizationType, item)"
+										:label="item"
+									/>
+								</el-select>
+							</el-form-item>
+						</el-col>
+					</el-row>
+
+					<el-row :gutter="60">
+						<el-col :span="8">
+							<el-form-item label="机构电话" prop="telephone">
+								<el-input placeholder="请输入机构电话" v-model="form.telephone">
+									<template #prefix>
+										<el-icon><Phone /></el-icon>
+									</template>
+								</el-input>
+							</el-form-item>
+						</el-col>
+
+						<el-col :span="8">
+							<el-form-item label="机构邮箱" prop="email">
+								<el-input placeholder="请输入机构邮箱" v-model="form.email">
+									<template #prefix>
+										<el-icon><Message /></el-icon>
+									</template>
+								</el-input>
+							</el-form-item>
+						</el-col>
+
+						<el-col :span="8">
+							<el-form-item label="所在城市" prop="city">
+								<el-cascader v-model="form.city" placeholder="请选择省/市/区" :options="regionData" filterable />
+							</el-form-item>
+						</el-col>
+					</el-row>
+
+					<el-row :gutter="60">
+						<el-col>
+							<el-form-item label="详细地址" prop="address">
+								<el-input placeholder="请输入详细地址" v-model="form.address"></el-input>
+							</el-form-item>
+						</el-col>
+					</el-row>
+
+					<el-row :gutter="60">
+						<el-col>
+							<el-form-item label="机构介绍" prop="introduction">
+								<el-input
+									:rows="5"
+									type="textarea"
+									maxlength="500"
+									show-word-limit
+									placeholder="请用文字说明API具体功能"
+									v-model="form.introduction"
 								/>
-							</el-select>
-						</el-form-item>
-					</el-col>
-				</el-row>
+							</el-form-item>
+						</el-col>
+					</el-row>
 
-				<el-row :gutter="60">
-					<el-col :span="8">
-						<el-form-item label="机构电话" prop="telephone">
-							<el-input placeholder="请输入机构电话" v-model="form.telephone">
-								<template #prefix>
-									<el-icon><Phone /></el-icon>
-								</template>
-							</el-input>
-						</el-form-item>
-					</el-col>
+					<el-row :gutter="60">
+						<el-col :span="10">
+							<el-form-item class="w-full" label="上级机构" prop="superior">
+								<el-select class="w-full" placeholder="选择" v-model="form.superior">
+									<el-option v-for="item in organizationList" :label="item.name" :value="item.id" />
+								</el-select>
+							</el-form-item>
+						</el-col>
 
-					<el-col :span="8">
-						<el-form-item label="机构邮箱" prop="email">
-							<el-input placeholder="请输入机构邮箱" v-model="form.email">
-								<template #prefix>
-									<el-icon><Message /></el-icon>
-								</template>
-							</el-input>
-						</el-form-item>
-					</el-col>
+						<el-col :span="6">
+							<el-form-item class="w-full" label="提供节点">
+								<el-radio-group class="w-full" v-model="form.provideNode">
+									<el-radio-button :label="false">否</el-radio-button>
+									<el-radio-button :label="true">是</el-radio-button>
+								</el-radio-group>
+							</el-form-item>
+						</el-col>
 
-					<el-col :span="8">
-						<el-form-item label="所在城市" prop="city">
-							<el-cascader v-model="form.city" placeholder="请选择省/市/区" :options="regionData" filterable />
-						</el-form-item>
-					</el-col>
-				</el-row>
+						<el-col :span="6" v-if="form.provideNode === true">
+							<el-form-item label="节点数量">
+								<el-select placeholder="选择" v-model="form.numNodes">
+									<el-option label="1" :value="1" />
+									<el-option label="2" :value="2" />
+									<el-option label="3" :value="3" />
+									<el-option label="4" :value="4" />
+									<el-option label="5" :value="5" />
+									<el-option label="6" :value="6" />
+								</el-select>
+							</el-form-item>
+						</el-col>
+					</el-row>
 
-				<el-row :gutter="60">
-					<el-col>
-						<el-form-item label="详细地址" prop="address">
-							<el-input placeholder="请输入详细地址" v-model="form.address"></el-input>
-						</el-form-item>
-					</el-col>
-				</el-row>
+					<el-row :gutter="60">
+						<el-col>
+							<el-form-item label="上传证明文件">
+								<el-upload
+									ref="fileRef"
+									class="w-full"
+									action=""
+									drag
+									:limit="1"
+									:accept="fileAcceptFormat.join(',')"
+									:on-success="uploadFileSuccess"
+									:before-upload="beforeFileUpload"
+									:auto-upload="false"
+									v-model:file-list="form.file"
+								>
+									<el-icon class="el-icon--upload"><UploadFilled /></el-icon>
+									<div class="el-upload__text">拖拽到此或<em>点击上传</em></div>
+									<template #tip>
+										<div v-if="form.file.length === 0" class="el-upload__tip">请上传压缩包(ZIP或者RAR)</div>
+									</template>
+								</el-upload>
+							</el-form-item>
+						</el-col>
+					</el-row>
 
-				<el-row :gutter="60">
-					<el-col>
-						<el-form-item label="机构介绍" prop="introduction">
-							<el-input
-								:rows="5"
-								type="textarea"
-								maxlength="500"
-								show-word-limit
-								placeholder="请用文字说明API具体功能"
-								v-model="form.introduction"
-							/>
-						</el-form-item>
-					</el-col>
-				</el-row>
-
-				<el-row :gutter="60">
-					<el-col :span="10">
-						<el-form-item class="w-full" label="上级机构" prop="superior">
-							<el-select class="w-full" placeholder="选择" v-model="form.superior">
-								<el-option v-for="item in organizationList" :label="item.name" :value="item.id" />
-							</el-select>
-						</el-form-item>
-					</el-col>
-
-					<el-col :span="6">
-						<el-form-item class="w-full" label="提供节点">
-							<el-radio-group class="w-full" v-model="form.provideNode">
-								<el-radio-button :label="false">否</el-radio-button>
-								<el-radio-button :label="true">是</el-radio-button>
-							</el-radio-group>
-						</el-form-item>
-					</el-col>
-
-					<el-col :span="6" v-if="form.provideNode === true">
-						<el-form-item label="节点数量">
-							<el-select placeholder="选择" v-model="form.numNodes">
-								<el-option label="1" :value="1" />
-								<el-option label="2" :value="2" />
-								<el-option label="3" :value="3" />
-								<el-option label="4" :value="4" />
-								<el-option label="5" :value="5" />
-								<el-option label="6" :value="6" />
-							</el-select>
-						</el-form-item>
-					</el-col>
-				</el-row>
-
-				<el-row :gutter="60">
-					<el-col>
-						<el-form-item label="上传证明文件">
-							<el-upload
-								ref="fileRef"
-								class="w-full"
-								action=""
-								drag
-								:limit="1"
-								:accept="fileAcceptFormat.join(',')"
-								:on-success="uploadFileSuccess"
-								:before-upload="beforeFileUpload"
-								:auto-upload="false"
-								v-model:file-list="form.file"
-							>
-								<el-icon class="el-icon--upload"><UploadFilled /></el-icon>
-								<div class="el-upload__text">拖拽到此或<em>点击上传</em></div>
-								<template #tip>
-									<div v-if="form.file.length === 0" class="el-upload__tip">请上传压缩包(ZIP或者RAR)</div>
-								</template>
-							</el-upload>
-						</el-form-item>
-					</el-col>
-				</el-row>
-
-				<el-row :gutter="60">
-					<el-col :span="6" :offset="3">
-						<el-button class="w-full" type="success" @click="submit(formRef)">注册</el-button>
-					</el-col>
-					<el-col :span="6">
-						<el-button class="w-full" type="primary" @click="reset(formRef)">重置</el-button>
-					</el-col>
-					<el-col :span="6">
-						<el-button class="w-full" type="danger" @click="router.push('/login')">返回</el-button>
-					</el-col>
-				</el-row>
-			</el-form>
-		</el-card>
+					<el-row :gutter="60">
+						<el-col :span="6" :offset="3">
+							<el-button class="w-full" type="success" @click="submit(formRef)">注册</el-button>
+						</el-col>
+						<el-col :span="6">
+							<el-button class="w-full" type="primary" @click="reset(formRef)">重置</el-button>
+						</el-col>
+						<el-col :span="6">
+							<el-button class="w-full" type="danger" @click="router.push('/login')">返回</el-button>
+						</el-col>
+					</el-row>
+				</el-form>
+			</el-card>
+		</el-scrollbar>
 	</div>
 
 	<el-dialog v-model="previewDialogVisible">
