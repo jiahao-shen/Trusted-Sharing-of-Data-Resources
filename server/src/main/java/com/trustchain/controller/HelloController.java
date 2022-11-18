@@ -5,11 +5,14 @@ import com.trustchain.fabric.FabricGateway;
 import com.trustchain.mapper.OrganizationRegisterMapper;
 import com.trustchain.minio.MinioUtil;
 import com.trustchain.model.OrganizationRegister;
+import com.trustchain.service.HelloService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.concurrent.Future;
 
 @RestController
 public class HelloController {
@@ -19,8 +22,14 @@ public class HelloController {
     @Autowired
     private MinioUtil minioUtil;
 
+    @Autowired
+    private HelloService service;
+
     @GetMapping("/hello")
-    public String hello() {
+    public String hello() throws Exception{
+//        service.testAsync();
+        Future<Boolean> result = service.testAsyncResult();
+
         return "Hello World";
     }
 

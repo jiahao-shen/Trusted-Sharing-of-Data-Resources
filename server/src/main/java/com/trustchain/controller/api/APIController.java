@@ -11,6 +11,7 @@ import com.trustchain.enums.BodyType;
 import com.trustchain.enums.HttpMethod;
 import com.trustchain.enums.RegisterStatus;
 import com.trustchain.mapper.APIInvokeMapper;
+import com.trustchain.service.FabricService;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,9 @@ public class APIController {
 
     @Autowired
     private APIInvokeMapper apiInvokeMapper;
+
+    @Autowired
+    private FabricService fabricService;
 
     /**
      * 发起API注册申请
@@ -144,27 +148,8 @@ public class APIController {
         apiRegister.setReplyTime(new Date());
         apiRegisterMapper.updateById(apiRegister);
 
-        try {
-            FabricGateway fg = new FabricGateway();
-            String response = fg.invoke("createAPI",
-                    api.getId().toString(),
-                    api.getName(),
-                    api.getIntroducation(),
-                    api.getOrganization().toString(),
-                    api.getUrl(),
-                    api.getMethod().toString(),
-                    api.getHeader(),
-                    api.getHeaderType().toString(),
-                    api.getRequest(),
-                    api.getResponseType().toString(),
-                    api.getResponse(),
-                    api.getResponseType().toString(),
-                    api.getVersion(),
-                    api.getCreatedTime().toString());
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("链码写入失败");
-        }
+        // 存储上链
+        fabricService.saveAPI(api);
 
         return ResponseEntity.status(HttpStatus.OK).body(true);
     }
@@ -302,19 +287,9 @@ public class APIController {
         // TODO: 查验审批状态
         // TODO: 查验调用方式
 
-        try {
-            FabricGateway fg = new FabricGateway();
-            String response = fg.invoke("requestAPI",
-                    UUID.randomUUID().toString(),
-                    request.getString("applicant"),
-                    request.getString("id"),
-                    "",
-                    LocalDateTime.now().toString());
-            return ResponseEntity.status(HttpStatus.OK).body(response);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("链码调用失败");
-        }
+        Object response = fabricService.invokeAPI(request.getString("applicant"), request.getString("id"), "", "");
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }
 

@@ -12,6 +12,7 @@ import com.trustchain.enums.OrganizationType;
 import com.trustchain.model.OrganizationInfo;
 import com.trustchain.model.OrganizationRegister;
 import com.trustchain.enums.RegisterStatus;
+import com.trustchain.service.FabricService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,9 @@ public class OrganizationController {
 
     @Autowired
     private MinioUtil minioUtil;
+
+    @Autowired
+    private FabricService fabricService;
 
     private static final Logger logger = LogManager.getLogger(OrganizationController.class);
 
@@ -77,9 +81,10 @@ public class OrganizationController {
 
                 return ResponseEntity.status(HttpStatus.OK).body(serialNumber);
             } catch (Exception e) {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e);
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("文件上传失败");
             }
         } else {
+            System.out.println("fuck");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("未知错误");
         }
     }
@@ -167,26 +172,13 @@ public class OrganizationController {
             // 存入数据库
             organization.setLogo(newLogoPath);
             organization.setFile(newFilePath);
-
             organizationMapper.updateById(organization);
         } catch (Exception e) {
             logger.error(e);
         }
 
-        // 存储到链码
-        try {
-            FabricGateway fg = new FabricGateway();
-            fg.invoke("createOrganization",
-                    organization.getId().toString(),
-                    organization.getName(),
-                    organization.getType().toString(),
-                    organization.getIntroduction(),
-                    organization.getSuperior().toString(),
-                    organization.getCreatedTime().toString());
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("链码写入失败");
-        }
+        // 存储上链
+        fabricService.saveOrganization(organization);
 
         return ResponseEntity.status(HttpStatus.OK).body(true);
     }

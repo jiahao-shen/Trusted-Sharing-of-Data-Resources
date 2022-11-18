@@ -11,12 +11,14 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@EnableAsync
 @SpringBootApplication
 @MapperScan("com.trustchain.mapper")
 public class SpringbootApplication extends WebMvcConfigurationSupport {
