@@ -239,8 +239,9 @@ class SpringbootApplicationTests {
     void testMinio() {
         try {
 //            minioSerive.listBuckets();
-            minioService.copy("organization_register/1593230328973996033/logo.jpg",
-                    "organization/1593230328973996033/logo.jpg");
+//            minioService.copy("organization_register/1593230328973996033/logo.jpg",
+//                    "organization/1593230328973996033/logo.jpg");
+            minioService.createBucket("fuck");
             System.out.println("success");
         } catch (Exception e) {
             e.printStackTrace();

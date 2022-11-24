@@ -33,7 +33,7 @@ public class MinioURLSerializer implements ObjectSerializer {
             return;
         }
 
-        String path = config.getBaseURL() + "/" + config.getBucket() + "/" + object;
+        String path = config.getEndpoint() + "/" + config.getBucket() + "/" + object;
 
         serializer.write(path);
     }

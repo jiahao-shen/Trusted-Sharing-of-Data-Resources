@@ -19,8 +19,7 @@ server:
       timeout: 3600s
 
 minio:
-  endpoint: http://127.0.0.1:9000  # TODO: 端口转发
-  accessKey: minioadmin
-  secretKey: minioadmin
+  endpoint: http://192.168.8.74:9000
+  accessKey: plus
+  secretKey: Tf13706212370
   bucket: trustchain
-  baseURL: http://192.168.100.78:9000

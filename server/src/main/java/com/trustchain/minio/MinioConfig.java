@@ -12,5 +12,4 @@ public class MinioConfig {
     private String accessKey;
     private String secretKey;
     private String bucket;
-    private String baseURL;
 }
