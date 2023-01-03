@@ -1,7 +1,7 @@
 import axios from 'axios'
+import { HttpStatusCode } from 'axios'
 import { useAppStore } from '@/store/app'
 import { ElNotification } from 'element-plus'
-import { HttpStatusCode } from '@/utils/enums'
 import { useRoute, useRouter } from 'vue-router'
 import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios'
 
