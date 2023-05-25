@@ -14,7 +14,7 @@
     "@iconify/vue": "^3.2.1",
     "@types/crypto-js": "^4.1.1",
     "@types/uuid": "^8.3.4",
-    "axios": "^1.2.2",
+    "axios": "^1.4.0",
     "crypto-js": "^4.1.1",
     "css": "^3.0.0",
     "element-china-area-data": "^5.0.2",

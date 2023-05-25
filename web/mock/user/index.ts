@@ -1,3 +1,5 @@
+import { v4 } from 'uuid'
+import moment from 'moment'
 import type { MockMethod } from 'vite-plugin-mock'
 
 export default [
@@ -12,4 +14,19 @@ export default [
 			}
 		},
 	},
+	{
+		url: '/user/list',
+		method: 'get',
+		statusCode: 200,
+		response: () => {
+			return [
+				{
+					username: 'admin',
+					type: 'NORMAL',
+					permission: ['权限一', '权限二'],
+					createdTime: moment().format('YYYY-MM-DD HH:mm:ss'),
+				}
+			]
+		}
+	}
 ] as MockMethod[]

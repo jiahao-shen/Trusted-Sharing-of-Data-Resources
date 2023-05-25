@@ -9,7 +9,7 @@ const router = useRouter()
 const appStore = useAppStore()
 
 const http: AxiosInstance = axios.create({
-	baseURL: '/server',
+	// baseURL: '/server',
 	timeout: 10000,
 })
 
